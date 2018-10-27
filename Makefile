@@ -35,9 +35,9 @@ zero-builddeb: clean deplist builddeb    ## Clean and Build Debian (.deb) pkg
 
 zero-buildrpm: clean deplist buildrpm    ## Clean and Build Redhat (.rpm) pkg
 
-zero-installdeb:	clean builddeb installdeb	## Clean, Build & Install Debian (.deb) pkg
+zero-deploydeb:	clean builddeb deploydeb	## Clean, Build & Install Debian (.deb) pkg
 
-zero-installrpm: clean buildrpm installrpm    ## Clean, Build & Install Redhat (.rpm) pkg
+zero-deployrpm: clean buildrpm deployrpm    ## Clean, Build & Install Redhat (.rpm) pkg
 
 
 # --- targets -------------------------------------------------------------------------------------
@@ -67,13 +67,6 @@ test:     ## Run pytest unittests
 	else bash $(CUR_DIR)/scripts/make-test.sh $(CUR_DIR) $(VENV_DIR) $(MODULE_PATH); fi
 
 
-.PHONY: deplist
-deplist: pre-build  setup-venv    ## Gen OS pkg desc files. FORCE=x to force regen
-	if [ $(FORCE) ]; then . $(VENV_DIR)/bin/activate && \
-	$(PYTHON3_PATH) $(SCRIPT_DIR)/build_deplist.py --force; \
-	else . $(VENV_DIR)/bin/activate && $(PYTHON3_PATH) $(SCRIPT_DIR)/build_deplist.py; fi
-
-
 .PHONY: builddeb
 builddeb:     ## Build Debian distribution (.deb) os package
 	@echo "Building Debian package format of $(PROJECT)"; \
@@ -93,13 +86,13 @@ buildrpm:      ## Build Redhat distribution (.rpm) os package
 
 
 .PHONY: installdeb
-installdeb: builddeb   ## Install (source: pypi). Build artifacts exist
+deploydeb: builddeb   ## Install (source: pypi). Build artifacts exist
 	if [ ! -e $(VENV_DIR) ]; then $(MAKE) setup-venv; fi; \
 	cd $(CUR_DIR) && . $(VENV_DIR)/bin/activate && bash $(SCRIPT_DIR)/installdeb.sh
 
 
 .PHONY: installrpm
-installrpm: buildrpm   ## Install (source: pypi). Build artifacts exist
+deployrpm: buildrpm   ## Install (source: pypi). Build artifacts exist
 	if [ ! -e $(VENV_DIR) ]; then $(MAKE) setup-venv; fi; \
 	cd $(CUR_DIR) && . $(VENV_DIR)/bin/activate && bash $(SCRIPT_DIR)/installrpm.sh
 
