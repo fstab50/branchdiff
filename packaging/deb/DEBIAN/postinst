@@ -5,41 +5,18 @@ BIN_PATH=/usr/local/bin
 
 ##  finalize file ownership & permissions  ##
 
-# log files
-touch /var/log/buildpy.log
-touch /var/log/console.log
-chmod 0666 /var/log/buildpy.log
-chmod 0666 /var/log/console.log
-
 # main executable
-chown root:root /usr/local/bin/buildpy
-chmod 0755 /usr/local/bin/buildpy
+chown root:root /usr/local/bin/branchdiff
+chmod 0755 /usr/local/bin/branchdiff
 
 # lib files
-chown root:root -R /usr/local/lib/buildpy
-chmod 0644 /usr/local/lib/buildpy/*.sh
-chmod 0755 /usr/local/lib/buildpy
+chown root:root -R /usr/local/lib/branchdiff
+chmod 0644 /usr/local/lib/branchdiff/*.sh
+chmod 0755 /usr/local/lib/branchdiff
 
 # bash completion files
-chown root:root /etc/bash_completion.d/buildpy-completion.bash
-chmod 0644 /etc/bash_completion.d/buildpy-completion.bash
-
-
-##  update sudoers path  ##
-
-if [ -f /etc/sudoers ]; then
-
-    var=$(grep secure_path /etc/sudoers)
-    cur_path="$(echo ${var##*=} | cut -c 2-100 | rev | cut -c 2-100 | rev)"
-
-    if [[ -z "$(echo $cur_path | grep $BIN_PATH)" ]]; then
-        # insert bin path
-        new_path="$cur_path:$BIN_PATH"
-        # append hardcoded secure_path (single quotes mandatory)
-        sed -i 's/secure_path=.*/secure_path=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin\"/g' /etc/sudoers
-    fi
-
-fi
+chown root:root /etc/bash_completion.d/branchdiff-completion.bash
+chmod 0644 /etc/bash_completion.d/branchdiff-completion.bash
 
 
 ## install debian-tools package repository if not exist  ##
@@ -89,13 +66,13 @@ if [ -f '/etc/bash_completion' ]; then
     . /etc/bash_completion
 
 elif [ -d '/etc/bash_completion.d' ]; then
-    . /etc/bash_completion.d/buildpy-completion.bash
+    . /etc/bash_completion.d/branchdiff-completion.bash
 
 elif [ -f '/usr/share/bash-completion/bash_completion' ]; then
     . /usr/share/bash-completion/bash_completion
 
-elif [ -f '/usr/local/etc/bash_completion.d/buildpy-completion.bash' ]; then
-    . /usr/local/etc/bash_completion.d/buildpy-completion.bash
+elif [ -f '/usr/local/etc/bash_completion.d/branchdiff-completion.bash' ]; then
+    . /usr/local/etc/bash_completion.d/branchdiff-completion.bash
 fi
 
 
