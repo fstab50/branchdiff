@@ -89,8 +89,8 @@ the current working branch when invoked with a parameter.
 [back to the top](#top)
 
 * * *
-
 ## Usage
+* * *
 
 To display the help menu:
 
@@ -106,8 +106,8 @@ To display the help menu:
 [back to the top](#top)
 
 * * *
-
 ## Author & Copyright
+* * *
 
 All works contained herein copyrighted via below author unless work is explicitly noted by an alternate author.
 
@@ -116,16 +116,17 @@ All works contained herein copyrighted via below author unless work is explicitl
 [back to the top](#top)
 
 * * *
-
 ## License
-
+* * *
 * Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 [back to the top](#top)
 
 * * *
-
 ## Disclaimer
+* * *
+
+The following code is provided in accordance with the strict legal disclaimer below:
 
 *Code is provided "as is". No liability is assumed by either the code's originating author nor this repo's owner for their use at AWS or any other facility. Furthermore, running function code at AWS may incur monetary charges; in some cases, charges may be substantial. Charges are the sole responsibility of the account holder executing code obtained from this library.*
 
