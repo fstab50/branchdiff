@@ -18,7 +18,7 @@ from pyaws.utils import stdout_message
 module = os.path.basename(__file__)
 lib_relpath = 'core'                # path relative to git project root
 version_module = 'version'
-targets = ['README.md']
+target = 'README.md'
 
 
 def git_root():
@@ -103,12 +103,11 @@ else:
 
 
 try:
-    for target in targets:
-        if os.path.exists(target):
-            # update specfile - major version
-            for line in fileinput.input([target], inplace=True):
-                print(line.replace(CURRENT, __version__), end='')
-            stdout_message(f'Updated {target} version {CURRENT} with {__version__}', prefix='OK')
+    if os.path.exists(target):
+        # update specfile - major version
+        for line in fileinput.input([target], inplace=True):
+            print(line.replace(CURRENT, __version__), end='')
+        stdout_message(f'Updated {target} version {CURRENT} with {__version__}', prefix='OK')
 except OSError as e:
     stdout_message(
             message='%s: Error while reading or writing post-commit-hook' % inspect.stack()[0][3],
