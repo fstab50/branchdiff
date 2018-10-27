@@ -19,7 +19,7 @@
 * [Supported Linux Distributions](#supported-linux-distributions)
 * [Installation](#installation)
 * [Usage](#usage)
-* [Author & Copyright](#author-copyright)
+* [Author & Copyright](#author---copyright)
 * [License](#license)
 * [Disclaimer](#disclaimer)
 
@@ -43,8 +43,7 @@
 ## Screenshots
 * * *
 
-**Status**: [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where  
-the cursor is located when user invokes the program:
+**Status**: [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where the cursor is located when user invokes the program:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
@@ -52,8 +51,7 @@ the cursor is located when user invokes the program:
 
 * * *
 
-**Comit Age**: [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the  
-working branch where the cursor is located when user invokes the program:
+**Comit Age**: [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
@@ -61,8 +59,7 @@ working branch where the cursor is located when user invokes the program:
 
 * * *
 
-**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the lines that have been alterned in
-the current working branch when invoked with a parameter.
+**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the lines that have been alterned in the current working branch when invoked with a parameter.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
