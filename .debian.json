@@ -23,7 +23,7 @@
         "Name": "branchdiff.spec",
         "Summary": "Utility for illustrating the status of a git working branch",
         "Description":  "",
-        "BuildArch": "noarch",
+        "BuildArch": "amd64",
         "License": "MIT",
         "Source": "branchdiff-MAJOR_VERSION.MINOR_VERSION.tar.gz",
         "BuildDirName": "branchdiff-MAJOR_VERSION",
