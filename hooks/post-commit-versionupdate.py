@@ -11,6 +11,7 @@ import sys
 import re
 import inspect
 import fileinput
+import subprocess
 from pyaws.utils import stdout_message
 
 # globals
@@ -18,6 +19,14 @@ module = os.path.basename(__file__)
 lib_relpath = 'core'                # path relative to git project root
 version_module = 'version'
 targets = ['README.md']
+
+
+def git_root():
+    """
+    Returns root directory of git repository
+    """
+    cmd = 'git rev-parse --show-toplevel 2>/dev/null'
+    return subprocess.getoutput(cmd).strip()
 
 
 def packagename(filename):
@@ -73,11 +82,13 @@ if PACKAGE is None:
 
     try:
 
-        pwd = os.getcwd()
-        os.chdir(lib_relpath)
-        from . import version
-        __version__ = version.__version__
-        os.chdir(pwd)
+        # adj path down 1 level
+        sys.path.insert(0, os.path.abspath(git_root() + '/' + lib_relpath))
+
+        from version import __version__
+
+        # normalize path
+        sys.path.pop(0)
 
     except ImportError as e:
         stdout_message(
