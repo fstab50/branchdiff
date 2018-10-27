@@ -75,9 +75,9 @@ def deprecated_version(filename, expression):
     return None
 
 
-def version_updated(old, new):
+def incremental_version(old, new):
     """Determine if version label has changed."""
-    return True if old == new else False
+    return False if old == new else True
 
 
 PACKAGE = packagename('DESCRIPTION.rst')
@@ -115,7 +115,7 @@ try:
         )
         sys.exit(1)
 
-    elif version_updated(CURRENT, __version__):
+    elif incremental_version(CURRENT, __version__):
 
         # update specfile - major version
         for line in fileinput.input(targets, inplace=True):
