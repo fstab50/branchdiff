@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+
+#
+#   Branch Differences Display
+#
+#      - commit diff between master & develop branches
+#
+
+pkg_path=$(cd $(dirname $0); pwd -P)
+tmp_file="/tmp/gitdiff.txt"
+header_file="/tmp/header.txt"
+twidth=$(( $(tput cols) - 10 ))
+# std functions & colors
+source $pkg_path/core/colors.sh
+source $pkg_path/core/std_functions.sh
+frame=$(echo -e ${bodytext})
+E_ERROR="1"
+
+
+function current_branch(){
+    echo "$(git branch | grep '\*' | awk '{print $2}')"
+}
+
+
+function float2int() {
+  awk 'BEGIN{for (i=1; i<ARGC;i++) printf "%.0f\n", ARGV[i]}' "$@"
+}
+
+
+function title_header(){
+    local branch1="master"
+    local branch2="$1"
+    local header="$2"
+    local sum
+    local pct
+    local vw
+    printf -- "\n${title}%s${bodytext}  :  %s\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
+    printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${bodytext}" > $header_file
+    # variable width headings
+    sum=$(( 60 + 54 + 20 + 23))
+
+    # commit msg header spacing
+    pct=$(echo "scale=2;60/$sum" | bc -l)
+    cm="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+
+    # age header spacing
+    pct=$(echo "scale=2;57/$sum" | bc -l)
+    age="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+
+    # author header spacing
+    pct=$(echo "scale=2;20/$sum" | bc -l)
+    auth="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-23s %-15s %-2s\n", $1, $2, $3, $4, $5, $6}' $header_file
+    printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
+    echo -e ${bodytext}
+    return 0
+}
+
+
+function parse_commits(){
+    # branch on number of commits
+    commits=$(cat $tmp_file | wc -l)
+    if [ "$commits" -eq 0 ]; then
+        std_message "No differences between master and $DIFF_BRANCH." "INFO"
+        exit 0
+    else
+        echo $commits
+    fi
+    return 0
+}
+
+
+function commit_diff(){
+    local branch1="master"
+    local branch2="$1"
+    local header="$2"
+    local sp="${frame}|${bodytext}"       # separator
+    local sum
+    local pct
+    local vw
+    # output
+    git log --color=always --graph \
+        --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
+        --abbrev-commit \
+        --date=relative $branch1..$branch2  > $tmp_file
+
+    commit_ct="$(parse_commits)"
+
+    # print section header
+    title_header "$DIFF_BRANCH" "$header"
+    # print section body
+    sum=$(( 14 + 23 + 15 + 83))
+    pct=$(echo "scale=2;90/$sum" | bc -l)
+    vw="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    awk -F '=' '{ printf "\t%-14s %-'$vw'.'$vw's %-23s %-15s\n", $1, $2, $3, $4}' $tmp_file
+    printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
+}
+
+
+function file_diff(){
+    local branch1="master"
+    local branch2="$1"
+    local header="$2"
+    # header
+    printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    # files changed
+    git -c color.ui=always diff --stat origin/$branch1..origin/$branch2 | head -n -1 | indent20
+}
+
+
+function overall_diff(){
+    local branch1="master"
+    local branch2="$1"
+    local header="$2"
+    #
+    git -c color.ui=always diff --stat origin/$branch1..origin/$branch2  > $tmp_file
+    files=$(cat "$tmp_file" | tail -n 1 | awk -F 'files' '{print $1}')
+    inserts=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $1}' | awk '{print $NF}')
+    deletes=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $2}' | grep -E -o "[0-9]+")
+    printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
+    printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$branch2${bodytext}"| indent04
+    printf -- "  ${title}%s${bodytext} Files, ${title}%s${bodytext} Insertions, ${title}%s${bodytext} Deletions\n" $files $inserts $deletes | indent20
+    printf -- "\n  %s\n\n" "Branch ${yellow}$branch2${bodytext} ahead of $branch1 by ${title}$commit_ct${bodytext} commits" | indent20
+}
+
+
+function std_error(){
+    local msg="$1"
+    echo -e "\n${yellow}[ ${red}ERROR${yellow} ]$reset  $msg\n" | indent04
+}
+
+
+function std_error_exit(){
+    local msg="$1"
+    local status="$2"
+    std_error "$msg"
+    exit $status
+}
+
+function codediff(){
+    ## displays line-by-line code diff ##
+    DIFF_BRANCH="$(current_branch)"
+    git diff master $DIFF_BRANCH
+    return 0
+}
+
+
+# ---  main  --------------------------------------------------------------------------------------
+
+
+function branchdiff(){
+    # determine branch to diff with master
+    DIFF_BRANCH="$(current_branch)"
+    # exit if on master
+    if [ ! "$(git branch -a 2>/dev/null | grep $DIFF_BRANCH)" ]; then
+        std_error_exit "Not a git repository - exit." $E_ERROR
+    elif [ "$DIFF_BRANCH" = "master" ]; then
+        std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
+    else
+        # output report
+        commit_diff "$DIFF_BRANCH" "BRANCH COMMITS"
+        file_diff "$DIFF_BRANCH" "FILE DIFF"
+        overall_diff "$DIFF_BRANCH" "OVERALL DIFF"
+        # clean up
+        rm -fr $tmp_file
+        exit 0
+    fi
+}
+
+if [ "$1" ]; then
+    codediff
+else
+    branchdiff
+fi
