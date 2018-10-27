@@ -75,7 +75,7 @@ if PACKAGE is None:
 
         pwd = os.getcwd()
         os.chdir(lib_relpath)
-        from version import __version__
+        from version_module import __version__
         os.chdir(pwd)
 
     except ImportError as e:
