@@ -14,8 +14,9 @@ import fileinput
 from pyaws.utils import stdout_message
 
 # globals
+module = os.path.basename(__file__)
 lib_relpath = 'core'                # path relative to git project root
-version_module = 'version.py'
+version_module = 'version'
 targets = ['README.md']
 
 
@@ -37,6 +38,13 @@ def deprecated_version(filename, expression):
     Summary.
 
         Extract program version N-1.
+
+    Args:
+        :filename (str): Name of file contents searched for N-1 version num.
+        :expression (str): Regex or string which matches deprecated version
+
+    Returns:
+        exact match, TYPE: str or None
 
     """
     pattern = re.compile(expression)
@@ -64,13 +72,16 @@ CURRENT = deprecated_version('README.md', '[0-9]\.[0-9]\.[0-9]')
 if PACKAGE is None:
 
     try:
+
+        pwd = os.getcwd()
         os.chdir(lib_relpath)
         from version_module import __version__
+        os.chdir(pwd)
 
     except ImportError as e:
         stdout_message(
-            message='Problem executing post-commit-hook (%s). Error: %s' %
-            (inspect.stack()[0][3], __file__, str(e)),
+            message='Problem executing commit-hook (%s). Error: %s' %
+            (__file__, str(e)),
             prefix='WARN'
             )
 else:
