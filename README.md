@@ -39,25 +39,50 @@
 
 [back to the top](#top)
 
+* * *
 ## Screenshots
+* * *
 
-![branchdiff](./assets/branchdiff.png)
+**Status**: [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where  
+the cursor is located when user invokes the program:
 
-![branchdiff2](./assets/branch-diff.png)
+<p align="center">
+  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
+</p>
+
+* * *
+
+**Comit Age**: [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the  
+working branch where the cursor is located when user invokes the program:
+
+<p align="center">
+  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
+</p>
+
+* * *
+
+**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the lines that have been alterned in
+the current working branch when invoked with a parameter.
+
+<p align="center">
+  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
+</p>
+
+
 
 [back to the top](#top)
 
 * * *
-
 ## Supported Linux Distributions
+* * *
 
 * TBD
 
 [back to the top](#top)
 
 * * *
-
 ## Installation
+* * *
 
 * TBD
 
