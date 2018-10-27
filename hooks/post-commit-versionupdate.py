@@ -8,11 +8,15 @@
 """
 import os
 import sys
+import re
 import inspect
 import fileinput
 from pyaws.utils import stdout_message
 
+# globals
+lib_relpath = 'core'                # path relative to git project root
 version_module = 'version.py'
+targets = ['README.md']
 
 
 def packagename(filename):
@@ -28,14 +32,47 @@ def packagename(filename):
     return None
 
 
+def deprecated_version(filename, expression):
+    """
+    Summary.
+
+        Extract program version N-1.
+
+    """
+    pattern = re.compile(expression)
+
+    try:
+        with open(filename) as d1:
+            parsed = set(d1.read().split())
+            for item in parsed:
+                if pattern.match(item):
+                    return item
+    except OSError:
+        stdout_message(
+                message=f'File {filename} not found', prefix='DBUG'
+            )
+    except Exception as e:
+        stdout_message(
+                message=f'Unknown error ({e})', prefix='DBUG'
+            )
+    return None
+
+
 PACKAGE = packagename('DESCRIPTION.rst')
+CURRENT = deprecated_version('README.md', '[0-9]\.[0-9]\.[0-9]')
 
 if PACKAGE is None:
-    stdout_message(
-            message='Problem executing post-commit-hook (%s). Exit' % __file__,
+
+    try:
+        os.chdir(lib_relpath)
+        from version_module import __version__
+
+    except ImportError as e:
+        stdout_message(
+            message='Problem executing post-commit-hook (%s). Error: %s' %
+            (inspect.stack()[0][3], __file__, str(e)),
             prefix='WARN'
-        )
-    sys.exit(1)
+            )
 else:
     sys.path.insert(0, os.path.abspath(PACKAGE))
     from version_module import __version__
@@ -43,13 +80,12 @@ else:
 
 
 try:
-
-    if os.path.exists('README.md'):
-        # update specfile - major version
-        for line in fileinput.input(['README.md'], inplace=True):
-            print(line.replace('MAJOR_VERSION', major), end='')
-        stdout_message(f'Updated {specfile} with MAJOR_VERSION', prefix='OK')
-
+    for target in targets:
+        if os.path.exists(target):
+            # update specfile - major version
+            for line in fileinput.input([target], inplace=True):
+                print(line.replace(CURRENT, __version__), end='')
+            stdout_message(f'Updated {target} version {CURRENT} with {__version__}', prefix='OK')
 except OSError as e:
     stdout_message(
             message='%s: Error while reading or writing post-commit-hook' % inspect.stack()[0][3],
