@@ -47,7 +47,7 @@
 the cursor is located when user invokes the program:
 
 <p align="center">
-  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
 * * *
@@ -56,7 +56,7 @@ the cursor is located when user invokes the program:
 working branch where the cursor is located when user invokes the program:
 
 <p align="center">
-  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
 
 * * *
@@ -65,7 +65,7 @@ working branch where the cursor is located when user invokes the program:
 the current working branch when invoked with a parameter.
 
 <p align="center">
-  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
 </p>
 
 
@@ -99,7 +99,7 @@ To display the help menu:
 ```
 
 <p align="center">
-  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
 </p>
 
 
