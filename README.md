@@ -49,6 +49,8 @@
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
+[back to the top](#top)
+
 * * *
 
 **Comit Age**: [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
@@ -57,15 +59,15 @@
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
 
+[back to the top](#top)
+
 * * *
 
-**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the lines that have been alterned in the current working branch when invoked with a parameter.
+**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.  Just invoke with the "code" parameter.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
 </p>
-
-
 
 [back to the top](#top)
 
@@ -119,8 +121,8 @@ All works contained herein copyrighted via below author unless work is explicitl
 
 [back to the top](#top)
 
-* * *
 ## Disclaimer
+* * *
 * * *
 
 The following code is provided in accordance with the strict legal disclaimer below:
