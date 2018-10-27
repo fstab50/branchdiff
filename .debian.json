@@ -2,25 +2,27 @@
     "Package": "deb",
     "Project": "branchdiff",
     "ProjectUrl": "https://github.com/fstab50/branchdiff",
+    "IssuesUrl": "https://github.com/fstab50/branchdiff/issues",
     "Description": "Utility for illustrating the status of a git working branch",
     "Version": "MAJOR_VERSION",
     "Release": "MINOR_VERSION",
     "PreInstall": ["", ""],
-    "Dependencies": [
+    "DependencyList": [
         "bash >= 4.1",
         "bc >= 1.0",
         "git",
-        "coreutils"
+        "coreutils",
+        "bash-completion"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
     "DockerUser": "builder",
     "DockerBuildScript": "docker-builddeb.sh",
     "BashCompletion": "branchdiff-completion.bash",
-    "SpecFile": {
+    "ControlFile": {
         "Name": "branchdiff.spec",
         "Summary": "Utility for illustrating the status of a git working branch",
-        "Group":  "TecAdmin",
+        "Description":  "",
         "BuildArch": "noarch",
         "License": "MIT",
         "Source": "branchdiff-MAJOR_VERSION.MINOR_VERSION.tar.gz",
