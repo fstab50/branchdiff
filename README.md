@@ -1,3 +1,4 @@
+<a name="top"></a>
 * * *
 # branchdiff
 * * *
@@ -13,16 +14,16 @@
 ## Contents
 * * *
 
-* [Summary](#markdown-header-summary)
-* [Screenshots](#markdown-header-screenshots)
-* [Supported Linux Distributions](#markdown-header-supported-linux-distributions)
-* [Installation](#markdown-header-installation)
-* [Usage](#markdown-header-usage)
-* [Author & Copyright](#markdown-header-author-copyright)
-* [License](#markdown-header-license)
-* [Disclaimer](#markdown-header-disclaimer)
+* [Summary](#summary)
+* [Screenshots](#screenshots)
+* [Supported Linux Distributions](#supported-linux-distributions)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Author & Copyright](#author-copyright)
+* [License](#license)
+* [Disclaimer](#disclaimer)
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
 ## Summary
@@ -36,7 +37,7 @@
 
 * Provides summary statistics
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 ## Screenshots
 
@@ -44,7 +45,7 @@
 
 ![branchdiff2](./assets/branch-diff.png)
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
 
@@ -52,7 +53,7 @@
 
 * TBD
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
 
@@ -60,7 +61,7 @@
 
 * TBD
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
 
@@ -70,15 +71,15 @@ All works contained herein copyrighted via below author unless work is explicitl
 
 * Copyright Blake Huber, All Rights Reserved.
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
 
 ## License
 
-* Software contained in this repository is licensed under the [MIT License]().
+* Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
 
@@ -86,8 +87,8 @@ All works contained herein copyrighted via below author unless work is explicitl
 
 *Code is provided "as is". No liability is assumed by either the code's originating author nor this repo's owner for their use at AWS or any other facility. Furthermore, running function code at AWS may incur monetary charges; in some cases, charges may be substantial. Charges are the sole responsibility of the account holder executing code obtained from this library.*
 
-Additional terms may be found in the complete [license agreement](https://bitbucket.org/blakeca00/library-utilities/src/master/LICENSE.md).
+Additional terms may be found in the complete [License Agreement](https://github.com/fstab50/branchdiff/blob/master/LICENSE).
 
-[back to the top](#markdown-header-branchdiff)
+[back to the top](#top)
 
 * * *
