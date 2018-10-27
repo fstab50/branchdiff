@@ -65,6 +65,23 @@
 
 * * *
 
+## Usage
+
+To display the help menu:
+
+```bash
+    $ branchdiff  --help
+```
+
+<p align="center">
+  <img src="https://rawgithub.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
+</p>
+
+
+[back to the top](#top)
+
+* * *
+
 ## Author & Copyright
 
 All works contained herein copyrighted via below author unless work is explicitly noted by an alternate author.
