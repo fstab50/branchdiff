@@ -75,6 +75,11 @@ def deprecated_version(filename, expression):
     return None
 
 
+def version_updated(old, new):
+    """Determine if version label has changed."""
+    return True if old == new else False
+
+
 PACKAGE = packagename('DESCRIPTION.rst')
 CURRENT = deprecated_version('README.md', '[0-9]\.[0-9]\.[0-9]')
 
@@ -109,11 +114,14 @@ try:
             prefix='WARN'
         )
         sys.exit(1)
-    else:
+
+    elif version_updated(CURRENT, __version__):
+
         # update specfile - major version
         for line in fileinput.input(targets, inplace=True):
             print(line.replace(CURRENT, __version__), end='')
         stdout_message(f'Updated {targets} version {CURRENT} with {__version__}', prefix='OK')
+
 except OSError as e:
     stdout_message(
             message='%s: Error while reading or writing post-commit-hook' % inspect.stack()[0][3],
