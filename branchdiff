@@ -83,7 +83,7 @@ EOM
 }
 
 
-function parse_parameters() {
+function parse_parameters(){
     ##
     ##  Parse all command-line parameters
     ##
@@ -91,7 +91,7 @@ function parse_parameters() {
     local var parameter major
 
     if [[ ! "$@" ]]; then
-        help_menu | more
+        branchdiff
         exit 0
     else
         while [ $# -gt 0 ]; do
@@ -103,10 +103,11 @@ function parse_parameters() {
                     ;;
 
                 -b | --branch)
+                    OPERATION="alt_branch_compare"
                     if [ "$2" ]; then
                         case "$2" in
                             valid_branches)
-                                BRANCH_COMPARE="$2"
+                                ALT_BRANCH="$2"
                                 shift 2
                             ;;
                             *)
@@ -121,7 +122,7 @@ function parse_parameters() {
                     ;;
 
                 -c | --code)
-                    OPERATION="CODEDIFF"
+                    OPERATION="code"
                     shift 1
                     ;;
             esac
@@ -287,12 +288,21 @@ function branchdiff(){
     fi
 }
 
-if [ "$1" = "--help" ]; then
-    help_menu
+parse_parameters "$@"
 
-elif [ "$1" = "code" ]; then
-    codediff
+case $OPERATION in
+    'code')
+        coddiff
+        ;;
 
-else
-    branchdiff
-fi
+    'alt_branch_compare')
+        branchdiff $ALT_BRANCH
+        ;;
+
+    *)
+        branchdiff
+        ;;
+esac
+
+
+exit 0      ##  end  ##
