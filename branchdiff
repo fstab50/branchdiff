@@ -201,6 +201,7 @@ function title_header(){
     local branch1="$1"
     local branch2="$2"
     local header="$3"
+    local var
     local sum
     local pct
     local vw
@@ -213,14 +214,19 @@ function title_header(){
     # commit msg header spacing
     pct=$(echo "scale=2;60/$sum" | bc -l)
     cm="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
-
+    echo "cm is: $cm"
     # age header spacing
     pct=$(echo "scale=2;57/$sum" | bc -l)
     age="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
 
+    cm_delta=$(( $cm - "$(var='CommitMsg'; echo ${#var})" ))
+    age=$(($cm_delta + 15))
+
     # author header spacing
     pct=$(echo "scale=2;20/$sum" | bc -l)
     auth="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    auth=20
+
     awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-23s %-15s %-2s\n", $1, $2, $3, $4, $5, $6}' $header_file
     printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
     echo -e ${bodytext}
