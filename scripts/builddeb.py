@@ -2,7 +2,7 @@
 """
 Summary.
 
-    builddeb (python3):  buildpy binary operating system package (.deb, Debian systems)
+    builddeb (python3):  branchdiff binary operating system package (.deb, Debian systems)
 
         - Automatic determination of version to be built
         - Build version can optionally be forced to a specific version
@@ -21,7 +21,7 @@ Author:
 License:
     General Public License v3
     Additional terms may be found in the complete license agreement:
-    https://bitbucket.org/blakeca00/buildpython3/src/master/LICENSE.md
+    https://github.com/fstab50/branchdiff/blob/master/LICENSE
 
 OS Support:
     - Debian, Ubuntu, Ubuntu variants
@@ -39,7 +39,7 @@ import subprocess
 from shutil import copy2 as copyfile
 from shutil import copytree, rmtree, which
 from pyaws.utils import stdout_message
-from pyaws.colors import Colors
+from pyaws import Colors
 from __init__ import logger                 # global logger
 
 
@@ -50,8 +50,14 @@ except Exception:
 
 
 # globals
-PROJECT = 'buildpy'
+PROJECT = 'branchdiff'
 module = os.path.basename(__file__)
+TMPDIR = '/tmp/build'
+VOLMNT = '/tmp/rpm'
+CONTAINER_VOLMNT = '/mnt/rpm'
+PACKAGE_CONFIG = '.deb.json'
+DISTRO_LIST = ['ubuntu14.04', 'ubuntu16.04', 'ubuntu18.04']
+
 act = Colors.ORANGE                     # accent highlight (bright orange)
 bd = Colors.BOLD + Colors.WHITE         # title formatting
 bn = Colors.CYAN                        # color for main binary highlighting
@@ -63,7 +69,10 @@ rst = Colors.RESET                      # reset all color, formatting
 
 def git_root():
     """
-    Returns root directory of git repository
+    Summary.
+
+        Returns root directory of git repository
+
     """
     cmd = 'git rev-parse --show-toplevel 2>/dev/null'
     return subprocess.getoutput(cmd).strip()
@@ -71,7 +80,10 @@ def git_root():
 
 def help_menu():
     """
-    Displays command line parameter options
+    Summary.
+
+        Command line parameter options (Help Menu)
+
     """
     menu = '''
                           ''' + bd + module + rst + ''' help contents
@@ -112,10 +124,11 @@ def help_menu():
 
 def current_branch(path):
     """
-    Returns:
+    Returns.
+
         git repository source url, TYPE: str
+
     """
-    cmd = 'git branch'
     pwd = os.getcwd()
     os.chdir(path)
 
@@ -244,6 +257,32 @@ def increment_version(current):
     return major + '.' + str(inc_minor)
 
 
+def tar_archive(archive, source_dir):
+    """
+    Summary:
+        - Creates .tar.gz compressed archive
+        - Checks that file was created before exit
+    Returns:
+        Success | Failure, TYPE: bool
+    """
+    try:
+
+        with tarfile.open(archive, "w:gz") as tar:
+            tar.add(source_dir, arcname=os.path.basename(source_dir))
+
+        if os.path.exists(archive):
+            return True
+
+    except OSError:
+        logger.exception(
+            '{}: Unable to create tar archive {}'.format(inspect.stack()[0][3], archive))
+    except Exception as e:
+        logger.exception(
+            '%s: Unknown problem while creating tar archive %s:\n%s' %
+            (inspect.stack()[0][3], archive, str(e)))
+    return False
+
+
 def create_builddirectory(path, version, force):
     """
     Summary:
@@ -281,18 +320,23 @@ def create_builddirectory(path, version, force):
 
 def builddir_structure(root, builddir):
     """
-    Summary:
+    Summary.
+
         - Updates path in binary exectuable
         - Updates
+
     Args:
         :root (str): full path to root directory of the git project
         :builddir (str): name of current build directory which we need to populate
+
     Vars:
-        :core_dir (str): src path to library modules in project root
+        :lib_path (str): src path to library modules in project root
         :builddir_path (str): dst path to root of the current build directory
          (/<path>/buildpy-1.X.X dir)
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     project_dir = root.split('/')[-1]
     build_root = root + '/packaging/deb'
@@ -400,10 +444,13 @@ def builddir_structure(root, builddir):
 
 def build_package(build_root, builddir):
     """
-    Summary:
-        Creates actual .deb package for current build, build version
+    Summary.
+
+        Creates final os installable package for current build, build version
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     try:
 
@@ -571,7 +618,7 @@ def main(setVersion=None, force=False):
         Success | Failure, TYPE: bool
     """
     global PROJECT_BIN
-    PROJECT_BIN = 'buildpy'
+    PROJECT_BIN = 'branchdiff'
     global PROJECT_ROOT
     PROJECT_ROOT = git_root()
     global SCRIPT_DIR
@@ -685,8 +732,21 @@ def prebuild():
         src = root + '/core' + '/' + version_module
         dst = root + '/scripts' + '/' + version_module
         copyfile(src, dst)
+
         global __version__
+        sys.path.insert(0, os.path.abspath(git_root() + '/' + lib_relpath))
+
         from version import __version__
+
+        # normalize path
+        sys.path.pop(0)
+
+    except ImportError as e:
+        logger.exception(
+                message='Problem importing program version module (%s). Error: %s' %
+                (__file__, str(e)),
+                prefix='WARN'
+            )
     except Exception as e:
         logger.exception(
             '{}: Failure to import _version module _version'.format(inspect.stack()[0][3])
@@ -836,7 +896,7 @@ def valid_version(parameter, min=0, max=100):
 
 
 def init_cli():
-    """ Collect parameters and call main """
+    """Collect parameters and call main """
     try:
         parser = argparse.ArgumentParser(add_help=False)
         args = options(parser)

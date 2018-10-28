@@ -11,10 +11,10 @@ __email__ = "blakeca00[AT]gmail.com"
 __status__ = "Development"
 
 HOME = os.environ.get('HOME')
-PACKAGE = 'core'
+PACKAGE = 'branchdiff'
 enable_logging = True
 log_mode = 'FILE'          # log to cloudwatch logs
-log_filename = 'build_process.log'
+log_filename = PACKAGE + '_build.log'
 log_dir = 'logs'
 log_path = HOME + '/' + log_dir + '/' + log_filename
 

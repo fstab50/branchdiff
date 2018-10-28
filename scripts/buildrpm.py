@@ -177,7 +177,6 @@ def masterbranch_version():
     """
     Returns version denoted in the master branch of the repository
     """
-
     branch = current_branch(git_root())
     cmds = ['git checkout master', 'git checkout {}'.format(branch)]
 
@@ -405,7 +404,7 @@ def build_package(build_root, builddir):
     """
     Summary.
 
-        Creates actual .deb package for current build, build version
+        Creates final os installable package for current build, build version
 
     Returns:
         Success | Failure, TYPE: bool
