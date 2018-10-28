@@ -114,7 +114,7 @@ function parse_parameters(){
                             std_warn "You must provide a valid branch name as a parameter"
                             exit $E_MISC
                         fi
-                        
+
                     else
                         std_warn "You must provide a valid branch name as a parameter"
                         shift 1
@@ -144,9 +144,9 @@ function float2int() {
 
 
 function title_header(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    local branch1="$1"
+    local branch2="$2"
+    local header="$3"
     local sum
     local pct
     local vw
@@ -188,9 +188,9 @@ function parse_commits(){
 
 
 function commit_diff(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    local branch1="$1"
+    local branch2="$2"
+    local header="$3"
     local sp="${frame}|${bodytext}"       # separator
     local sum
     local pct
@@ -204,7 +204,7 @@ function commit_diff(){
     commit_ct="$(parse_commits)"
 
     # print section header
-    title_header "$DIFF_BRANCH" "$header"
+    title_header "$branch1" "$DIFF_BRANCH" "$header"
     # print section body
     sum=$(( 14 + 23 + 15 + 83))
     pct=$(echo "scale=2;90/$sum" | bc -l)
@@ -215,9 +215,9 @@ function commit_diff(){
 
 
 function file_diff(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    local branch1="$1"
+    local branch2="$2"
+    local header="$3"
     # header
     printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
     # files changed
@@ -226,9 +226,9 @@ function file_diff(){
 
 
 function overall_diff(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    local branch1="$1"
+    local branch2="$2"
+    local header="$3"
     #
     git -c color.ui=always diff --stat origin/$branch1..origin/$branch2  > $tmp_file
     files=$(cat "$tmp_file" | tail -n 1 | awk -F 'files' '{print $1}')
@@ -293,21 +293,30 @@ function valid_branch(){
 
 function branchdiff(){
     ##
-    ##   main
+    ##   main:  determine branch to diff with master
     ##
-    # determine branch to diff with master
+    local reference_branch          # baseline ref branch; usually master branch
+    local alternate="$1"            # alternate branch name to compare to reference_branch
+
+    if [ -z $alternate ]; then
+        reference_branch="master"
+    fi
     DIFF_BRANCH="$(current_branch)"
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $DIFF_BRANCH)" ]; then
+
         std_error_exit "Not a git repository - exit." $E_ERROR
+
     elif [ "$DIFF_BRANCH" = "master" ]; then
+
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
+
     else
         # output report
-        commit_diff "$DIFF_BRANCH" "BRANCH COMMITS"
-        file_diff "$DIFF_BRANCH" "FILE DIFF"
-        overall_diff "$DIFF_BRANCH" "OVERALL DIFF"
+        commit_diff "$reference_branch" "$DIFF_BRANCH" "BRANCH COMMITS"
+        file_diff "$reference_branch" "$DIFF_BRANCH" "FILE DIFF"
+        overall_diff "$reference_branch" "$DIFF_BRANCH" "OVERALL DIFF"
         # clean up
         rm -fr $tmp_file
         exit 0
