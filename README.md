@@ -42,11 +42,11 @@
 ## Screenshots
 * * *
 
-### Status
+### Working Branch Commit Status
 
 [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where the cursor is located when user invokes the program:
 
-```
+```bash
 $ cd <git project directory>
 
 $ branchdiff
