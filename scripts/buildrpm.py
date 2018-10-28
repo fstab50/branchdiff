@@ -90,7 +90,10 @@ def git_root():
 
 def help_menu():
     """
-    Displays command line parameter options
+    Summary.
+
+        Command line parameter options (Help Menu)
+
     """
     menu = '''
                           ''' + bd + module + rst + ''' help contents
@@ -275,11 +278,14 @@ def increment_version(current):
 
 def tar_archive(archive, source_dir):
     """
-    Summary:
+    Summary.
+
         - Creates .tar.gz compressed archive
         - Checks that file was created before exit
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     try:
 

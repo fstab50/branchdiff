@@ -36,8 +36,10 @@ import json
 import inspect
 import re
 import subprocess
+import tarfile
 from shutil import copy2 as copyfile
 from shutil import copytree, rmtree, which
+import docker
 from pyaws.utils import stdout_message
 from pyaws import Colors
 from __init__ import logger                 # global logger
@@ -54,10 +56,14 @@ PROJECT = 'branchdiff'
 module = os.path.basename(__file__)
 TMPDIR = '/tmp/build'
 VOLMNT = '/tmp/rpm'
-CONTAINER_VOLMNT = '/mnt/rpm'
+CONTAINER_VOLMNT = '/mnt/deb'
 PACKAGE_CONFIG = '.deb.json'
 DISTRO_LIST = ['ubuntu14.04', 'ubuntu16.04', 'ubuntu18.04']
 
+# docker
+dclient = docker.from_env()
+
+# formatting
 act = Colors.ORANGE                     # accent highlight (bright orange)
 bd = Colors.BOLD + Colors.WHITE         # title formatting
 bn = Colors.CYAN                        # color for main binary highlighting
@@ -163,7 +169,6 @@ def masterbranch_version():
     """
     Returns version denoted in the master branch of the repository
     """
-
     branch = current_branch(git_root())
     cmds = ['git checkout master', 'git checkout {}'.format(branch)]
 
@@ -259,11 +264,14 @@ def increment_version(current):
 
 def tar_archive(archive, source_dir):
     """
-    Summary:
+    Summary.
+
         - Creates .tar.gz compressed archive
         - Checks that file was created before exit
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     try:
 
