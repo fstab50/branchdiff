@@ -55,7 +55,7 @@ except Exception:
 PROJECT = 'branchdiff'
 module = os.path.basename(__file__)
 TMPDIR = '/tmp/build'
-VOLMNT = '/tmp/rpm'
+VOLMNT = '/tmp/deb'
 CONTAINER_VOLMNT = '/mnt/deb'
 PACKAGE_CONFIG = '.deb.json'
 DISTRO_LIST = ['ubuntu14.04', 'ubuntu16.04', 'ubuntu18.04']
@@ -488,7 +488,7 @@ def build_package(build_root, builddir):
     return True
 
 
-def builddir_content_updates(root, build_root, builddir, binary, version):
+def builddir_content_updates(root, build_root, builddir, binary, version, version_module):
     """
     Summary.
 
@@ -510,7 +510,6 @@ def builddir_content_updates(root, build_root, builddir, binary, version):
 
     """
     project_dir = git_root().split('/')[-1]
-    version_module = 'version.py'
     builddir_path = build_root + '/' + builddir
     debian_dir = 'DEBIAN'
     debian_path = builddir_path + '/' + debian_dir
@@ -677,7 +676,8 @@ def main(setVersion=None, force=False, debug=False):
         r_struture = builddir_structure(PROJECT_ROOT, BUILDDIRNAME)
 
         r_updates = builddir_content_updates(
-                PROJECT_ROOT, BUILD_ROOT, BUILDDIRNAME, PROJECT_BIN, VERSION
+                PROJECT_ROOT, BUILD_ROOT, BUILDDIRNAME,
+                PROJECT_BIN, VERSION, VERSION_FILE
             )
 
         if r_struture and r_updates and build_package(BUILD_ROOT, BUILDDIRNAME):
