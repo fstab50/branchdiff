@@ -60,7 +60,7 @@ function help_menu(){
 
         ${title}-b${btext}, ${title}--branch${btext}  <value> :  When provided, parameter uses branch
             name provided for  <value> as the baseline code reference
-            instead of the master branch  (default branch reference).
+            instead of the master branch  (DEFAULT branch reference).
 
         ${title}-c${btext}, ${title}--code${btext}: If provided, $pkg displays the line-by-line
             differences between master branch and the current working
