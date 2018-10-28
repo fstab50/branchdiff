@@ -74,7 +74,7 @@ function help_menu(){
                     $  $pkg  code
   _________________________________________________________________________
 
-            ${btext}README:  ${url}https://bitbucket.org/blakeca00/buildpython3${btext}
+            ${btext}README:  ${url}https://github.com/fstab50/branchdiff${btext}
   _________________________________________________________________________
 ${reset}
 EOM
@@ -102,18 +102,19 @@ function parse_parameters(){
                     ;;
 
                 '-b' | '--branch')
+
                     OPERATION="alt_branch_compare"
+
                     if [ "$2" ]; then
-                        case "$2" in
-                            valid_branches)
-                                ALT_BRANCH="$2"
-                                shift 2
-                            ;;
-                            *)
-                                std_warn "You must provide a valid branch name as a parameter"
-                                exit $E_MISC
-                            ;;
-                        esac
+
+                        if valid_branch "$2"; then
+                            ALT_BRANCH="$2"
+                            shift 2
+                        else
+                            std_warn "You must provide a valid branch name as a parameter"
+                            exit $E_MISC
+                        fi
+                        
                     else
                         std_warn "You must provide a valid branch name as a parameter"
                         shift 1
@@ -258,6 +259,32 @@ function codediff(){
     DIFF_BRANCH="$(current_branch)"
     git diff master $DIFF_BRANCH
     return 0
+}
+
+function valid_branch(){
+    ##
+    ##  determines if parameter is valid branch name
+    ##
+    ##  Returns:
+    ##      true | false
+    ##
+    local altbranch="$1"
+    declare -a arr_branches
+
+    for b in $(git branch -a | grep remotes | tail -n +2); do
+
+        branchname=$(echo $b | awk -F '/' '{print $NF}')
+        arr_branches=(  ${arr_branches[@]} $branchname  )
+
+    done
+
+    if [ "$(echo "${arr_branches[@]}" | grep $altbranch)" ]; then
+        return 0
+    else
+        return 1
+    fi
+    #
+    # <--- end functino valid_branch --->
 }
 
 
