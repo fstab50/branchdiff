@@ -59,18 +59,22 @@ function _branch_subcommands(){
 function _complete_branchdiff_commands()
 {
     local cmds="$1"
-    local split='2'       # times to split screen width
-    local ct="0"
+    local split='1'       # times to split screen width
+    local ct="2"
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
+
+    formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
+    COMPREPLY=( "${formatted_cmds[@]}")
+    return 0
 
     for i in "${!formatted_cmds[@]}"; do
 
         if [ $(( $ct % 2 )) -eq "0" ]; then
             #formatted_cmds[$i]="$(echo ${formatted_cmds[$i]})"
-            formatted_cmds[$i]="$(printf '%*s' "-$((2))"  "${formatted_cmds[$i]}")"
+            formatted_cmds[$i]="$(printf '%*s' "-$((4))"  "${formatted_cmds[$i]}")"
         else
-            formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS))"  "${formatted_cmds[$i]}")"
+            formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
         fi
 
         (( ct++ ))
@@ -102,6 +106,7 @@ function _branchdiff_completions(){
 
     # option strings
     commands='-b --branch -c --code -h --help -V --version'
+    commands='--branch --code --help --version'
 
     # subcommand sets
     branch_subcommands="$(_branch_subcommands) ALL"
@@ -138,7 +143,7 @@ function _branchdiff_completions(){
             ;;
 
         "branchdiff")
-            if [ "$cur" = "" ] || [ "$cur" = "--" ]; then
+            if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
 
                 _complete_branchdiff_commands "${commands}"
                 return 0
