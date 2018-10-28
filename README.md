@@ -44,7 +44,7 @@
 
 ### Working Branch Commit Status
 
-[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where the cursor is located when user invokes the program:
+[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
 
 ```bash
 $ cd <git project directory>
@@ -64,7 +64,7 @@ $ branchdiff
 
 [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
 
-```
+```bash
 $ cd <git project directory>
 
 $ branchdiff code
@@ -82,7 +82,7 @@ $ branchdiff code
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
 
-```
+```bash
 $ cd <git project directory>
 
 $ branchdiff code
