@@ -58,9 +58,9 @@ function help_menu(){
 
   ${title}OPTIONS${btext}
 
-        ${title}-b${btext}, ${title}--branch${btext}: Remove all build and installation artifacts. Can
-            optionally be invoked with a Python major revision number
-            provided as a parameter to clean specific build artifacts
+        ${title}-b${btext}, ${title}--branch${btext}  <value> :  When provided, parameter uses branch
+            name provided for  <value> as the baseline code reference
+            instead of the master branch  (default branch reference).
 
         ${title}-c${btext}, ${title}--code${btext}: If provided, $pkg displays the line-by-line
             differences between master branch and the current working
@@ -68,9 +68,9 @@ function help_menu(){
             the branchname given as the parameter for --branch as the
             reference instead of master branch.
 
-        ${title}-h${btext}, ${title}--help${btext}: Display this help menu
+        ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
 
-        ${title}-V${btext}, ${title}--version${btext}: Display $pkg version and license information
+        ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information
 
   ${title}EXAMPLES${btext}
 
