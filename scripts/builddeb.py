@@ -32,10 +32,10 @@ Dependencies:
 import argparse
 import os
 import sys
+import json
 import inspect
 import re
 import subprocess
-import time
 from shutil import copy2 as copyfile
 from shutil import copytree, rmtree, which
 from pyaws.utils import stdout_message
@@ -631,6 +631,46 @@ def options(parser, help_menu=False):
     return parser.parse_args()
 
 
+def is_installed(binary):
+    """
+    Verifies if program installed on Redhat-based Linux system
+    """
+    cmd = 'dpkg-query -l | grep ' + binary
+    return True if subprocess.getoutput(cmd) else False
+
+
+def ospackages(pkg_list):
+    """Summary
+        Install OS Package Prerequisites
+    Returns:
+        Success | Failure, TYPE: bool
+    """
+    try:
+        for pkg in pkg_list:
+
+            if is_installed(pkg):
+                logger.info(f'{pkg} binary is already installed - skip')
+                continue
+
+            elif which('yum'):
+                cmd = 'sudo yum install ' + pkg + ' 2>/dev/null'
+                print(subprocess.getoutput(cmd))
+
+            elif which('dnf'):
+                cmd = 'sudo dnf install ' + pkg + ' 2>/dev/null'
+                print(subprocess.getoutput(cmd))
+
+            else:
+                logger.warning(
+                    '%s: Dependent OS binaries not installed - package manager not identified' %
+                    inspect.stack()[0][3])
+
+    except OSError as e:
+        logger.exception('{}: Problem installing os package {}'.format(inspect.stack()[0][3], pkg))
+        return False
+    return True
+
+
 def prebuild():
     """
     Summary.
@@ -695,21 +735,78 @@ def postbuild(version, builddir_path):
     return display_package_contents(BUILD_ROOT, VERSION)
 
 
+class ParameterSet():
+    """Recursion class for processing complex dictionary schema."""
+
+    def __init__(self, parameter_file, version):
+        """
+        Summary.
+
+            Retains major and minor version numbers + parameters
+            in json form for later use
+
+        Args:
+            :parameter_file (str): path to json file obj containing
+             parameter keys and values
+            :version (str): current build version
+        """
+        self.parameter_dict = json.loads(read(parameter_file))
+        self.version = version
+        self.major = '.'.join(self.version.split('.')[:2])
+        self.minor = self.version.split('.')[-1]
+
+    def create(self, parameters=None):
+        """
+        Summary.
+
+            Update parameter dict with current values appropriate
+            for the active build
+
+        Args:
+            :parameters (dict): dictionary of all parameters used to gen rpm
+            :version (str):  the version of the current build, e.g. 1.6.7
+
+        Returns:
+            parameters, TYPE: dict
+
+        """
+        if parameters is None:
+            parameters = self.parameter_dict
+
+        for k, v in parameters.items():
+            if isinstance(v, dict):
+                self.create(v)
+            else:
+                if k == 'Version':
+                    parameters[k] = self.major
+                elif k == 'Release':
+                    parameters[k] = self.minor
+                elif k == 'Source':
+                    parameters[k] = PROJECT + '-' + self.major + '.' + self.minor + '.tar.gz'
+                elif k == 'BuildDirName':
+                    parameters[k] = PROJECT + '-' + self.major
+        return parameters
+
+
 def valid_version(parameter, min=0, max=100):
     """
-    Summary:
+    Summary.
+
         User input validation.  Validates version string made up of integers.
         Example:  '1.6.2'.  Each integer in the version sequence must be in
         a range of > 0 and < 100. Maximum version string digits is 3
         (Example: 0.2.3 )
+
     Args:
         :parameter (str): Version string from user input
         :min (int): Minimum allowable integer value a single digit in version
             string provided as a parameter
         :max (int): Maximum allowable integer value a single digit in a version
             string provided as a parameter
+
     Returns:
         True if parameter valid or None, False if invalid, TYPE: bool
+
     """
     # type correction and validation
     if parameter is None:
