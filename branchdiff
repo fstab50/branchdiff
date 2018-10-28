@@ -41,7 +41,7 @@ btext=${reset}                                      # clear accents; rtn to nati
 function help_menu(){
     cat <<EOM
 
-                        ${title}branchdiff${btext} help
+                           ${title}branchdiff${btext} help
 
   ${title}DESCRIPTION${btext}
 
