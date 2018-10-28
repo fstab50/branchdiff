@@ -57,7 +57,7 @@ module = os.path.basename(__file__)
 TMPDIR = '/tmp/build'
 VOLMNT = '/tmp/deb'
 CONTAINER_VOLMNT = '/mnt/deb'
-PACKAGE_CONFIG = '.deb.json'
+PACKAGE_CONFIG = '.debian.json'
 DISTRO_LIST = ['ubuntu14.04', 'ubuntu16.04', 'ubuntu18.04']
 
 # docker
