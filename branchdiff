@@ -83,6 +83,55 @@ EOM
 }
 
 
+function parse_parameters() {
+    ##
+    ##  Parse all command-line parameters
+    ##
+
+    local var parameter major
+
+    if [[ ! "$@" ]]; then
+        help_menu | more
+        exit 0
+    else
+        while [ $# -gt 0 ]; do
+            case $1 in
+                -h | --help)
+                    help_menu | more
+                    shift 1
+                    exit 0
+                    ;;
+
+                -b | --branch)
+                    if [ "$2" ]; then
+                        case "$2" in
+                            valid_branches)
+                                BRANCH_COMPARE="$2"
+                                shift 2
+                            ;;
+                            *)
+                                std_warn "You must provide a valid branch name as a parameter"
+                                exit $E_MISC
+                            ;;
+                        esac
+                    else
+                        std_warn "You must provide a valid branch name as a parameter"
+                        shift 1
+                    fi
+                    ;;
+
+                -c | --code)
+                    OPERATION="CODEDIFF"
+                    shift 1
+                    ;;
+            esac
+        done
+    fi
+    #
+    # <-- end function parse_parameters -->
+}
+
+
 function current_branch(){
     echo "$(git branch | grep '\*' | awk '{print $2}')"
 }
@@ -216,8 +265,12 @@ function codediff(){
 
 
 function branchdiff(){
+    ##
+    ##   main
+    ##
     # determine branch to diff with master
     DIFF_BRANCH="$(current_branch)"
+
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $DIFF_BRANCH)" ]; then
         std_error_exit "Not a git repository - exit." $E_ERROR
