@@ -42,7 +42,15 @@
 ## Screenshots
 * * *
 
-**Status**: [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where the cursor is located when user invokes the program:
+### Status
+
+[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where the cursor is located when user invokes the program:
+
+```
+$ cd <git project directory>
+
+$ branchdiff
+```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
@@ -52,7 +60,15 @@
 
 * * *
 
-**Comit Age**: [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
+#### Comit Age
+
+[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
+
+```
+$ cd <git project directory>
+
+$ branchdiff code
+```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
@@ -62,7 +78,15 @@
 
 * * *
 
-**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.  Just invoke with the "code" parameter.
+#### Code Diff
+
+[branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
+
+```
+$ cd <git project directory>
+
+$ branchdiff code
+```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
