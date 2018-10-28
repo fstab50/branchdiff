@@ -6,15 +6,81 @@
 #      - commit diff between master & develop branches
 #
 
-pkg_path=$(cd $(dirname $0); pwd -P)
+pkg=$(basename $0)                                  # pkg (script) full name
+pkg_root=$(echo $pkg | awk -F '.' '{print $1}')     # pkg without file extention
+pkg_path=$(cd $(dirname $0); pwd -P)                # location of pkg
+pkg_lib="$pkg_path/core"
 tmp_file="/tmp/gitdiff.txt"
 header_file="/tmp/header.txt"
 twidth=$(( $(tput cols) - 10 ))
-# std functions & colors
-source $pkg_path/core/colors.sh
-source $pkg_path/core/std_functions.sh
+
+# source colors, exitcodes, version file, and  std_function defs | NOTE: source order dependent
+source $pkg_lib/colors.sh
+source $pkg_lib/exitcodes.sh
+source $pkg_lib/version.py
+source $pkg_lib/std_functions.sh
+
 frame=$(echo -e ${bodytext})
 E_ERROR="1"
+
+# formatting
+bbc=$(echo -e ${bold}${brightcyan})
+title=$(echo -e ${bold}${brightwhite})              # title color, white + bold
+hic=$(echo -e ${bold}${brightyellowgreen})          # help menu accent 1
+bin=$(echo -e ${bold}${orange})                     # help menu binary accent
+ul=$(echo -e ${underline})                          # std underline
+bd=$(echo -e ${bold})                               # std bold
+wt=$(echo -e ${brightwhite})                        # help menu accent 2
+fs=$(echo -e ${yellow})                             # file path color
+btext=${reset}                                      # clear accents; rtn to native term colors
+
+
+# --- declarations ---------------------------------------------------------------------------------
+
+
+function help_menu(){
+    cat <<EOM
+
+                            ${title}branchdiff${btext} help
+
+  ${title}DESCRIPTION${btext}
+
+        See the working branch status with detailed commit information
+
+  ${title}SYNOPSIS${btext}
+
+           $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
+
+                         [-c | --code ]
+                         [-b | --branch <value> ]
+                         [-h | --help ]
+
+  ${title}OPTIONS${btext}
+        ${title}-b${btext}, ${title}--backup-pip${btext}: Create local Backup copy of installed python
+            packages (single operation only)
+
+        ${title}-c${btext}, ${title}--clean${btext}: Remove all build and installation artifacts. Can
+            optionally be invoked with a Python major revision number
+            provided as a parameter to clean specific build artifacts
+
+  ${title}EXAMPLES${btext}
+            ${title}Status of working branch vs. master${btext}
+                    $  $pkg
+
+            ${title}Status of working branch vs. another named branch${btext}
+                    $  $pkg  --branch  <branchname>
+
+            ${title}Code updates vs. master${btext}
+                    $  $pkg  code
+  _________________________________________________________________________
+
+            ${btext}README:  ${url}https://bitbucket.org/blakeca00/buildpython3${btext}
+  _________________________________________________________________________
+${reset}
+EOM
+    #
+    # <-- end function put_rule_help -->
+}
 
 
 function current_branch(){
@@ -168,8 +234,12 @@ function branchdiff(){
     fi
 }
 
-if [ "$1" ]; then
+if [ "$1" = "--help" ]; then
+    help_menu
+
+elif [ "$1" = "code" ]; then
     codediff
+
 else
     branchdiff
 fi
