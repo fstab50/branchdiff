@@ -41,11 +41,11 @@ btext=${reset}                                      # clear accents; rtn to nati
 function help_menu(){
     cat <<EOM
 
-                            ${title}branchdiff${btext} help
+                        ${title}branchdiff${btext} help
 
   ${title}DESCRIPTION${btext}
 
-        See the working branch status with detailed commit information
+        Working branch status combined with detailed commit timeline
 
   ${title}SYNOPSIS${btext}
 
@@ -96,13 +96,12 @@ function parse_parameters(){
     else
         while [ $# -gt 0 ]; do
             case $1 in
-                -h | --help)
-                    help_menu | more
+                '-h' | '--help')
+                    OPERATION="help"
                     shift 1
-                    exit 0
                     ;;
 
-                -b | --branch)
+                '-b' | '--branch')
                     OPERATION="alt_branch_compare"
                     if [ "$2" ]; then
                         case "$2" in
@@ -121,7 +120,7 @@ function parse_parameters(){
                     fi
                     ;;
 
-                -c | --code)
+                '-c' | '--code')
                     OPERATION="code"
                     shift 1
                     ;;
@@ -291,6 +290,10 @@ function branchdiff(){
 parse_parameters "$@"
 
 case $OPERATION in
+    'help')
+        help_menu | more
+        ;;
+
     'code')
         coddiff
         ;;
