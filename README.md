@@ -78,7 +78,7 @@ $ branchdiff code
 
 * * *
 
-#### Code Diff
+#### Code Updates
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
 
