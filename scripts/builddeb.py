@@ -179,10 +179,9 @@ def masterbranch_version(version_module):
 
         # return to working branch
         stdout_message(
-            'Returning to working branch: checkout %s\n\n%s' %
-            (branch, subprocess.getoutput(cmds[1]))
-            )
-
+            'Returning to working branch: checkout %s\n\n%s'.format(branch)
+        )
+        subprocess.getoutput(cmds[1])
     except Exception:
         return None
     return masterversion
