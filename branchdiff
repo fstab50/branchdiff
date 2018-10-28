@@ -51,19 +51,29 @@ function help_menu(){
 
            $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
 
-                         [-c | --code ]
                          [-b | --branch <value> ]
-                         [-h | --help ]
+                         [-c | --code    ]
+                         [-h | --help    ]
+                         [-V | --version ]
 
   ${title}OPTIONS${btext}
-        ${title}-b${btext}, ${title}--backup-pip${btext}: Create local Backup copy of installed python
-            packages (single operation only)
 
-        ${title}-c${btext}, ${title}--clean${btext}: Remove all build and installation artifacts. Can
+        ${title}-b${btext}, ${title}--branch${btext}: Remove all build and installation artifacts. Can
             optionally be invoked with a Python major revision number
             provided as a parameter to clean specific build artifacts
 
+        ${title}-c${btext}, ${title}--code${btext}: If provided, $pkg displays the line-by-line
+            differences between master branch and the current working
+            branch. If --branch option provided, the code option uses
+            the branchname given as the parameter for --branch as the
+            reference instead of master branch.
+
+        ${title}-h${btext}, ${title}--help${btext}: Display this help menu
+
+        ${title}-V${btext}, ${title}--version${btext}: Display $pkg version and license information
+
   ${title}EXAMPLES${btext}
+
             ${title}Status of working branch vs. master${btext}
                     $  $pkg
 
@@ -125,11 +135,55 @@ function parse_parameters(){
                     OPERATION="code"
                     shift 1
                     ;;
+
+                '-V' | '--version')
+                    OPERATION="display_version"
+                    shift 1
+                    ;;
+
+                *)
+                    std_warn "You must provide a valid parameter or None"
+                    exit 1
+                    ;;
             esac
         done
     fi
     #
     # <-- end function parse_parameters -->
+}
+
+
+function display_program_version(){
+    ##
+    ## output script version info, license
+    ##
+    local _version=$__version__
+    local _hic=$(echo -e ${brightblue})
+    local _year=$(date +%G)
+    local _bashver="$(
+                bash --version | head -n1 | awk -F 'version' '{print $2}' \
+                    | awk '{print $1}' | awk -F '(' '{print $1}'
+            )"
+    #
+    cat <<EOM
+    ______________________________________________________________________
+
+
+
+
+
+              ${_hic}$pkg${reset} version: ${title}$_version${reset}   |   GNU Bash $_bashver
+
+
+
+
+    ______________________________________________________________________
+
+       Copyright 2017-$_year, Blake Huber.  This program distributed under
+       MIT License.  Copyright notice must remain with derivative works.
+    ______________________________________________________________________
+
+EOM
 }
 
 
@@ -326,16 +380,21 @@ function branchdiff(){
 parse_parameters "$@"
 
 case $OPERATION in
-    'help')
-        help_menu | more
+    'alt_branch_compare')
+        branchdiff $ALT_BRANCH
         ;;
 
     'code')
         coddiff
         ;;
 
-    'alt_branch_compare')
-        branchdiff $ALT_BRANCH
+    'display_version')
+        display_program_version
+        shift 1
+        ;;
+
+    'help')
+        help_menu | more
         ;;
 
     *)
