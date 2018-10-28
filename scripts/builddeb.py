@@ -175,7 +175,7 @@ def masterbranch_version(version_module):
     try:
         # checkout master
         stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(cmds[0]))
-        masterversion = read(SCRIPT_DIR + '/' + version_module).split('=')[1].strip().strip('"')
+        masterversion = read(version_modpath).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(
@@ -188,7 +188,7 @@ def masterbranch_version(version_module):
     return masterversion
 
 
-def current_version(binary, version_module):
+def current_version(binary, version_modpath):
     """
     Summary:
         Returns current binary package version if locally
@@ -197,6 +197,7 @@ def current_version(binary, version_module):
     Args:
         :root (str): path to the project root directory
         :binary (str): Name of main project exectuable
+        :version_modpath (str): path to __version__ module
     Returns:
         current version number of the project, TYPE: str
     """
@@ -219,7 +220,7 @@ def current_version(binary, version_module):
             logger.info(
                 '%s: Build binary %s not installed, comparing current branch version to master branch version' %
                 (inspect.stack()[0][3], binary))
-    return greater_version(masterbranch_version(version_module), __version__)
+    return greater_version(masterbranch_version(version_modpath), __version__)
 
 
 def greater_version(versionA, versionB):
@@ -636,10 +637,12 @@ def main(setVersion=None, force=False, debug=False):
     PROJECT_ROOT = git_root()
     global SCRIPT_DIR
     SCRIPT_DIR = PROJECT_ROOT + '/' + 'scripts'
+    global LIB_DIR
+    LIB_DIR = PROJECT_ROOT + '/' + 'core'
     global BUILD_ROOT
     BUILD_ROOT = PROJECT_ROOT + '/packaging/deb'
     global CURRENT_VERSION
-    CURRENT_VERSION = current_version(PROJECT_BIN, 'version.py')
+    CURRENT_VERSION = current_version(PROJECT_BIN, LIB_DIR + '/' 'version.py')
 
     # sort out version numbers, forceVersion is override      #
     # for all info contained in project                       #
