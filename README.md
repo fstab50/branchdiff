@@ -12,7 +12,6 @@
 
 * * *
 ## Contents
-* * *
 
 * [Summary](#summary)
 * [Screenshots](#screenshots)
@@ -26,8 +25,8 @@
 [back to the top](#top)
 
 * * *
+
 ## Summary
-* * *
 
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
 
@@ -73,7 +72,6 @@
 
 * * *
 ## Supported Linux Distributions
-* * *
 
 * TBD
 
@@ -81,7 +79,6 @@
 
 * * *
 ## Installation
-* * *
 
 * TBD
 
@@ -89,7 +86,6 @@
 
 * * *
 ## Usage
-* * *
 
 To display the help menu:
 
@@ -105,8 +101,8 @@ To display the help menu:
 [back to the top](#top)
 
 * * *
+
 ## Author & Copyright
-* * *
 
 All works contained herein copyrighted via below author unless work is explicitly noted by an alternate author.
 
@@ -115,15 +111,16 @@ All works contained herein copyrighted via below author unless work is explicitl
 [back to the top](#top)
 
 * * *
+
 ## License
-* * *
+
 * Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 [back to the top](#top)
 
+* * *
+
 ## Disclaimer
-* * *
-* * *
 
 The following code is provided in accordance with the strict legal disclaimer below:
 
