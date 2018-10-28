@@ -165,7 +165,7 @@ def read(fname):
     return open(os.path.join(basedir, fname)).read()
 
 
-def masterbranch_version():
+def masterbranch_version(version_module):
     """
     Returns version denoted in the master branch of the repository
     """
@@ -175,7 +175,7 @@ def masterbranch_version():
     try:
         # checkout master
         stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(cmds[0]))
-        masterversion = read(SCRIPT_DIR + '/version.py').split('=')[1].strip().strip('"')
+        masterversion = read(SCRIPT_DIR + '/' + version_module).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(
@@ -188,7 +188,7 @@ def masterbranch_version():
     return masterversion
 
 
-def current_version(binary):
+def current_version(binary, version_module):
     """
     Summary:
         Returns current binary package version if locally
@@ -219,7 +219,7 @@ def current_version(binary):
             logger.info(
                 '%s: Build binary %s not installed, comparing current branch version to master branch version' %
                 (inspect.stack()[0][3], binary))
-    return greater_version(masterbranch_version(), __version__)
+    return greater_version(masterbranch_version(version_module), __version__)
 
 
 def greater_version(versionA, versionB):
@@ -498,11 +498,13 @@ def builddir_content_updates(root, build_root, builddir, binary, version):
         - updates the version.py file if version != to __version__
           contained in the file.  This occurs if user invokes the -S /
           --set-version option
+
     Args:
         :root (str): project root full fs path
         :builddir (str): dirname of the current build directory
         :binary (str): name of the main exectuable
         :version (str): version label provided with --set-version parameter. None otherwise
+
     Returns:
         Success | Failure, TYPE: bool
 
@@ -569,13 +571,17 @@ def builddir_content_updates(root, build_root, builddir, binary, version):
 
 def display_package_contents(build_root, version):
     """
-    Summary:
+    Summary.
+
         Output newly built package contents.
+
     Args:
         :build_root (str):  location of newly built rpm package
         :version (str):  current version string, format:  '{major}.{minor}.{patch num}'
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     pkg_path = None
 
@@ -618,7 +624,7 @@ def display_package_contents(build_root, version):
     return True
 
 
-def main(setVersion=None, force=False):
+def main(setVersion=None, force=False, debug=False):
     """
     Summary:
         Create build directories, populate contents, update contents
@@ -634,7 +640,13 @@ def main(setVersion=None, force=False):
     global BUILD_ROOT
     BUILD_ROOT = PROJECT_ROOT + '/packaging/deb'
     global CURRENT_VERSION
-    CURRENT_VERSION = current_version(PROJECT_BIN)
+
+    # sub in current values
+    parameter_obj = ParameterSet(PROJECT_ROOT + '/' + PACKAGE_CONFIG, VERSION)
+    vars = parameter_obj.create()
+
+    VERSION_FILE = vars['VersionModule']
+    CURRENT_VERSION = current_version(PROJECT_BIN, VERSION_FILE)
 
     # sort out version numbers, forceVersion is override      #
     # for all info contained in project                       #
@@ -657,6 +669,9 @@ def main(setVersion=None, force=False):
     # create initial binary working dir
     BUILDDIRNAME = create_builddirectory(BUILD_ROOT, VERSION, force)
 
+    if debug:
+        print(json.dumps(vars, indent=True, sort_keys=True))
+
     if BUILDDIRNAME:
 
         r_struture = builddir_structure(PROJECT_ROOT, BUILDDIRNAME)
@@ -666,17 +681,20 @@ def main(setVersion=None, force=False):
             )
 
         if r_struture and r_updates and build_package(BUILD_ROOT, BUILDDIRNAME):
-            return postbuild(VERSION, BUILD_ROOT + '/' + BUILDDIRNAME)
+            return postbuild(VERSION, VERSION_FILE, BUILD_ROOT + '/' + BUILDDIRNAME)
 
     return False
 
 
 def options(parser, help_menu=False):
     """
-    Summary:
+    Summary.
+
         parse cli parameter options
+
     Returns:
         TYPE: argparse object, parser argument set
+
     """
     parser.add_argument("-b", "--build", dest='build', default=False, action='store_true', required=False)
     parser.add_argument("-d", "--debug", dest='debug', default=False, action='store_true', required=False)
@@ -733,13 +751,9 @@ def prebuild():
         Prerequisites and dependencies for build execution
 
     """
-    version_module = 'version.py'
+    lib_relpath = 'core'
 
     try:
-        root = git_root()
-        src = root + '/core' + '/' + version_module
-        dst = root + '/scripts' + '/' + version_module
-        copyfile(src, dst)
 
         global __version__
         sys.path.insert(0, os.path.abspath(git_root() + '/' + lib_relpath))
@@ -763,7 +777,7 @@ def prebuild():
     return True
 
 
-def postbuild(version, builddir_path):
+def postbuild(version, version_module, builddir_path):
     """
     Summary.
 
@@ -774,15 +788,9 @@ def postbuild(version, builddir_path):
 
     """
     root = git_root()
-    scripts_dir = SCRIPT_DIR
     project_dir = root.split('/')[-1]
-    version_module = 'version.py'
 
     try:
-
-        # remove temp version module copied to scripts dir
-        if os.path.exists(scripts_dir + '/' + version_module):
-            os.remove(scripts_dir + '/' + version_module)
 
         # remove build directory, residual artifacts
         if os.path.exists(builddir_path):
@@ -942,12 +950,19 @@ def init_cli():
 
         if valid_version(args.set) and prebuild():
 
-            if main(setVersion=args.set, force=args.force):
-                stdout_message(f'{PROJECT} build complete')
+            package = main(
+                        setVersion=args.set,
+                        force=args.force,
+                        debug=args.debug
+                    )
+
+            if package:
+                stdout_message(f'{PROJECT} build package created: {yl + package + rst}')
+                stdout_message(f'Debian build process completed successfully. End', prefix='OK')
                 return exit_codes['EX_OK']['Code']
             else:
                 stdout_message(
-                    '{}: Problem creating .deb installation package. Exit'.format(inspect.stack()[0][3]),
+                    '{}: Problem creating os installation package. Exit'.format(inspect.stack()[0][3]),
                     prefix='WARN',
                     severity='WARNING'
                 )
