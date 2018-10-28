@@ -639,13 +639,7 @@ def main(setVersion=None, force=False, debug=False):
     global BUILD_ROOT
     BUILD_ROOT = PROJECT_ROOT + '/packaging/deb'
     global CURRENT_VERSION
-
-    # sub in current values
-    parameter_obj = ParameterSet(PROJECT_ROOT + '/' + PACKAGE_CONFIG, VERSION)
-    vars = parameter_obj.create()
-
-    VERSION_FILE = vars['VersionModule']
-    CURRENT_VERSION = current_version(PROJECT_BIN, VERSION_FILE)
+    CURRENT_VERSION = current_version(PROJECT_BIN, 'version.py')
 
     # sort out version numbers, forceVersion is override      #
     # for all info contained in project                       #
@@ -667,6 +661,13 @@ def main(setVersion=None, force=False, debug=False):
 
     # create initial binary working dir
     BUILDDIRNAME = create_builddirectory(BUILD_ROOT, VERSION, force)
+
+    # sub in current values
+    parameter_obj = ParameterSet(PROJECT_ROOT + '/' + PACKAGE_CONFIG, VERSION)
+    vars = parameter_obj.create()
+
+    VERSION_FILE = vars['VersionModule']
+
 
     if debug:
         print(json.dumps(vars, indent=True, sort_keys=True))
