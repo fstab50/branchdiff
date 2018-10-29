@@ -214,7 +214,7 @@ function title_header(){
     # commit msg header spacing
     pct=$(echo "scale=2;60/$sum" | bc -l)
     cm="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
-    echo "cm is: $cm"
+
     # age header spacing
     pct=$(echo "scale=2;57/$sum" | bc -l)
     age="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
