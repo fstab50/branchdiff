@@ -391,7 +391,7 @@ case $OPERATION in
         ;;
 
     'code')
-        coddiff
+        codediff
         ;;
 
     'display_version')
