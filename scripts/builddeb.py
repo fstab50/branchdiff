@@ -21,7 +21,7 @@ Author:
 License:
     General Public License v3
     Additional terms may be found in the complete license agreement:
-    https://bitbucket.org/blakeca00/branchdiffthon3/src/master/LICENSE.md
+    https://github.com/fstab50/branchdiff/blob/master/LICENSE
 
 OS Support:
     - Debian, Ubuntu, Ubuntu variants
@@ -32,15 +32,17 @@ Dependencies:
 import argparse
 import os
 import sys
+import json
 import inspect
 import re
 import subprocess
 import pdb
-import time
+import tarfile
 from shutil import copy2 as copyfile
 from shutil import copytree, rmtree, which
+import docker
 from pyaws.utils import stdout_message
-from pyaws.colors import Colors
+from pyaws import Colors
 from __init__ import logger                 # global logger
 
 
@@ -53,6 +55,16 @@ except Exception:
 # globals
 PROJECT = 'branchdiff'
 module = os.path.basename(__file__)
+TMPDIR = '/tmp/build'
+VOLMNT = '/tmp/deb'
+CONTAINER_VOLMNT = '/mnt/deb'
+PACKAGE_CONFIG = '.debian.json'
+DISTRO_LIST = ['ubuntu14.04', 'ubuntu16.04', 'ubuntu18.04']
+
+# docker
+dclient = docker.from_env()
+
+# formatting
 act = Colors.ORANGE                     # accent highlight (bright orange)
 bd = Colors.BOLD + Colors.WHITE         # title formatting
 bn = Colors.CYAN                        # color for main binary highlighting
@@ -64,7 +76,10 @@ rst = Colors.RESET                      # reset all color, formatting
 
 def git_root():
     """
-    Returns root directory of git repository
+    Summary.
+
+        Returns root directory of git repository
+
     """
     cmd = 'git rev-parse --show-toplevel 2>/dev/null'
     return subprocess.getoutput(cmd).strip()
@@ -72,7 +87,10 @@ def git_root():
 
 def help_menu():
     """
-    Displays command line parameter options
+    Summary.
+
+        Command line parameter options (Help Menu)
+
     """
     menu = '''
                           ''' + bd + module + rst + ''' help contents
@@ -113,10 +131,11 @@ def help_menu():
 
 def current_branch(path):
     """
-    Returns:
+    Returns.
+
         git repository source url, TYPE: str
+
     """
-    cmd = 'git branch'
     pwd = os.getcwd()
     os.chdir(path)
 
@@ -147,31 +166,29 @@ def read(fname):
     return open(os.path.join(basedir, fname)).read()
 
 
-def masterbranch_version():
+def masterbranch_version(version_module):
     """
     Returns version denoted in the master branch of the repository
     """
-
     branch = current_branch(git_root())
     cmds = ['git checkout master', 'git checkout {}'.format(branch)]
 
     try:
         # checkout master
         stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(cmds[0]))
-        masterversion = read(SCRIPT_DIR + '/version.py').split('=')[1].strip().strip('"')
+        masterversion = read(version_modpath).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(
-            'Returning to working branch: checkout %s\n\n%s' %
-            (branch, subprocess.getoutput(cmds[1]))
-            )
-
+            'Returning to working branch: checkout %s\n\n%s'.format(branch)
+        )
+        subprocess.getoutput(cmds[1])
     except Exception:
         return None
     return masterversion
 
 
-def current_version(binary):
+def current_version(binary, version_modpath):
     """
     Summary:
         Returns current binary package version if locally
@@ -180,6 +197,7 @@ def current_version(binary):
     Args:
         :root (str): path to the project root directory
         :binary (str): Name of main project exectuable
+        :version_modpath (str): path to __version__ module
     Returns:
         current version number of the project, TYPE: str
     """
@@ -202,7 +220,7 @@ def current_version(binary):
             logger.info(
                 '%s: Build binary %s not installed, comparing current branch version to master branch version' %
                 (inspect.stack()[0][3], binary))
-    return greater_version(masterbranch_version(), __version__)
+    return greater_version(masterbranch_version(version_modpath), __version__)
 
 
 def greater_version(versionA, versionB):
@@ -245,6 +263,35 @@ def increment_version(current):
     return major + '.' + str(inc_minor)
 
 
+def tar_archive(archive, source_dir):
+    """
+    Summary.
+
+        - Creates .tar.gz compressed archive
+        - Checks that file was created before exit
+
+    Returns:
+        Success | Failure, TYPE: bool
+
+    """
+    try:
+
+        with tarfile.open(archive, "w:gz") as tar:
+            tar.add(source_dir, arcname=os.path.basename(source_dir))
+
+        if os.path.exists(archive):
+            return True
+
+    except OSError:
+        logger.exception(
+            '{}: Unable to create tar archive {}'.format(inspect.stack()[0][3], archive))
+    except Exception as e:
+        logger.exception(
+            '%s: Unknown problem while creating tar archive %s:\n%s' %
+            (inspect.stack()[0][3], archive, str(e)))
+    return False
+
+
 def create_builddirectory(path, version, force):
     """
     Summary:
@@ -282,18 +329,23 @@ def create_builddirectory(path, version, force):
 
 def builddir_structure(root, builddir):
     """
-    Summary:
+    Summary.
+
         - Updates path in binary exectuable
         - Updates
+
     Args:
         :root (str): full path to root directory of the git project
         :builddir (str): name of current build directory which we need to populate
+
     Vars:
-        :core_dir (str): src path to library modules in project root
+        :lib_path (str): src path to library modules in project root
         :builddir_path (str): dst path to root of the current build directory
          (/<path>/branchdiff-1.X.X dir)
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     project_dir = root.split('/')[-1]
     build_root = root + '/packaging/deb'
@@ -340,8 +392,6 @@ def builddir_structure(root, builddir):
                     message='Copied:\t{} {} {}'.format(lk + _src_path + rst, arrow, lk + _dst_path + rst),
                     prefix='OK'
                 )
-
-        #pdb.set_trace()
 
         if not os.path.exists(lib_path):
 
@@ -403,10 +453,13 @@ def builddir_structure(root, builddir):
 
 def build_package(build_root, builddir):
     """
-    Summary:
-        Creates actual .deb package for current build, build version
+    Summary.
+
+        Creates final os installable package for current build, build version
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     try:
 
@@ -436,7 +489,7 @@ def build_package(build_root, builddir):
     return True
 
 
-def builddir_content_updates(root, build_root, builddir, binary, version):
+def builddir_content_updates(root, build_root, builddir, binary, version, version_module):
     """
     Summary.
 
@@ -446,17 +499,18 @@ def builddir_content_updates(root, build_root, builddir, binary, version):
         - updates the version.py file if version != to __version__
           contained in the file.  This occurs if user invokes the -S /
           --set-version option
+
     Args:
         :root (str): project root full fs path
         :builddir (str): dirname of the current build directory
         :binary (str): name of the main exectuable
         :version (str): version label provided with --set-version parameter. None otherwise
+
     Returns:
         Success | Failure, TYPE: bool
 
     """
     project_dir = git_root().split('/')[-1]
-    version_module = 'version.py'
     builddir_path = build_root + '/' + builddir
     debian_dir = 'DEBIAN'
     debian_path = builddir_path + '/' + debian_dir
@@ -517,13 +571,17 @@ def builddir_content_updates(root, build_root, builddir, binary, version):
 
 def display_package_contents(build_root, version):
     """
-    Summary:
+    Summary.
+
         Output newly built package contents.
+
     Args:
         :build_root (str):  location of newly built rpm package
         :version (str):  current version string, format:  '{major}.{minor}.{patch num}'
+
     Returns:
         Success | Failure, TYPE: bool
+
     """
     pkg_path = None
 
@@ -566,7 +624,7 @@ def display_package_contents(build_root, version):
     return True
 
 
-def main(setVersion=None, force=False):
+def main(setVersion=None, force=False, debug=False):
     """
     Summary:
         Create build directories, populate contents, update contents
@@ -579,10 +637,12 @@ def main(setVersion=None, force=False):
     PROJECT_ROOT = git_root()
     global SCRIPT_DIR
     SCRIPT_DIR = PROJECT_ROOT + '/' + 'scripts'
+    global LIB_DIR
+    LIB_DIR = PROJECT_ROOT + '/' + 'core'
     global BUILD_ROOT
     BUILD_ROOT = PROJECT_ROOT + '/packaging/deb'
     global CURRENT_VERSION
-    CURRENT_VERSION = current_version(PROJECT_BIN)
+    CURRENT_VERSION = current_version(PROJECT_BIN, LIB_DIR + '/' 'version.py')
 
     # sort out version numbers, forceVersion is override      #
     # for all info contained in project                       #
@@ -605,26 +665,40 @@ def main(setVersion=None, force=False):
     # create initial binary working dir
     BUILDDIRNAME = create_builddirectory(BUILD_ROOT, VERSION, force)
 
+    # sub in current values
+    parameter_obj = ParameterSet(PROJECT_ROOT + '/' + PACKAGE_CONFIG, VERSION)
+    vars = parameter_obj.create()
+
+    VERSION_FILE = vars['VersionModule']
+
+
+    if debug:
+        print(json.dumps(vars, indent=True, sort_keys=True))
+
     if BUILDDIRNAME:
 
         r_struture = builddir_structure(PROJECT_ROOT, BUILDDIRNAME)
 
         r_updates = builddir_content_updates(
-                PROJECT_ROOT, BUILD_ROOT, BUILDDIRNAME, PROJECT_BIN, VERSION
+                PROJECT_ROOT, BUILD_ROOT, BUILDDIRNAME,
+                PROJECT_BIN, VERSION, VERSION_FILE
             )
 
         if r_struture and r_updates and build_package(BUILD_ROOT, BUILDDIRNAME):
-            return postbuild(VERSION, BUILD_ROOT + '/' + BUILDDIRNAME)
+            return postbuild(VERSION, VERSION_FILE, BUILD_ROOT + '/' + BUILDDIRNAME)
 
     return False
 
 
 def options(parser, help_menu=False):
     """
-    Summary:
+    Summary.
+
         parse cli parameter options
+
     Returns:
         TYPE: argparse object, parser argument set
+
     """
     parser.add_argument("-b", "--build", dest='build', default=False, action='store_true', required=False)
     parser.add_argument("-d", "--debug", dest='debug', default=False, action='store_true', required=False)
@@ -634,6 +708,46 @@ def options(parser, help_menu=False):
     return parser.parse_args()
 
 
+def is_installed(binary):
+    """
+    Verifies if program installed on Redhat-based Linux system
+    """
+    cmd = 'dpkg-query -l | grep ' + binary
+    return True if subprocess.getoutput(cmd) else False
+
+
+def ospackages(pkg_list):
+    """Summary
+        Install OS Package Prerequisites
+    Returns:
+        Success | Failure, TYPE: bool
+    """
+    try:
+        for pkg in pkg_list:
+
+            if is_installed(pkg):
+                logger.info(f'{pkg} binary is already installed - skip')
+                continue
+
+            elif which('yum'):
+                cmd = 'sudo yum install ' + pkg + ' 2>/dev/null'
+                print(subprocess.getoutput(cmd))
+
+            elif which('dnf'):
+                cmd = 'sudo dnf install ' + pkg + ' 2>/dev/null'
+                print(subprocess.getoutput(cmd))
+
+            else:
+                logger.warning(
+                    '%s: Dependent OS binaries not installed - package manager not identified' %
+                    inspect.stack()[0][3])
+
+    except OSError as e:
+        logger.exception('{}: Problem installing os package {}'.format(inspect.stack()[0][3], pkg))
+        return False
+    return True
+
+
 def prebuild():
     """
     Summary.
@@ -641,15 +755,24 @@ def prebuild():
         Prerequisites and dependencies for build execution
 
     """
-    version_module = 'version.py'
+    lib_relpath = 'core'
 
     try:
-        root = git_root()
-        src = root + '/core' + '/' + version_module
-        dst = root + '/scripts' + '/' + version_module
-        copyfile(src, dst)
+
         global __version__
+        sys.path.insert(0, os.path.abspath(git_root() + '/' + lib_relpath))
+
         from version import __version__
+
+        # normalize path
+        sys.path.pop(0)
+
+    except ImportError as e:
+        logger.exception(
+                message='Problem importing program version module (%s). Error: %s' %
+                (__file__, str(e)),
+                prefix='WARN'
+            )
     except Exception as e:
         logger.exception(
             '{}: Failure to import _version module _version'.format(inspect.stack()[0][3])
@@ -658,7 +781,7 @@ def prebuild():
     return True
 
 
-def postbuild(version, builddir_path):
+def postbuild(version, version_module, builddir_path):
     """
     Summary.
 
@@ -669,15 +792,9 @@ def postbuild(version, builddir_path):
 
     """
     root = git_root()
-    scripts_dir = SCRIPT_DIR
     project_dir = root.split('/')[-1]
-    version_module = 'version.py'
 
     try:
-
-        # remove temp version module copied to scripts dir
-        if os.path.exists(scripts_dir + '/' + version_module):
-            os.remove(scripts_dir + '/' + version_module)
 
         # remove build directory, residual artifacts
         if os.path.exists(builddir_path):
@@ -698,21 +815,78 @@ def postbuild(version, builddir_path):
     return display_package_contents(BUILD_ROOT, VERSION)
 
 
+class ParameterSet():
+    """Recursion class for processing complex dictionary schema."""
+
+    def __init__(self, parameter_file, version):
+        """
+        Summary.
+
+            Retains major and minor version numbers + parameters
+            in json form for later use
+
+        Args:
+            :parameter_file (str): path to json file obj containing
+             parameter keys and values
+            :version (str): current build version
+        """
+        self.parameter_dict = json.loads(read(parameter_file))
+        self.version = version
+        self.major = '.'.join(self.version.split('.')[:2])
+        self.minor = self.version.split('.')[-1]
+
+    def create(self, parameters=None):
+        """
+        Summary.
+
+            Update parameter dict with current values appropriate
+            for the active build
+
+        Args:
+            :parameters (dict): dictionary of all parameters used to gen rpm
+            :version (str):  the version of the current build, e.g. 1.6.7
+
+        Returns:
+            parameters, TYPE: dict
+
+        """
+        if parameters is None:
+            parameters = self.parameter_dict
+
+        for k, v in parameters.items():
+            if isinstance(v, dict):
+                self.create(v)
+            else:
+                if k == 'Version':
+                    parameters[k] = self.major
+                elif k == 'Release':
+                    parameters[k] = self.minor
+                elif k == 'Source':
+                    parameters[k] = PROJECT + '-' + self.major + '.' + self.minor + '.tar.gz'
+                elif k == 'BuildDirName':
+                    parameters[k] = PROJECT + '-' + self.major
+        return parameters
+
+
 def valid_version(parameter, min=0, max=100):
     """
-    Summary:
+    Summary.
+
         User input validation.  Validates version string made up of integers.
         Example:  '1.6.2'.  Each integer in the version sequence must be in
         a range of > 0 and < 100. Maximum version string digits is 3
         (Example: 0.2.3 )
+
     Args:
         :parameter (str): Version string from user input
         :min (int): Minimum allowable integer value a single digit in version
             string provided as a parameter
         :max (int): Maximum allowable integer value a single digit in a version
             string provided as a parameter
+
     Returns:
         True if parameter valid or None, False if invalid, TYPE: bool
+
     """
     # type correction and validation
     if parameter is None:
@@ -742,7 +916,7 @@ def valid_version(parameter, min=0, max=100):
 
 
 def init_cli():
-    """ Collect parameters and call main """
+    """Collect parameters and call main """
     try:
         parser = argparse.ArgumentParser(add_help=False)
         args = options(parser)
@@ -780,12 +954,19 @@ def init_cli():
 
         if valid_version(args.set) and prebuild():
 
-            if main(setVersion=args.set, force=args.force):
-                stdout_message(f'{PROJECT} build complete')
+            package = main(
+                        setVersion=args.set,
+                        force=args.force,
+                        debug=args.debug
+                    )
+
+            if package:
+                stdout_message(f'{PROJECT} build package created: {yl + package + rst}')
+                stdout_message(f'Debian build process completed successfully. End', prefix='OK')
                 return exit_codes['EX_OK']['Code']
             else:
                 stdout_message(
-                    '{}: Problem creating .deb installation package. Exit'.format(inspect.stack()[0][3]),
+                    '{}: Problem creating os installation package. Exit'.format(inspect.stack()[0][3]),
                     prefix='WARN',
                     severity='WARNING'
                 )
