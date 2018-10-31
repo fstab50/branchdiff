@@ -171,18 +171,19 @@ def masterbranch_version(version_module):
     Returns version denoted in the master branch of the repository
     """
     branch = current_branch(git_root())
-    cmds = ['git checkout master', 'git checkout {}'.format(branch)]
+    commands = ['git checkout master', 'git checkout {}'.format(branch)]
 
     try:
         # checkout master
-        stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(cmds[0]))
+        stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(commands[0]))
         masterversion = read(version_modpath).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(
             'Returning to working branch: checkout %s\n\n%s'.format(branch)
         )
-        subprocess.getoutput(cmds[1])
+        #subprocess.getoutput(commands[1])
+        stdout_message(subprocess.getoutput(f'git checkout {branch}'))
     except Exception:
         return None
     return masterversion
