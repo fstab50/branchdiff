@@ -761,18 +761,6 @@ def prebuild(root=git_root()):
     illegal = ['__pycache__']
     module = inspect.stack()[0][3]
 
-    ## clean up source ##
-    try:
-        for directory in sources:
-            for artifact in os.listdir(directory):
-                if artifact in illegal:
-                    rmtree(directory + '/' + artifact)
-
-    except OSError:
-        logger.exception(
-            '{}: Illegal file object detected, but unable to remove {}'.format(module, archive))
-        return False
-
     try:
 
         global __version__
@@ -793,6 +781,18 @@ def prebuild(root=git_root()):
         logger.exception(
             '{}: Failure to import _version module _version'.format(inspect.stack()[0][3])
         )
+        return False
+
+    ## clean up source ##
+    try:
+        for directory in sources:
+            for artifact in os.listdir(directory):
+                if artifact in illegal:
+                    rmtree(directory + '/' + artifact)
+
+    except OSError:
+        logger.exception(
+            '{}: Illegal file object detected, but unable to remove {}'.format(module, archive))
         return False
     return True
 
