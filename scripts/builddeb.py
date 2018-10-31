@@ -748,7 +748,7 @@ def ospackages(pkg_list):
     return True
 
 
-def prebuild():
+def prebuild(root=git_root()):
     """
     Summary.
 
@@ -756,6 +756,22 @@ def prebuild():
 
     """
     lib_relpath = 'core'
+    lib_path = root + '/' + lib_relpath
+    sources = [lib_path]
+    illegal = ['__pycache__']
+    module = inspect.stack()[0][3]
+
+    ## clean up source ##
+    try:
+        for directory in sources:
+            for artifact in os.listdir(directory):
+                if artifact in illegal:
+                    rmtree(artifact)
+
+    except OSError:
+        logger.exception(
+            '{}: Illegal file object detected, but unable to remove {}'.format(module, archive))
+        return False
 
     try:
 
