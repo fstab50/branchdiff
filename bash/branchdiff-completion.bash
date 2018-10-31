@@ -59,7 +59,7 @@ function _branch_subcommands(){
 function _complete_branchdiff_commands()
 {
     local cmds="$1"
-    local split='5'       # times to split screen width
+    local split='7'       # times to split screen width
     local ct="0"
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
