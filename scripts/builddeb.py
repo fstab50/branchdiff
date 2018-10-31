@@ -175,14 +175,13 @@ def masterbranch_version(version_module):
 
     try:
         # checkout master
-        stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(commands[0]))
+        #stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(commands[0]))
         masterversion = read(version_modpath).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(
             'Returning to working branch: checkout %s\n\n%s'.format(branch)
         )
-        #subprocess.getoutput(commands[1])
         stdout_message(subprocess.getoutput(f'git checkout {branch}'))
     except Exception:
         return None
@@ -625,6 +624,18 @@ def display_package_contents(build_root, version):
     return True
 
 
+def locate_deb(origin):
+    """ Finds rpm file object after creation
+    Returns:
+        full path to rpm file | None if not found
+    """
+    for root, dirs, files in os.walk(origin):
+        for file in files:
+            if file.endswith('.deb'):
+                return os.path.abspath(os.path.join(root, file))
+    return None
+
+
 def main(setVersion=None, force=False, debug=False):
     """
     Summary:
@@ -810,6 +821,7 @@ def postbuild(version, version_module, builddir_path):
     """
     root = git_root()
     project_dir = root.split('/')[-1]
+    package = locate_deb(root)
 
     try:
 
@@ -825,11 +837,12 @@ def postbuild(version, version_module, builddir_path):
             stdout_message(
                 '{}: Module {} successfully updated.'.format(inspect.stack()[0][3], yl + path + rst)
                 )
-
+        if display_package_contents(BUILD_ROOT, VERSION):
+            return package_path
     except OSError as e:
         logger.exception('{}: Postbuild clean up failure'.format(inspect.stack()[0][3]))
         return False
-    return display_package_contents(BUILD_ROOT, VERSION)
+    return package_path
 
 
 class ParameterSet():
