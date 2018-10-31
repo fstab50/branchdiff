@@ -766,7 +766,7 @@ def prebuild(root=git_root()):
         for directory in sources:
             for artifact in os.listdir(directory):
                 if artifact in illegal:
-                    rmtree(artifact)
+                    rmtree(directory + '/' + artifact)
 
     except OSError:
         logger.exception(
