@@ -821,7 +821,7 @@ def postbuild(version, version_module, builddir_path):
     """
     root = git_root()
     project_dir = root.split('/')[-1]
-    package = locate_deb(root)
+    package_path = locate_deb(root)
 
     try:
 
