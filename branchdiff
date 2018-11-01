@@ -190,7 +190,7 @@ EOM
 
 
 function current_branch(){
-    echo "$(git branch | grep '\*' | awk '{print $2}')"
+    echo "$(git branch 2>/dev/null | grep '\*' | awk '{print $2}')"
 }
 
 
@@ -366,7 +366,7 @@ function branchdiff(){
     DIFF_BRANCH="$(current_branch)"
 
     # exit if on master
-    if [ ! "$(git branch -a 2>/dev/null | grep $DIFF_BRANCH)" ]; then
+    if [ ! "$(git branch -a 2>/dev/null | grep $DIFF_BRANCH 2>/dev/null)" ]; then
 
         std_error_exit "Not a git repository - exit." $E_ERROR
 
