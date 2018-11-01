@@ -164,6 +164,8 @@ function display_program_version(){
                 bash --version | head -n1 | awk -F 'version' '{print $2}' \
                     | awk '{print $1}' | awk -F '(' '{print $1}'
             )"
+    local _gitver=$(git --version | awk '{print $3}')
+    local _bd=$(echo -e ${bold})
     #
     cat <<EOM
     ______________________________________________________________________
@@ -172,7 +174,7 @@ function display_program_version(){
 
 
 
-              ${_hic}$pkg${reset} version: ${title}$_version${reset}   |   GNU Bash $_bashver
+              ${_hic}$pkg${reset} version: ${title}$_version${reset}   |   git version ${title}$_gitver${reset}
 
 
 
