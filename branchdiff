@@ -211,7 +211,7 @@ function title_header(){
     printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
     printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
     # variable width headings
-    sum=$(( 60 + 54 + 20 + 23))
+    sum=$(( $(tput cols) - 4))
 
     # commit msg header spacing
     pct=$(echo "scale=2;60/$sum" | bc -l)
@@ -222,12 +222,12 @@ function title_header(){
     age=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
 
     cm_delta=$(( $cm - "$(var='CommitMsg'; echo ${#var})" ))
-    age=$(($cm_delta + 10))
+    age=$(($cm_delta + 12))
 
     # author header spacing
     pct=$(echo "scale=2;20/$sum" | bc -l)
     auth=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
-    auth=20
+    auth=12
 
     awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-23s %-15s %-2s\n", $1, $2, $3, $4, $5, $6}' $header_file
     printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
@@ -270,7 +270,7 @@ function commit_diff(){
     # print section body
     sum=$(( 14 + 23 + 15 + 83))
     pct=$(echo "scale=2;90/$sum" | bc -l)
-    vw="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
     awk -F '=' '{ printf "\t%-14s %-'$vw'.'$vw's %-23s %-15s\n", $1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
 }
