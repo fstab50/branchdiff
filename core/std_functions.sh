@@ -24,7 +24,7 @@ host=$(hostname)
 system=$(uname)
 
 # this file
-VERSION="2.7.7"
+VERSION="2.8.7"
 
 if [ ! $pkg ] || [ ! $pkg_path ]; then
     echo -e "\npkg and pkg_path errors - both are null"
@@ -49,7 +49,7 @@ function array2json(){
     echo -e "{" > $output_file
     ct=1
     max_keys=${#array_dict[@]}
-    for key in ${!array_dict[@]}; do
+    for key in "${!array_dict[@]}"; do
         if [ $ct == $max_keys ]; then
             # last key, no comma
             echo "\"${key}\": \"${array_dict[${key}]}\"" | indent04 >> $output_file
@@ -176,7 +176,14 @@ function convert_time_months(){
 
 
 function delay_spinner(){
-    # vars
+    ##
+    ##  Usage:
+    ##
+    ##      $ long-running-command  &
+    ##      $ delay_spinner "  Please wait msg..."
+    ##
+    ##  Spinner exists when long-running-command completes
+    ##
     local PROGRESSTXT
     if [ ! "$1" ]; then
         PROGRESSTXT="  Please wait..."
@@ -197,6 +204,7 @@ function delay_spinner(){
         sleep $delay
         printf "\b\b\b\b\b\b"
     done
+    printf -- '\n\n'
     #
     # <-- end function ec2cli_spinner -->
     #
@@ -239,7 +247,7 @@ function environment_info(){
         std_logger "Detected: $($prog --version | head -1)" $prefix $log_file
     fi
     #
-    #<-- end function environment_info -->
+    # <<-- end function environment_info -->>
 }
 
 
@@ -396,6 +404,48 @@ function linux_distro(){
 }
 
 
+function pkg_info(){
+    ##
+    ##  displays information about this library module
+    ##
+    ##     - dependent module colors.sh is located always adjacent
+    ##     - sourcing of dep modules must occur after local var to avoid overwrite
+    ##       of variable values in this module
+    ##
+    local version=$VERSION
+    source $pkg_path/colors.sh
+    bd=$(echo -e ${bold})
+    act=$(echo -e ${orange})
+    rst=$(echo -e ${reset})
+
+    # generate list of functions
+    printf -- '%s\n' "$(declare -F | awk '{print $3}')" > /tmp/.functions
+    sum=$(cat /tmp/.functions | wc -l)
+
+    # construct, display help msg output
+    cat <<EOM
+    ___________________________________________________
+
+    ${title}Bashtools Library${rst}: Standard Functions
+
+    Module Name:        ${cyan}$pkg${rst}
+    Module Version:     ${act}$version${rst}
+    ___________________________________________________
+
+    Module Contains $sum Functions:
+
+EOM
+    # display list of function names in this module
+    for l in $(cat /tmp/.functions); do
+        printf -- '\t%s %s\n' "-" "$l"
+    done
+    printf -- '\n'
+    rm /tmp/.functions
+    #
+    # <<-- end function pkg_info -->>
+}
+
+
 function print_header(){
     ##
     ## print formatted report header ##
@@ -476,6 +526,87 @@ function python_version_depcheck(){
 }
 
 
+function progress_dots(){
+    ##
+    ##  Usage:
+    ##
+    ##      $ long-running-command  &
+    ##      $ progress_dots --text "Process XYZ Starting" --end " End xyz"
+    ##
+    ##      Exists when long-running-command completes
+    ##
+    ##  Dependencies:
+    ##      - requires colors.sh (source of indent function)
+    ##
+    local text
+    local endmsg
+    local fast
+    local width=$(tput cols)
+    local stop=$(( $width / 4 ))
+    local pid=$!
+    local delay="0.1"
+    local counter="0"
+    local len
+
+    while [ $# -gt 0 ]; do
+        case $1 in
+            -e | --end)
+                endmsg="$2"; shift 2
+                ;;
+
+            -f | --fast)
+                fast="$2"; shift 2
+                ;;
+
+            -t | --text)
+                text=$2; shift 2
+                ;;
+        esac
+    done
+
+    if [ ! "$text" ]; then text="Please wait"; fi
+    if [ ! "$endmsg" ]; then endmsg="done."; fi
+
+    # print fast dots if short process
+    if [ "$fast" = "true" ]; then delay="$(( 1/15 ))"; fi
+
+    # min width of dot pattern
+    if [ $stop -lt "80" ]; then stop="80"; fi
+
+    len=${#text}                            # length of text msg, chars
+    stopmarker=$stop                        # stop column when not title row
+    titlestop=$(( $stop - $len ))           # stop column on text msg row
+
+    # title
+    printf -- '\n\n%s' "$text" | indent04
+    # output progress dots
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+
+        if [ "$counter" = "0" ]; then
+            printf -- '%s' "."
+            stop=$titlestop
+
+        elif [ $counter -ge $stop ]; then
+            printf -- '\n%s' "." | indent04
+            counter="0"
+            stop=$stopmarker
+
+        else
+            printf -- '%s' "."
+        fi
+
+        sleep $delay
+        counter=$(( $counter + 1 ))
+
+    done
+
+    printf -- "  ${endmsg}\n\n"
+    #
+    # <-- end function ec2cli_spinner -->
+    #
+}
+
+
 function python_module_depcheck(){
     ##
     ## validate python library dependencies
@@ -508,24 +639,29 @@ function std_logger(){
     ##
     ##  Args:
     ##      - msg:      body of the log message text
-    ##      - prefix:   INFO, DEBUG, etc. Note: WARN is handled by std_warn function
+    ##
+    ##      - prefix:   INFO, DEBUG, etc. Note: WARN is handled by std_warn
+    ##                  function
+    ##
     ##      - log_file: The file to which log messages should be written
-    ##      - version:  Populated if version module exists in pkg_lib. __version__ sourced
-    ##                  from within the version module
+    ##
+    ##      - version:  Populated if version module exists in
+    ##                  pkg_lib. __version__ sourced from within the
+    ##                  version module
     ##
     local msg="$1"
     local prefix="$2"
     local log_file="$3"
+    local rst=$(echo -e ${RESET})
     local version
+    local strip_ansi="false"
 
     # set prefix if not provided
-    if [ ! $prefix ]; then
-        prefix="INFO"
-    fi
+    if [ ! $prefix ]; then prefix="INFO"; fi
 
     # set version in logger
-    if [ $pkg_lib ] && [ -f $pkg_lib/_version.py ]; then
-        source "$pkg_lib/_version.py"
+    if [ $pkg_lib ] && [ -f $pkg_lib/version.py ]; then
+        source "$pkg_lib/version.py"
         version=$__version__
 
     elif [ "$VERSION" ]; then
@@ -543,13 +679,18 @@ function std_logger(){
         touch $log_file
 
         if [ ! -f $log_file ]; then
-            echo -e "[$prefix]: $pkg ($version): failure to call std_logger, $log_file location not writeable"
+            echo -e "[$prefix]: $pkg ($version): std_logger failure, $log_file path not writeable"
             exit $E_DIR
         fi
 
+    elif [ "$strip_ansi" = "true" ]; then
+
+        echo -e "$(date +'%Y-%m-%d %T') $host - $pkg - $version - [$prefix]: $msg${rst}" | \
+        sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|G|K]//g" >> "$log_file"
+
     else
 
-        echo -e "$(date +'%Y-%m-%d %T') $host - $pkg - $version - [$prefix]: $msg" >> "$log_file"
+        echo -e "$(date +'%Y-%m-%d %T') $host - $pkg - $version - [$prefix]: $msg${rst}" >> "$log_file"
 
     fi
     #
@@ -569,11 +710,12 @@ function std_message(){
     local prefix="$2"
     local log_file="$3"
     local format="$4"
+    local rst=${reset}
 
-    if [ $log_file ] && { [ "$prefix" = "ok" ] || [ "$prefix" = "OK" ]; }; then
+    if [ $log_file ] && { [ "$prefix" = "ok" ] || [ "$prefix" = "OK" ] || [ "$prefix" = "DONE" ]; }; then
 
         # ensure info log message written to log
-        std_logger "$msg" "INFO" "$log_file"
+        std_logger "$msg" "DONE" "$log_file"
 
     elif [ $log_file ]; then
 
@@ -597,11 +739,11 @@ function std_message(){
 
     elif [ "$prefix" = "OK" ] || [ "$prefix" = "ok" ]; then
 
-        echo -e "\n${yellow}[ $green${BOLD}$pref$yellow ]$reset  $msg\n" | indent04
+        echo -e "\n${yellow}[  $green${BOLD}$pref${rst}${yellow}  ]${rst}  $msg\n" | indent04
 
     else
 
-        echo -e "\n${yellow}[ $cyan$pref$yellow ]$reset  $msg\n" | indent04
+        echo -e "\n${yellow}[ $cyan$pref$yellow ]${rst}  $msg\n" | indent04
 
     fi
     #
@@ -620,16 +762,20 @@ function std_error(){
 
 function std_warn(){
     local msg="$1"
-    local byl="$(echo -e ${brightyellow2})"
+    local log_file="$2"
+    local pc="$(echo -e ${a_brightyellow2})"        # prefix color
+    local rst="$(echo -e ${reset})"                 # reset code
 
-    std_logger "$msg" "WARN" $LOG_FILE
+    if [ $log_file ]; then
+        std_logger "$msg" "WARN" $log_file
+    fi
 
     if [ "$3" ]; then
         # there is a second line of the msg, to be printed by the caller
-        echo -e "\n${yellow}[ ${byl}WARN${yellow} ]$reset  $msg" | indent04
+        echo -e "\n${pv_wgray}[${rst} ${pc}WARN${pv_wgray} ]$reset  $msg" | indent04
     else
         # msg is only 1 line sent by the caller
-        echo -e "\n${yellow}[ ${byl}WARN${yellow} ]$reset  $msg\n" | indent04
+        echo -e "\n${pv_wgray}[${rst} ${pc}WARN${pv_wgray} ]$reset  $msg\n" | indent04
     fi
     #
     # <<-- end function std_warn -->>
@@ -640,6 +786,7 @@ function std_error_exit(){
     ##
     ##  standard function presents error msg, automatically
     ##  exits error code
+    ##
     local msg="$1"
     local status="$2"
     std_error "$msg"
@@ -651,16 +798,15 @@ function std_error_exit(){
 
 function timer(){
     ## measure total execution runtime ##
-    #
-    # --------- USAGE -------------
-    #
-    #       @ beginning:
-    #       START=$(timer)
-    #
-    #       @ end time:
-    #       printf 'Total runtime: %s\n' $(timer $START)
-    #
-    #
+    ##
+    ##    Usage:
+    ##
+    ##       @ beginning:
+    ##       $ START=$(timer)
+    ##
+    ##       @ end time:
+    ##       $ printf 'Total runtime: %s\n' $(timer $START)
+    ##
     if [[ $# -eq 0 ]]; then
 
         echo $(date '+%s')
@@ -681,3 +827,8 @@ function timer(){
     #
     # <<-- end function timer -->>
 }
+
+# print information about this package
+if [ "$pkg" = "std_functions.sh" ]; then
+    pkg_info
+fi
