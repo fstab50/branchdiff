@@ -20,7 +20,6 @@ source $pkg_lib/exitcodes.sh
 source $pkg_lib/version.py
 source $pkg_lib/std_functions.sh
 
-frame=$(echo -e ${bodytext})
 E_ERROR="1"
 
 # formatting
@@ -33,6 +32,7 @@ bd=$(echo -e ${bold})                               # std bold
 wt=$(echo -e ${a_brightwhite})                        # help menu accent 2
 fs=$(echo -e ${yellow})                             # file path color
 btext=${reset}                                      # clear accents; rtn to native term colors
+frame=${btext}
 
 
 # --- declarations ---------------------------------------------------------------------------------
@@ -207,31 +207,31 @@ function title_header(){
     local sum
     local pct
     local vw
-    printf -- "\n${title}%s${bodytext}  :  %s\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
     printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
-    printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${bodytext}" > $header_file
+    printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
     # variable width headings
     sum=$(( 60 + 54 + 20 + 23))
 
     # commit msg header spacing
     pct=$(echo "scale=2;60/$sum" | bc -l)
-    cm="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    cm=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
 
     # age header spacing
     pct=$(echo "scale=2;57/$sum" | bc -l)
-    age="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    age=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
 
     cm_delta=$(( $cm - "$(var='CommitMsg'; echo ${#var})" ))
     age=$(($cm_delta + 10))
 
     # author header spacing
     pct=$(echo "scale=2;20/$sum" | bc -l)
-    auth="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    auth=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
     auth=20
 
     awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-23s %-15s %-2s\n", $1, $2, $3, $4, $5, $6}' $header_file
     printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
-    echo -e ${bodytext}
+    echo -e ${btext}
     return 0
 }
 
@@ -253,7 +253,7 @@ function commit_diff(){
     local branch1="$1"
     local branch2="$2"
     local header="$3"
-    local sp="${frame}|${bodytext}"       # separator
+    local sp="${frame}|${btext}"       # separator
     local sum
     local pct
     local vw
@@ -281,7 +281,7 @@ function file_diff(){
     local branch2="$2"
     local header="$3"
     # header
-    printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
     # files changed
     git -c color.ui=always diff --stat origin/$branch1..origin/$branch2 | head -n -1 | indent20
 }
@@ -297,9 +297,9 @@ function overall_diff(){
     inserts=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $1}' | awk '{print $NF}')
     deletes=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $2}' | grep -E -o "[0-9]+")
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
-    printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$branch2${bodytext}"| indent04
-    printf -- "  ${title}%s${bodytext} Files, ${title}%s${bodytext} Insertions, ${title}%s${bodytext} Deletions\n" $files $inserts $deletes | indent20
-    printf -- "\n  %s\n\n" "Branch ${yellow}$branch2${bodytext} ahead of $branch1 by ${title}$commit_ct${bodytext} commits" | indent20
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "master vs. ${yellow}$branch2${btext}"| indent04
+    printf -- "  ${title}%s${btext} Files, ${title}%s${btext} Insertions, ${title}%s${btext} Deletions\n" $files $inserts $deletes | indent20
+    printf -- "\n  %s\n\n" "Branch ${yellow}$branch2${btext} ahead of $branch1 by ${title}$commit_ct${btext} commits" | indent20
 }
 
 
