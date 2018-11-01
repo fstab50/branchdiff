@@ -98,22 +98,25 @@ function parse_parameters(){
     ##  Parse all command-line parameters
     ##
 
-    local var parameter major
+    local var
+    #local commandline=("${!1}")
 
-    if [[ ! "$@" ]]; then
-        branchdiff
-        exit 0
+    if [[ ! "$*" ]]; then
+
+        OPERATION='compare_master'
+        return 0
+
     else
         while [ $# -gt 0 ]; do
             case $1 in
                 '-h' | '--help')
-                    OPERATION="help"
+                    OPERATION='help'
                     shift 1
                     ;;
 
                 '-b' | '--branch')
 
-                    OPERATION="alt_branch_compare"
+                    OPERATION='compare_alternate'
 
                     if [ "$2" ]; then
 
@@ -207,7 +210,7 @@ function title_header(){
     local sum
     local pct
     local vw
-    printf -- "\n${title}%s${btext}  :  %s\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n" "$header" "$branch1 vs. ${yellow}$branch2${frame}"| indent04
     printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
     printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
     # variable width headings
@@ -266,7 +269,7 @@ function commit_diff(){
     commit_ct="$(parse_commits)"
 
     # print section header
-    title_header "$branch1" "$DIFF_BRANCH" "$header"
+    title_header "$branch1" "$branch2" "$header"
     # print section body
     sum=$(( 14 + 23 + 15 + 83))
     pct=$(echo "scale=2;90/$sum" | bc -l)
@@ -281,7 +284,7 @@ function file_diff(){
     local branch2="$2"
     local header="$3"
     # header
-    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branch1 vs. ${yellow}$branch2${frame}"| indent04
     # files changed
     git -c color.ui=always diff --stat origin/$branch1..origin/$branch2 | head -n -1 | indent20
 }
@@ -297,7 +300,7 @@ function overall_diff(){
     inserts=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $1}' | awk '{print $NF}')
     deletes=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $2}' | grep -E -o "[0-9]+")
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
-    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "master vs. ${yellow}$branch2${btext}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branch1 vs. ${yellow}$branch2${btext}"| indent04
     printf -- "  ${title}%s${btext} Files, ${title}%s${btext} Insertions, ${title}%s${btext} Deletions\n" $files $inserts $deletes | indent20
     printf -- "\n  %s\n\n" "Branch ${yellow}$branch2${btext} ahead of $branch1 by ${title}$commit_ct${btext} commits" | indent20
 }
@@ -317,9 +320,15 @@ function std_error_exit(){
 }
 
 function codediff(){
-    ## displays line-by-line code diff ##
-    DIFF_BRANCH="$(current_branch)"
-    git diff master $DIFF_BRANCH
+    ##
+    ##  displays line-by-line code diff ##
+    ##
+    local reference_branch="$1"          # baseline ref branch; usually master branch
+
+    if [ -z $reference_branch ]; then
+        reference_branch="master"
+    fi
+    git diff "$reference_branch" "$(current_branch)"
     return 0
 }
 
@@ -348,9 +357,6 @@ function valid_branch(){
     #
     # <--- end functino valid_branch --->
 }
-
-
-# ---  main  --------------------------------------------------------------------------------------
 
 
 function branchdiff(){
@@ -385,15 +391,23 @@ function branchdiff(){
     fi
 }
 
+
+# ---  main  --------------------------------------------------------------------------------------
+
+
 parse_parameters "$@"
 
 case $OPERATION in
-    'alt_branch_compare')
+    'compare_master')
+        branchdiff
+        ;;
+
+    'compare_alternate')
         branchdiff $ALT_BRANCH
         ;;
 
     'code')
-        codediff
+        codediff $ALT_BRANCH
         ;;
 
     'display_version')
