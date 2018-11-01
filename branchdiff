@@ -220,7 +220,7 @@ function title_header(){
     age="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
 
     cm_delta=$(( $cm - "$(var='CommitMsg'; echo ${#var})" ))
-    age=$(($cm_delta + 15))
+    age=$(($cm_delta + 10))
 
     # author header spacing
     pct=$(echo "scale=2;20/$sum" | bc -l)
@@ -376,7 +376,7 @@ function branchdiff(){
         # output report
         commit_diff "$reference_branch" "$DIFF_BRANCH" "BRANCH COMMITS"
         file_diff "$reference_branch" "$DIFF_BRANCH" "FILE DIFF"
-        overall_diff "$reference_branch" "$DIFF_BRANCH" "OVERALL DIFF"
+        overall_diff "$reference_branch" "$DIFF_BRANCH" "SUMMARY "
         # clean up
         rm -fr $tmp_file
         exit 0
