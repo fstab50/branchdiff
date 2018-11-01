@@ -23,43 +23,40 @@
 # SOFTWARE.
 
 
-function _branch_subcommands(){
+function _local_branches(){
     ##
-    ##  Examines local fs for downloaded artifacts
+    ##  returns an array of git branches listed by the
+    ##  local git repository
     ##
-    ##      - returns entry for each python binary set downloaded to /tmp
-    ##
-    local index="0"
-    declare -a arr_targets xz tgz
+    declare -a local_branches
 
-    xz=( $(find /tmp -name \*.tar.xz 2>/dev/null) )
-    tgz=( $(find /tmp -name \*.tgz 2>/dev/null) )
-
-    for i in "${xz[@]}"; do
-        temp="$(echo $i | awk -F '.tar' '{print $1}' | awk -F '.' '{print $1"."$2}')"
-        xz[$index]=$(echo $temp | awk -F '/' '{print $NF}')
-        (( index++ ))
-    done
-
-    index="0"
-
-    for i in "${tgz[@]}"; do
-        temp="$(echo $i | awk -F '.tgz' '{print $1}' | awk -F '.' '{print $1"."$2}')"
-        tgz[$index]=$(echo $temp | awk -F '/' '{print $NF}')
-        (( index++ ))
-    done
-
-    arr_targets=( $(echo "${xz[@]}") $(echo "${tgz[@]}") )
-    echo "${arr_targets[@]}"
+    local_branches=(  $(git branch 2>/dev/null |  grep -v remotes | cut -c 3-50)  )
+    echo "${local_branches[@]}"
     #
     # <--- end function _clean_subcommands --->
 }
 
 
-function _complete_branchdiff_commands()
-{
+function _remote_branches(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  remote repository
+    ##
+    declare -a remotes
+
+    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | tail -n +2 | awk -F '/' '{print $NF}')  )
+    echo "${remotes[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
+function _complete_alternatebranch_commands(){
+    ##
+    ##
+    ##
     local cmds="$1"
-    local split='7'       # times to split screen width
+    local split='4'       # times to split screen width
     local ct="0"
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
@@ -67,20 +64,19 @@ function _complete_branchdiff_commands()
     formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
     COMPREPLY=( "${formatted_cmds[@]}")
     return 0
+    #
+    # <-- end function _complete_branchdiff_commands -->
+}
 
-    for i in "${!formatted_cmds[@]}"; do
 
-        if [ $(( $ct % 2 )) -eq "0" ]; then
-            #formatted_cmds[$i]="$(echo ${formatted_cmds[$i]})"
-            formatted_cmds[$i]="$(printf '%*s' "-$((4))"  "${formatted_cmds[$i]}")"
-        else
-            formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
-        fi
+function _complete_branchdiff_commands(){
+    local cmds="$1"
+    local split='4'       # times to split screen width
+    local ct="0"
+    local IFS=$' \t\n'
+    local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
 
-        (( ct++ ))
-
-    done
-
+    formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
     COMPREPLY=( "${formatted_cmds[@]}")
     return 0
     #
@@ -105,40 +101,32 @@ function _branchdiff_completions(){
     numoptions=0
 
     # option strings
-    commands='-b --branch -c --code -h --help -V --version'
-    #commands='--branch --code --help --version'
+    commands='--branch --code --help --version'
 
     # subcommand sets
-    branch_subcommands="$(_branch_subcommands) ALL"
+    branch_subcommands=$(_branch_subcommands)
+    local_branches=$(_local_branches)
+    remote_branches=$(_remote_branches)
 
     #echo -e "CUR: $cur, PREV: $prev"       # debug
 
     case "${cur}" in
-        '--info' | '--version' | '--backup-pip')
+
+        '--version')
             return 0
             ;;
 
-        'Python-'[0-9].[0-9])
-            case "${prev}" in
-                '--install')
-                    COMPREPLY=( $(compgen -W "${install_options}" -- ${cur}) )
-                    return 0
-                    ;;
-                *)
-                    return 0
-                    ;;
-            esac
-            ;;
     esac
 
     case "${prev}" in
 
         '--branch')
-            COMPREPLY=( $(compgen -W "${clean_subcommands}" -- ${cur}) )
+            _complete_alternatebranch_commands "${local_branches}"
+            #COMPREPLY=( $(compgen -W "${remote_branches}" -- ${cur}) )
             return 0
             ;;
 
-        '--code' | '--version' | '--help')
+        '--version' | '--help')
             return 0
             ;;
 
