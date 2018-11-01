@@ -24,13 +24,13 @@ frame=$(echo -e ${bodytext})
 E_ERROR="1"
 
 # formatting
-bbc=$(echo -e ${bold}${brightcyan})
-title=$(echo -e ${bold}${brightwhite})              # title color, white + bold
-hic=$(echo -e ${bold}${brightyellowgreen})          # help menu accent 1
-bin=$(echo -e ${bold}${orange})                     # help menu binary accent
+bbc=$(echo -e ${bold}${a_brightcyan})
+title=$(echo -e ${bold}${a_brightwhite})              # title color, white + bold
+hic=$(echo -e ${bold}${a_brightyellowgreen})          # help menu accent 1
+bin=$(echo -e ${bold}${a_orange})                     # help menu binary accent
 ul=$(echo -e ${underline})                          # std underline
 bd=$(echo -e ${bold})                               # std bold
-wt=$(echo -e ${brightwhite})                        # help menu accent 2
+wt=$(echo -e ${a_brightwhite})                        # help menu accent 2
 fs=$(echo -e ${yellow})                             # file path color
 btext=${reset}                                      # clear accents; rtn to native term colors
 
@@ -158,7 +158,7 @@ function display_program_version(){
     ## output script version info, license
     ##
     local _version=$__version__
-    local _hic=$(echo -e ${brightgreen})
+    local _hic=$(echo -e ${a_brightgreen})
     local _year=$(date +%G)
     local _bashver="$(
                 bash --version | head -n1 | awk -F 'version' '{print $2}' \
