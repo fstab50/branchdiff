@@ -158,7 +158,7 @@ function display_program_version(){
     ## output script version info, license
     ##
     local _version=$__version__
-    local _hic=$(echo -e ${brightblue})
+    local _hic=$(echo -e ${brightgreen})
     local _year=$(date +%G)
     local _bashver="$(
                 bash --version | head -n1 | awk -F 'version' '{print $2}' \
