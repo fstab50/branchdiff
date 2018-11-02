@@ -202,6 +202,15 @@ function float2int() {
 
 
 function title_header(){
+    ##
+    ##  Calculates column spacing linearly proporational to screen wideth
+    ##
+    ##      Uses following scale:  @ Total with 153 - 4 (= sum)
+    ##          - last % twidth = 25%
+    ##          - cm % twidth = 60%
+    ##          - age % twidth = 60%
+    ##          - auth = 14 (static)
+    ##
     local branch1="$1"
     local branch2="$2"
     local header="$3"
@@ -212,26 +221,28 @@ function title_header(){
     printf -- "\n${title}%s${btext}  :  %s\n" "$header" "$branch1 vs. ${yellow}$branch2${frame}"| indent04
     printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
     printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
-    # variable width headings
-    sum=$(( $(tput cols) - 4))
+
+    # reference width
+    refsum='153'
+
+    # first column spacing
+    pct0=$(echo "scale=2;25/$refsum" | bc -l)
+    last=$(float2int "$(echo "scale=0;$pct0*$twidth" | bc -l)")
 
     # commit msg header spacing
-    pct=$(echo "scale=2;60/$sum" | bc -l)
-    cm=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
+    pct1=$(echo "scale=2;60/$refsum" | bc -l)
+    cm=$(float2int "$(echo "scale=0;$pct1*$twidth" | bc -l)")
 
     # age header spacing
-    pct=$(echo "scale=2;57/$sum" | bc -l)
-    age=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
-
-    cm_delta=$(( $cm - "$(var='CommitMsg'; echo ${#var})" ))
-    age=$(($cm_delta + 12))
+    pct2=$(echo "scale=2;57/$refsum" | bc -l)   # percent width
+    cf=$(echo "scale=2;10/$refsum" | bc -l)     # correction factor percent
+    cfwidth=$(float2int "$(echo "scale=0;0.04*$refsum" | bc -l)")
+    age=$(( $(float2int "$(echo "scale=0;$pct2*$twidth" | bc -l)") + $cfwidth ))
 
     # author header spacing
-    pct=$(echo "scale=2;20/$sum" | bc -l)
-    auth=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
-    auth=12
+    auth=14
 
-    awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-23s %-15s %-2s\n", $1, $2, $3, $4, $5, $6}' $header_file
+    awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-'$last's\n", $1, $2, $3, $4}' $header_file
     printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
     echo -e ${btext}
     return 0
