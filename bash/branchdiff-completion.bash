@@ -61,7 +61,10 @@ function _complete_alternatebranch_commands(){
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
 
-    formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
+    for i in "${!formatted_cmds[@]}"; do
+        formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
+    done
+
     COMPREPLY=( "${formatted_cmds[@]}")
     return 0
     #
@@ -76,7 +79,10 @@ function _complete_branchdiff_commands(){
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
 
-    formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
+    for i in "${!formatted_cmds[@]}"; do
+        formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
+    done
+
     COMPREPLY=( "${formatted_cmds[@]}")
     return 0
     #
@@ -92,8 +98,8 @@ function _branchdiff_completions(){
 
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    prevcmd="${COMP_WORDS[COMP_CWORD-2]}"
-    #echo "cur: $cur, prev: $prev"
+    initcmd="${COMP_WORDS[COMP_CWORD-2]}"
+    #echxo "cur: $cur, prev: $prev"
 
     # initialize vars
     COMPREPLY=()
@@ -104,11 +110,15 @@ function _branchdiff_completions(){
     commands='--branch --code --help --version'
 
     # subcommand sets
-    branch_subcommands=$(_branch_subcommands)
-    local_branches=$(_local_branches)
     remote_branches=$(_remote_branches)
 
-    #echo -e "CUR: $cur, PREV: $prev"       # debug
+    case "${initcmd}" in
+
+        '--branch')
+            return 0
+            ;;
+
+    esac
 
     case "${cur}" in
 
@@ -121,8 +131,8 @@ function _branchdiff_completions(){
     case "${prev}" in
 
         '--branch')
-            _complete_alternatebranch_commands "${local_branches}"
-            #COMPREPLY=( $(compgen -W "${remote_branches}" -- ${cur}) )
+            #_complete_alternatebranch_commands "${local_branchnames}"
+            COMPREPLY=( $(compgen -W "${remote_branches}" -- ${cur}) )
             return 0
             ;;
 

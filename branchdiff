@@ -369,6 +369,21 @@ function valid_branch(){
 }
 
 
+
+function _local_branches(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  local git repository
+    ##
+    declare -a local_branches
+
+    local_branches=(  $(git branch 2>/dev/null |  grep -v remotes | cut -c 3-50)  )
+    echo "${local_branches[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
 function branchdiff(){
     ##
     ##   main:  determine branch to diff with master
