@@ -201,6 +201,34 @@ function float2int() {
 }
 
 
+function _local_branches(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  local git repository
+    ##
+    declare -a local_branches
+
+    local_branches=(  $(git branch 2>/dev/null |  grep -v remotes | cut -c 3-50)  )
+    echo "${local_branches[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
+function _remote_branches(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  remote repository
+    ##
+    declare -a remotes
+
+    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | tail -n +2 | awk -F '/' '{print $NF}')  )
+    echo "${remotes[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
 function title_header(){
     ##
     ##  Calculates column spacing linearly proporational to screen wideth
@@ -369,21 +397,6 @@ function valid_branch(){
 }
 
 
-
-function _local_branches(){
-    ##
-    ##  returns an array of git branches listed by the
-    ##  local git repository
-    ##
-    declare -a local_branches
-
-    local_branches=(  $(git branch 2>/dev/null |  grep -v remotes | cut -c 3-50)  )
-    echo "${local_branches[@]}"
-    #
-    # <--- end function _clean_subcommands --->
-}
-
-
 function branchdiff(){
     ##
     ##   main:  determine branch to diff with master
@@ -392,7 +405,9 @@ function branchdiff(){
     local reference_branch          # baseline ref branch; usually master branch
     local diff_branch               # current branch to be baselined against reference
 
-    if [ -z $alternate ]; then
+    if [ $alternate ]; then
+        reference_branch="$alternate"
+    else
         reference_branch="master"
     fi
 
