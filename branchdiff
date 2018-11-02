@@ -55,7 +55,6 @@ function help_menu(){
                          [-c | --code    ]
                          [-h | --help    ]
                          [-V | --version ]
-
   ${title}OPTIONS${btext}
 
         ${title}-b${btext}, ${title}--branch${btext}  <value> :  When provided, parameter uses branch
@@ -81,7 +80,7 @@ function help_menu(){
                     $  $pkg  --branch  <branchname>
 
             ${title}Code updates vs. master${btext}
-                    $  $pkg  code
+                    $  $pkg  --code
   _________________________________________________________________________
 
             ${btext}README:  ${url}https://github.com/fstab50/branchdiff${btext}
