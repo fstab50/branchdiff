@@ -541,7 +541,7 @@ def builddir_content_updates(param_dict, osimage, version):
     project_dirname = root.split('/')[-1]
     build_root = TMPDIR
     debian_dir = 'DEBIAN'
-    control_file = param_dict['ControlFile']['Name']
+    control_filename = param_dict['ControlFile']['Name']
     deb_src = root + '/packaging/deb'
     major = '.'.join(version.split('.')[:2])
     minor = version.split('.')[-1]
@@ -558,6 +558,7 @@ def builddir_content_updates(param_dict, osimage, version):
     # full paths
     builddir_path = build_root + '/' + builddir
     debian_path = builddir_path + '/' + debian_dir
+    control_filepath = debian_path + '/' + control_filename
     binary_path = builddir_path + '/usr/local/bin'
     lib_src = root + '/' + 'core'
     lib_dst = builddir_path + '/usr/local/lib/' + PROJECT
@@ -592,7 +593,7 @@ def builddir_content_updates(param_dict, osimage, version):
             stdout_message('Bin {} successfully updated.'.format(yl + path + rst))
 
         # debian control files
-        with open(debian_path + '/' + control_file) as f1:
+        with open(control_filepath) as f1:
             f2 = f1.readlines()
             for index, line in enumerate(f2):
                 if line.startswith('Version:'):
@@ -601,38 +602,38 @@ def builddir_content_updates(param_dict, osimage, version):
             f1.close()
 
         # rewrite file
-        with open(debian_path + '/' + control_file, 'w') as f3:
+        with open(control_filepath, 'w') as f3:
             f3.writelines(f2)
-            path = project_dirname + (debian_path + '/' + control_file)[len(root):]
-            stdout_message('Control file {} successfully updated.'.format(yl + path + rst))
+            path = project_dirname + (control_filepath)[len(root):]
+            stdout_message('Control file {} version updated.'.format(yl + path + rst))
 
         # rewrite version file with current build version in case delta
-        with open(lib_path + '/' + version_module, 'w') as f3:
+        with open(lib_src + '/' + version_module, 'w') as f3:
             f2 = ['__version__=\"' + version + '\"\n']
             f3.writelines(f2)
-            path = project_dirname + (lib_path + '/' + version_module)[len(root):]
+            path = project_dirname + (lib_src + '/' + version_module)[len(root):]
             stdout_message('Module {} successfully updated.'.format(yl + path + rst))
 
-        if os.path.exists(debian_path + '/' + control_file):
+        if os.path.exists(control_filepath):
             # update specfile - major version
-            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+            for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('ISSUES_URL', issues_url), end='')
-            stdout_message(f'Updated {debian_path + '/' + control_file} with ISSUES_URL', prefix='OK')
+            stdout_message(f'Updated {control_filepath} with ISSUES_URL', prefix='OK')
 
             # update specfile - minor version
-            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+            for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('DEPLIST', deplist), end='')
-            stdout_message(f'Updated {debian_path + '/' + control_file} with dependcies ({deplist})', prefix='OK')
+            stdout_message(f'Updated {control_filepath} with dependcies ({deplist})', prefix='OK')
 
             # update specfile - Dependencies
-            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+            for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('PROJECT_URL', project_url), end='')
-            stdout_message(f'Updated {debian_path + '/' + control_file} with project url ({project_url})', prefix='OK')
+            stdout_message(f'Updated {control_filepath} with project url ({project_url})', prefix='OK')
 
             # update specfile - Dependencies
-            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+            for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('BUILD_ARCH', buildarch), end='')
-            stdout_message(f'Updated {debian_path + '/' + control_file} with arch ({buildarch})', prefix='OK')
+            stdout_message(f'Updated {control_filepath} with arch ({buildarch})', prefix='OK')
 
     except OSError as e:
         logger.exception(
