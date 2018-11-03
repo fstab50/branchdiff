@@ -328,7 +328,7 @@ def create_builddirectory(path, version, force):
     return builddir
 
 
-def builddir_structure(root, builddir):
+def builddir_structure(param_dict, version):
     """
     Summary.
 
@@ -350,20 +350,40 @@ def builddir_structure(root, builddir):
     """
     root = git_root()
     project_dirname = root.split('/')[-1]
-    build_root = TMPDIR
     core_dir = root + '/' + 'core'
+    build_root = TMPDIR
+
+
+    # files
+    binary = param_dict['Executable']
+    control_file = param_dict['ControlFile']['Name']
+    compfile = param_dict['BashCompletion']
+    builddir = param_dict['ControlFile']['BuildDirName']
+
+    # full paths
     builddir_path = build_root + '/' + builddir
+    deb_src = root + '/packaging/deb'
     debian_dir = 'DEBIAN'
     debian_path = build_root + '/' + debian_dir
     binary_path = builddir_path + '/usr/local/bin'
+    lib_path = builddir_path + '/usr/local/lib/' + PROJECT
     comp_src = root + '/' + 'bash'
     comp_dst = builddir_path + '/etc/bash_completion.d'
-    lib_path = builddir_path + '/usr/local/lib/' + PROJECT
+
     arrow = yl + Colors.BOLD + '-->' + rst
 
     try:
 
-        stdout_message(f'Generating build structure and artifacts in {bn + builddir + rst}')
+        stdout_message(f'Assembling build directory artifacts in {bn + builddir + rst}')
+
+        # create build directory
+        if os.path.exists(builddir_path):
+            rmtree(builddir_path)
+        os.makedirs(builddir_path)
+        stdout_message(
+                message='Created:\t{}'.format(yl + builddir_path + rst),
+                prefix='OK'
+            )
 
         if not os.path.exists(builddir_path + '/' + debian_dir):
             copytree(debian_path, builddir_path + '/' + debian_dir)
@@ -573,11 +593,6 @@ def builddir_content_updates(param_dict, osimage, version):
                     f2[index] = newline
             f1.close()
 
-            # update specfile - Dependencies
-        for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
-            print(line.replace('DEPLIST', deplist), end='')
-        stdout_message(f'Updated {control_file} file with Dependencies ({deplist})', prefix='OK')
-
         # rewrite file
         with open(debian_path + '/' + control_file, 'w') as f3:
             f3.writelines(f2)
@@ -590,6 +605,22 @@ def builddir_content_updates(param_dict, osimage, version):
             f3.writelines(f2)
             path = project_dir + (lib_path + '/' + version_module)[len(root):]
             stdout_message('Module {} successfully updated.'.format(yl + path + rst))
+
+        if os.path.exists(build_root + '/' ):
+            # update specfile - major version
+            for line in fileinput.input([build_root + '/' + specfile], inplace=True):
+                print(line.replace('MAJOR_VERSION', major), end='')
+            stdout_message(f'Updated {specfile} with MAJOR_VERSION', prefix='OK')
+
+            # update specfile - minor version
+            for line in fileinput.input([build_root + '/' + specfile], inplace=True):
+                print(line.replace('MINOR_VERSION', minor), end='')
+            stdout_message(f'Updated {specfile} with MINOR_VERSION', prefix='OK')
+
+            # update specfile - Dependencies
+            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+                print(line.replace('DEPLIST', deplist), end='')
+            stdout_message(f'Updated {control_file} file with Dependencies ({deplist})', prefix='OK')
 
     except OSError as e:
         logger.exception(
@@ -865,6 +896,7 @@ def postbuild(version, version_module, builddir_path):
                 )
         if display_package_contents(BUILD_ROOT, VERSION):
             return package_path
+
     except OSError as e:
         logger.exception('{}: Postbuild clean up failure'.format(inspect.stack()[0][3]))
         return False
@@ -890,6 +922,7 @@ class ParameterSet():
         self.version = version
         self.major = '.'.join(self.version.split('.')[:2])
         self.minor = self.version.split('.')[-1]
+        self.arch = self.parameter_dict['ControlFile']['BuildArch']
 
     def create(self, parameters=None):
         """
@@ -920,7 +953,7 @@ class ParameterSet():
                 elif k == 'Source':
                     parameters[k] = PROJECT + '-' + self.major + '.' + self.minor + '.tar.gz'
                 elif k == 'BuildDirName':
-                    parameters[k] = PROJECT + '-' + self.major
+                    parameters[k] = PROJECT + '-' + self.major + '_' + self.arch
         return parameters
 
 
