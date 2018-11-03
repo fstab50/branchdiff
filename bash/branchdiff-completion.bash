@@ -74,7 +74,7 @@ function _complete_alternatebranch_commands(){
 
 function _complete_branchdiff_commands(){
     local cmds="$1"
-    local split='4'       # times to split screen width
+    local split='5'       # times to split screen width
     local ct="0"
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
@@ -107,7 +107,7 @@ function _branchdiff_completions(){
     numoptions=0
 
     # option strings
-    commands='--branch --code --help --version'
+    commands='--branch --code --debug --help --version'
 
     # subcommand sets
     remote_branches=$(_remote_branchnames)

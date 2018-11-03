@@ -67,6 +67,8 @@ function help_menu(){
             the branchname given as the parameter for --branch as the
             reference instead of master branch.
 
+        ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging
+
         ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
 
         ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information
@@ -135,6 +137,11 @@ function parse_parameters(){
 
                 '-c' | '--code')
                     OPERATION="code"
+                    shift 1
+                    ;;
+
+                '-d' | '--debug')
+                    DEBUG="true"
                     shift 1
                     ;;
 
