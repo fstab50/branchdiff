@@ -208,6 +208,35 @@ function float2int() {
 }
 
 
+function _branchname_reconcilliation(){
+    ##
+    ##
+    ##
+    local alternate="$1"
+    local _remotes          # remote branchnames
+    local _locals           # local machine branchnames
+
+    _remotes=(  $(_remote_branches)  )
+    _locals=( $(_local_branches)  )
+
+    if [ "$(echo "${_locals[@]}" | grep $alternate)" ]; then
+
+        printf -- '%s\n' "$(echo "${_locals[@]}" | grep $alternate)"
+
+    else
+        for branch in "${_remotes[@]}"; do
+
+            if [ "$(echo $branch | grep $alternate)" ]; then
+                printf -- '%s\n' "$branch"
+            fi
+
+        done
+    fi
+    #
+    # <--- end function _branchname_reconcilliation --->
+}
+
+
 function _local_branches(){
     ##
     ##  returns an array of git branches listed by the
@@ -387,9 +416,18 @@ function codediff(){
     ##
     ##  displays line-by-line code diff ##
     ##
-    local reference_branch="$1"          # baseline ref branch; usually master branch
+    local alternate="$1"            # alternate branch name to compare to reference_branch
+    local reference_branch          # baseline ref branch; usually master branch
+    local diff_branch               # current branch to be baselined against reference
 
-    if [ -z $reference_branch ]; then
+    if [ $alternate ]; then
+        #
+        # check if in remote; if so use branchname from _remote_branches
+        #
+        #reference_branch="$alternate"
+        reference_branch="$(_branchname_reconcilliation $alternate)"
+
+    else
         reference_branch="master"
     fi
 
@@ -437,15 +475,7 @@ function branchdiff(){
         #
         # check if in remote; if so use branchname from _remote_branches
         #
-        _remotes=$(_remote_branches)
-
-        for branch in $(echo $_remotes); do
-            if [ "$(echo $branch | grep $alternate)" ]; then
-                alternate=$branch
-            fi
-        done
-
-        reference_branch="$alternate"
+        reference_branch="$(_branchname_reconcilliation $alternate)"
 
     else
         reference_branch="master"
@@ -460,12 +490,15 @@ function branchdiff(){
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
+
         std_error_exit "Not a git repository - exit." $E_ERROR
 
     elif [ "$diff_branch" = "master" ]; then
+
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
 
     elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
+
         std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
 
     else
