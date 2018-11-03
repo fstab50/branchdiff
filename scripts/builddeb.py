@@ -404,12 +404,16 @@ def builddir_structure(param_dict, version):
                 )
 
         if not os.path.exists(binary_path + '/' + PROJECT):
-            binary_src = PROJECT_ROOT + '/' + PROJECT
-            binary_dst = binary_path + '/' + PROJECT
+            binary_src = PROJECT_ROOT + '/' + binary
+            binary_dst = binary_path + '/' + binary
             copyfile(binary_src, binary_dst)
+
+            srcpath = '/'.join(os.path.split(binary_src)[0].split(project_dirname)[1])
+            dstpath = '/'.join(os.path.split(binary_dst)[0].split(project_dirname)[1])
+
             # status msg
-            _src_path = '../' + project_dirname + binary_src.split(project_dirname)[1]
-            _dst_path = '../' + project_dirname + binary_dst.split(project_dirname)[1]
+            _src_path = '../' + project_dirname + '/' + os.path.split(binary_src)[1]
+            _dst_path = '../' + project_dirname + '/' + os.path.split(binary_dst)[1]
             stdout_message(
                     message='Copied:\t{} {} {}'.format(lk + _src_path + rst, arrow, lk + _dst_path + rst),
                     prefix='OK'
@@ -420,7 +424,7 @@ def builddir_structure(param_dict, version):
             os.makedirs(lib_path)     # create library dir in builddir
 
             # status msg branching
-            _dst_path = '../' + project_dirname + lib_path.split(project_dir)[1]
+            _dst_path = '../' + project_dirname + lib_path.split(project_dirname)[1]
             if os.path.exists(lib_path):
                 stdout_message(
                         message='Created:\t{}'.format(lk + _dst_path + rst),
@@ -446,8 +450,8 @@ def builddir_structure(param_dict, version):
                 lib_dst = lib_path + '/' + libfile
                 copyfile(lib_src, lib_dst)
                 # status msg
-                _src_path = '../' + project_dirname + lib_src.split(project_dir)[1]
-                _dst_path = '../' + project_dirname + lib_dst.split(project_dir)[1]
+                _src_path = '../' + project_dirname + lib_src.split(project_dirname)[1]
+                _dst_path = '../' + project_dirname + lib_dst.split(project_dirname)[1]
                 stdout_message(
                         message='Copied:\t{} {} {}'.format(lk + _src_path + rst, arrow, lk + _dst_path + rst),
                         prefix='OK'
@@ -456,7 +460,7 @@ def builddir_structure(param_dict, version):
         if not os.path.exists(comp_dst):
             # create path
             os.makedirs(comp_dst)
-            _dst_path = '../' + project_dirname + comp_dst.split(project_dir)[1]
+            _dst_path = '../' + project_dirname + comp_dst.split(project_dirname)[1]
             stdout_message(
                     message='Created:\t{}'.format(lk + _dst_path + rst),
                     prefix='OK'
@@ -547,6 +551,9 @@ def builddir_content_updates(param_dict, osimage, version):
     builddir = param_dict['ControlFile']['BuildDirName']
     version_module = param_dict['VersionModule']
     dockeruser = param_dict['DockerUser']
+    issues_url = param_dict['IssuesUrl']
+    project_url = param_dict['ProjectUrl']
+    buildarch = param_dict['ControlFile']['BuildArch']
 
     # full paths
     builddir_path = build_root + '/' + builddir
@@ -606,21 +613,26 @@ def builddir_content_updates(param_dict, osimage, version):
             path = project_dirname + (lib_path + '/' + version_module)[len(root):]
             stdout_message('Module {} successfully updated.'.format(yl + path + rst))
 
-        if os.path.exists(build_root + '/' ):
+        if os.path.exists(debian_path + '/' + control_file):
             # update specfile - major version
-            for line in fileinput.input([build_root + '/' + specfile], inplace=True):
-                print(line.replace('MAJOR_VERSION', major), end='')
-            stdout_message(f'Updated {specfile} with MAJOR_VERSION', prefix='OK')
+            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+                print(line.replace('ISSUES_URL', issues_url), end='')
+            stdout_message(f'Updated {debian_path + '/' + control_file} with ISSUES_URL', prefix='OK')
 
             # update specfile - minor version
-            for line in fileinput.input([build_root + '/' + specfile], inplace=True):
-                print(line.replace('MINOR_VERSION', minor), end='')
-            stdout_message(f'Updated {specfile} with MINOR_VERSION', prefix='OK')
+            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+                print(line.replace('DEPLIST', deplist), end='')
+            stdout_message(f'Updated {debian_path + '/' + control_file} with dependcies ({deplist})', prefix='OK')
 
             # update specfile - Dependencies
             for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
-                print(line.replace('DEPLIST', deplist), end='')
-            stdout_message(f'Updated {control_file} file with Dependencies ({deplist})', prefix='OK')
+                print(line.replace('PROJECT_URL', project_url), end='')
+            stdout_message(f'Updated {debian_path + '/' + control_file} with project url ({project_url})', prefix='OK')
+
+            # update specfile - Dependencies
+            for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+                print(line.replace('BUILD_ARCH', buildarch), end='')
+            stdout_message(f'Updated {debian_path + '/' + control_file} with arch ({buildarch})', prefix='OK')
 
     except OSError as e:
         logger.exception(
@@ -817,13 +829,33 @@ def ospackages(pkg_list):
     return True
 
 
-def prebuild(root=git_root()):
+def prebuild(builddir, volmnt, parameter_file):
     """
     Summary.
 
         Prerequisites and dependencies for build execution
 
     """
+    def preclean(dir):
+        """ Cleans residual build artifacts """
+        try:
+            if os.path.exists(dir):
+                rmtree(dir)
+        except OSError as e:
+            logger.exception(
+                '%s: Error while cleaning residual build artifacts: %s' %
+                (inspect.stack()[0][3], str(e)))
+            return False
+        return True
+
+    version_module = json.loads(read(parameter_file))['VersionModule']
+
+    if preclean(builddir) and preclean(volmnt):
+        stdout_message(f'Removed pre-existing build artifacts ({builddir}, {volmnt})')
+    os.makedirs(builddir)
+    os.makedirs(volmnt)
+
+    root = git_root()
     lib_relpath = 'core'
     lib_path = root + '/' + lib_relpath
     sources = [lib_path]
@@ -1041,7 +1073,7 @@ def init_cli():
 
     elif args.build:
 
-        if valid_version(args.set) and prebuild():
+        if valid_version(args.set) and prebuild(TMPDIR, VOLMNT, git_root() + '/' + PACKAGE_CONFIG):
 
             package = main(
                         setVersion=args.set,
