@@ -920,7 +920,8 @@ def postbuild(version, version_module, builddir_path, debian_root):
     """
     root = git_root()
     project_dirname = root.split('/')[-1]
-    package = locate_deb(builddir_path)
+    build_root = os.path.split(builddir_path)[0]
+    package = locate_deb(build_root)
 
     try:
 
