@@ -240,13 +240,13 @@ function title_header(){
     ##          - auth = 14 (static)
     ##
     local branchref="$1"
-    local branch2="$2"
+    local branchcur="$2"
     local header="$3"
     local var
     local sum
     local pct
     local vw
-    printf -- "\n${title}%s${btext}  :  %s\n" "$header" "$branchref vs. ${yellow}$branch2${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n" "$header" "$branchref vs. ${yellow}$branchcur${frame}"| indent04
     printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
     printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
 
@@ -278,10 +278,15 @@ function title_header(){
 
 
 function parse_commits(){
-    # branch on number of commits
+    ##
+    ## branch on number of commits
+    ##
+    local branchref="$1"
+    local branchcur="$2"
+
     commits=$(cat $tmp_file | wc -l)
     if [ "$commits" -eq 0 ]; then
-        std_message "No differences between master and $DIFF_BRANCH." "INFO"
+        std_message "No differences between $branchref and $branchcur." "INFO"
         exit 0
     else
         echo $commits
@@ -292,7 +297,7 @@ function parse_commits(){
 
 function commit_diff(){
     local branchref="$1"
-    local branch2="$2"
+    local branchcur="$2"
     local header="$3"
     local sp="${frame}|${btext}"       # separator
     local sum
@@ -302,12 +307,12 @@ function commit_diff(){
     git log --color=always --graph \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
-        --date=relative $branchref..$branch2  > $tmp_file
+        --date=relative $branchref..$branchcur  > $tmp_file
 
-    commit_ct="$(parse_commits)"
+    commit_ct="$(parse_commits $branchref $branchcur)"
 
     # print section header
-    title_header "$branchref" "$branch2" "$header"
+    title_header "$branchref" "$branchcur" "$header"
     # print section body
     sum=$(( 14 + 23 + 15 + 83))
     pct=$(echo "scale=2;90/$sum" | bc -l)
@@ -319,28 +324,28 @@ function commit_diff(){
 
 function file_diff(){
     local branchref="$1"
-    local branch2="$2"
+    local branchcur="$2"
     local header="$3"
     # header
-    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}$branch2${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}${branchcur}${frame}"| indent04
     # files changed
-    git -c color.ui=always diff --stat origin/$branchref..origin/$branch2 | head -n -1 | indent20
+    git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur} | head -n -1 | indent20
 }
 
 
 function overall_diff(){
     local branchref="$1"
-    local branch2="$2"
+    local branchcur="$2"
     local header="$3"
     #
-    git -c color.ui=always diff --stat origin/$branchref..origin/$branch2  > $tmp_file
+    git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur}  > $tmp_file
     files=$(cat "$tmp_file" | tail -n 1 | awk -F 'files' '{print $1}')
     inserts=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $1}' | awk '{print $NF}')
     deletes=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $2}' | grep -E -o "[0-9]+")
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
-    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}$branch2${btext}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}$branchcur${btext}"| indent04
     printf -- "  ${title}%s${btext} Files, ${title}%s${btext} Insertions, ${title}%s${btext} Deletions\n" $files $inserts $deletes | indent20
-    printf -- "\n  %s\n\n" "Branch ${yellow}$branch2${btext} ahead of $branchref by ${title}$commit_ct${btext} commits" | indent20
+    printf -- "\n  %s\n\n" "Branch ${yellow}$branchcur${btext} ahead of $branchref by ${title}$commit_ct${btext} commits" | indent20
 }
 
 
@@ -366,7 +371,9 @@ function codediff(){
     if [ -z $reference_branch ]; then
         reference_branch="master"
     fi
+
     git diff "$reference_branch" "$(current_branch)"
+
     return 0
 }
 
@@ -411,7 +418,7 @@ function branchdiff(){
         reference_branch="master"
     fi
 
-    diff_branch="$(current_branch)"
+    diff_branch=$(current_branch)
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
