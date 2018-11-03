@@ -27,7 +27,7 @@
         "BuildArch": "amd64",
         "License": "MIT",
         "Source": "branchdiff-MAJOR_VERSION.MINOR_VERSION.tar.gz",
-        "BuildDirName": "branchdiff-MAJOR_VERSION",
+        "BuildDirName": "branchdiff-MAJOR_VERSION.MINOR_VERSION",
         "Directories": [
             {
                 "Dirname": "/usr/local/lib/branchdiff",

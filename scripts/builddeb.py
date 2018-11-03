@@ -304,9 +304,10 @@ def create_builddirectory(path, version, force):
         Success | Failure, TYPE: bool
     """
     try:
+        print('\nversion IS: %s' % version)
 
         builddir = PROJECT + '-' + version + '_amd64'
-
+        print('\nBUILDDIR IS: %s' % builddir)
         # rm builddir when force if exists
         if force is True and builddir in os.listdir(path):
             rmtree(path + '/' + builddir)
