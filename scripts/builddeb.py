@@ -731,6 +731,7 @@ def main(setVersion, environment, force=False, debug=False):
     PROJECT_ROOT = git_root()
     global SCRIPT_DIR
     SCRIPT_DIR = PROJECT_ROOT + '/' + 'scripts'
+    DEBIAN_ROOT = PROJECT_ROOT + '/' + 'packaging/deb'
     global BUILD_ROOT
     BUILD_ROOT = TMPDIR
     global LIB_DIR
@@ -774,7 +775,7 @@ def main(setVersion, environment, force=False, debug=False):
         r_updates = builddir_content_updates(vars, environment, VERSION)
 
         if r_struture and r_updates and build_package(BUILD_ROOT, BUILDDIRNAME):
-            return postbuild(VERSION, VERSION_FILE, BUILD_ROOT + '/' + BUILDDIRNAME)
+            return postbuild(VERSION, VERSION_FILE, BUILD_ROOT + '/' + BUILDDIRNAME, DEBIAN_ROOT)
 
     return False
 
@@ -907,7 +908,7 @@ def prebuild(builddir, volmnt, parameter_file):
     return True
 
 
-def postbuild(version, version_module, builddir_path):
+def postbuild(version, version_module, builddir_path, debian_root):
     """
     Summary.
 
@@ -919,9 +920,13 @@ def postbuild(version, version_module, builddir_path):
     """
     root = git_root()
     project_dirname = root.split('/')[-1]
-    package_path = locate_deb(root)
+    package = locate_deb(builddir_path)
 
     try:
+
+        if package:
+            copyfile(package, debian_root)
+            package_path = debian_root + '/' + os.path.split(package)[1]
 
         # remove build directory, residual artifacts
         if os.path.exists(builddir_path):
@@ -994,7 +999,7 @@ class ParameterSet():
                 elif k == 'Source':
                     parameters[k] = PROJECT + '-' + self.major + '.' + self.minor + '.tar.gz'
                 elif k == 'BuildDirName':
-                    parameters[k] = PROJECT + '-' + self.major + '_' + self.arch
+                    parameters[k] = PROJECT + '-' + self.version + '_' + self.arch
         return parameters
 
 
