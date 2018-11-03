@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
+Summary.
 
-   - Summary:   Post commit hook, updates version throughout project
-   - Location:  .git/hooks
-   - Filename:  commit-msg
+   Post commit hook, updates version throughout project
+
+Location:  .git/hooks
+
+Filename:  commit-msg
 
 """
 import os
@@ -22,9 +25,7 @@ targets = ['README.md']
 
 
 def git_root():
-    """
-    Returns root directory of git repository
-    """
+    """Locate root directory of git repository."""
     cmd = 'git rev-parse --show-toplevel 2>/dev/null'
     return subprocess.getoutput(cmd).strip()
 

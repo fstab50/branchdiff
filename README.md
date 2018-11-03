@@ -6,28 +6,27 @@
 ## About this repository
 
 * Purpose: 		Instantly know status of the current git working branch
-* Version:	     1.0.9
+* Version:	     1.0.11
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
 * * *
 ## Contents
-* * *
 
 * [Summary](#summary)
 * [Screenshots](#screenshots)
 * [Supported Linux Distributions](#supported-linux-distributions)
 * [Installation](#installation)
 * [Usage](#usage)
-* [Author & Copyright](#author-copyright)
+* [Author & Copyright](#author---copyright)
 * [License](#license)
 * [Disclaimer](#disclaimer)
 
 [back to the top](#top)
 
 * * *
+
 ## Summary
-* * *
 
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
 
@@ -43,38 +42,62 @@
 ## Screenshots
 * * *
 
-**Status**: [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch where  
-the cursor is located when user invokes the program:
+### Working Branch Commit Status
+
+[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
+
+```bash
+$ cd <git project directory>
+
+$ branchdiff
+```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
+[back to the top](#top)
+
 * * *
 
-**Comit Age**: [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the  
-working branch where the cursor is located when user invokes the program:
+#### Comit Age
+
+[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
+
+```bash
+$ cd <git project directory>
+
+$ branchdiff code
+```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
 
+[back to the top](#top)
+
 * * *
 
-**Code Diff**: [branchdiff](https://github.com/fstab50/branchdiff) shows the lines that have been alterned in
-the current working branch when invoked with a parameter.
+#### Code Updates
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
 </p>
 
+```bash
+$ cd <git project directory>
 
+$ branchdiff code
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
+</p>
 
 [back to the top](#top)
 
 * * *
 ## Supported Linux Distributions
-* * *
 
 * TBD
 
@@ -82,7 +105,6 @@ the current working branch when invoked with a parameter.
 
 * * *
 ## Installation
-* * *
 
 * TBD
 
@@ -90,7 +112,6 @@ the current working branch when invoked with a parameter.
 
 * * *
 ## Usage
-* * *
 
 To display the help menu:
 
@@ -106,8 +127,8 @@ To display the help menu:
 [back to the top](#top)
 
 * * *
+
 ## Author & Copyright
-* * *
 
 All works contained herein copyrighted via below author unless work is explicitly noted by an alternate author.
 
@@ -116,15 +137,16 @@ All works contained herein copyrighted via below author unless work is explicitl
 [back to the top](#top)
 
 * * *
+
 ## License
-* * *
+
 * Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 [back to the top](#top)
 
 * * *
+
 ## Disclaimer
-* * *
 
 The following code is provided in accordance with the strict legal disclaimer below:
 

@@ -1,4 +1,4 @@
-Package: buildpy
+Package: branchdiff
 Version: 0.0.0
 Section: devel
 Priority: optional

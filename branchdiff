@@ -6,19 +6,200 @@
 #      - commit diff between master & develop branches
 #
 
-pkg_path=$(cd $(dirname $0); pwd -P)
+pkg=$(basename $0)                                  # pkg (script) full name
+pkg_root=$(echo $pkg | awk -F '.' '{print $1}')     # pkg without file extention
+pkg_path=$(cd $(dirname $0); pwd -P)                # location of pkg
+pkg_lib="$pkg_path/core"
 tmp_file="/tmp/gitdiff.txt"
 header_file="/tmp/header.txt"
 twidth=$(( $(tput cols) - 10 ))
-# std functions & colors
-source $pkg_path/core/colors.sh
-source $pkg_path/core/std_functions.sh
-frame=$(echo -e ${bodytext})
+
+# source colors, exitcodes, version file, and  std_function defs | NOTE: source order dependent
+source $pkg_lib/colors.sh
+source $pkg_lib/exitcodes.sh
+source $pkg_lib/version.py
+source $pkg_lib/std_functions.sh
+
 E_ERROR="1"
+
+# formatting
+bbc=$(echo -e ${bold}${a_brightcyan})
+title=$(echo -e ${bold}${a_brightwhite})              # title color, white + bold
+hic=$(echo -e ${bold}${a_brightyellowgreen})          # help menu accent 1
+bin=$(echo -e ${bold}${a_orange})                     # help menu binary accent
+ul=$(echo -e ${underline})                          # std underline
+bd=$(echo -e ${bold})                               # std bold
+wt=$(echo -e ${a_brightwhite})                        # help menu accent 2
+fs=$(echo -e ${yellow})                             # file path color
+btext=${reset}                                      # clear accents; rtn to native term colors
+frame=${btext}
+
+
+# --- declarations ---------------------------------------------------------------------------------
+
+
+function help_menu(){
+    cat <<EOM
+
+                     ${title}branchdiff${btext} help contents
+
+  ${title}DESCRIPTION${btext}
+
+        Working branch status combined with detailed commit timeline
+
+  ${title}SYNOPSIS${btext}
+
+           $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
+
+                         [-b | --branch <value> ]
+                         [-c | --code    ]
+                         [-h | --help    ]
+                         [-V | --version ]
+  ${title}OPTIONS${btext}
+
+        ${title}-b${btext}, ${title}--branch${btext}  <value> :  When provided, parameter uses branch
+            name provided for  <value> as the baseline code reference
+            instead of the master branch  (DEFAULT branch reference).
+
+        ${title}-c${btext}, ${title}--code${btext}: If provided, $pkg displays the line-by-line
+            differences between master branch and the current working
+            branch. If --branch option provided, the code option uses
+            the branchname given as the parameter for --branch as the
+            reference instead of master branch.
+
+        ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging
+
+        ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
+
+        ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information
+
+  ${title}EXAMPLES${btext}
+
+            ${title}Status of working branch vs. master${btext}
+                    $  $pkg
+
+            ${title}Status of working branch vs. another named branch${btext}
+                    $  $pkg  --branch  <branchname>
+
+            ${title}Code updates vs. master${btext}
+                    $  $pkg  --code
+  _________________________________________________________________________
+
+            ${btext}README:  ${url}https://github.com/fstab50/branchdiff${btext}
+  _________________________________________________________________________
+${reset}
+EOM
+    #
+    # <-- end function put_rule_help -->
+}
+
+
+function parse_parameters(){
+    ##
+    ##  Parse all command-line parameters
+    ##
+
+    local var
+    #local commandline=("${!1}")
+
+    if [[ ! "$*" ]]; then
+
+        OPERATION='compare_master'
+        return 0
+
+    else
+        while [ $# -gt 0 ]; do
+            case $1 in
+                '-h' | '--help')
+                    OPERATION='help'
+                    shift 1
+                    ;;
+
+                '-b' | '--branch')
+
+                    OPERATION='compare_alternate'
+
+                    if [ "$2" ]; then
+
+                        if valid_branch "$2"; then
+                            ALT_BRANCH="$2"
+                            shift 2
+                        else
+                            std_warn "You must provide a valid branch name as a parameter"
+                            exit $E_MISC
+                        fi
+
+                    else
+                        std_warn "You must provide a valid branch name as a parameter"
+                        shift 1
+                    fi
+                    ;;
+
+                '-c' | '--code')
+                    OPERATION="code"
+                    shift 1
+                    ;;
+
+                '-d' | '--debug')
+                    DEBUG="true"
+                    shift 1
+                    ;;
+
+                '-V' | '--version')
+                    OPERATION="display_version"
+                    shift 1
+                    ;;
+
+                *)
+                    std_warn "You must provide a valid parameter or None"
+                    exit 1
+                    ;;
+            esac
+        done
+    fi
+    #
+    # <-- end function parse_parameters -->
+}
+
+
+function display_program_version(){
+    ##
+    ## output script version info, license
+    ##
+    local _version=$__version__
+    local _hic=$(echo -e ${a_brightgreen})
+    local _year=$(date +%G)
+    local _bashver="$(
+                bash --version | head -n1 | awk -F 'version' '{print $2}' \
+                    | awk '{print $1}' | awk -F '(' '{print $1}'
+            )"
+    local _gitver=$(git --version | awk '{print $3}')
+    local _bd=$(echo -e ${bold})
+    #
+    cat <<EOM
+    ______________________________________________________________________
+
+
+
+
+
+              ${_hic}$pkg${reset} version: ${title}$_version${reset}   |   git version ${title}$_gitver${reset}
+
+
+
+
+    ______________________________________________________________________
+
+       Copyright 2017-$_year, Blake Huber.  This program distributed under
+       MIT License.  Copyright notice must remain with derivative works.
+    ______________________________________________________________________
+
+EOM
+}
 
 
 function current_branch(){
-    echo "$(git branch | grep '\*' | awk '{print $2}')"
+    echo "$(git branch 2>/dev/null | grep '\*' | awk '{print $2}')"
 }
 
 
@@ -27,42 +208,121 @@ function float2int() {
 }
 
 
+function _branchname_reconcilliation(){
+    ##
+    ##
+    ##
+    local alternate="$1"
+    local _remotes          # remote branchnames
+    local _locals           # local machine branchnames
+
+    _remotes=(  $(_remote_branches)  )
+    _locals=( $(_local_branches)  )
+
+    if [ "$(echo "${_locals[@]}" | grep $alternate)" ]; then
+
+        printf -- '%s\n' "$(echo "${_locals[@]}" | grep $alternate)"
+
+    else
+        for branch in "${_remotes[@]}"; do
+
+            if [ "$(echo $branch | grep $alternate)" ]; then
+                printf -- '%s\n' "$branch"
+            fi
+
+        done
+    fi
+    #
+    # <--- end function _branchname_reconcilliation --->
+}
+
+
+function _local_branches(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  local git repository
+    ##
+    declare -a local_branches
+
+    local_branches=(  $(git branch 2>/dev/null |  grep -v remotes | cut -c 3-50)  )
+    echo "${local_branches[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
+function _remote_branches(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  remote repository
+    ##
+    declare -a remotes
+
+    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | grep -v HEAD)  )
+    echo "${remotes[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
 function title_header(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    ##
+    ##  Calculates column spacing linearly proporational to screen wideth
+    ##
+    ##      Uses following scale:  @ Total with 153 - 4 (= sum)
+    ##          - last % twidth = 25%
+    ##          - cm % twidth = 60%
+    ##          - age % twidth = 60%
+    ##          - auth = 14 (static)
+    ##
+    local branchref="$1"
+    local branchcur="$2"
+    local header="$3"
+    local var
     local sum
     local pct
     local vw
-    printf -- "\n${title}%s${bodytext}  :  %s\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n" "$header" "$branchref vs. ${yellow}$branchcur${frame}"| indent04
     printf '%*s\n\n' "$twidth" '' | tr ' ' _  | indent04
-    printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${bodytext}" > $header_file
-    # variable width headings
-    sum=$(( 60 + 54 + 20 + 23))
+    printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
+
+    # reference width
+    refsum='153'
+
+    # first column spacing
+    pct0=$(echo "scale=2;25/$refsum" | bc -l)
+    last=$(float2int "$(echo "scale=0;$pct0*$twidth" | bc -l)")
 
     # commit msg header spacing
-    pct=$(echo "scale=2;60/$sum" | bc -l)
-    cm="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    pct1=$(echo "scale=2;60/$refsum" | bc -l)
+    cm=$(float2int "$(echo "scale=0;$pct1*$twidth" | bc -l)")
 
     # age header spacing
-    pct=$(echo "scale=2;57/$sum" | bc -l)
-    age="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    pct2=$(echo "scale=2;57/$refsum" | bc -l)   # percent width
+    cf=$(echo "scale=2;10/$refsum" | bc -l)     # correction factor percent
+    cfwidth=$(float2int "$(echo "scale=0;0.04*$refsum" | bc -l)")
+    age=$(( $(float2int "$(echo "scale=0;$pct2*$twidth" | bc -l)") + $cfwidth ))
 
     # author header spacing
-    pct=$(echo "scale=2;20/$sum" | bc -l)
-    auth="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
-    awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-23s %-15s %-2s\n", $1, $2, $3, $4, $5, $6}' $header_file
+    auth=14
+
+    awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-'$last's\n", $1, $2, $3, $4}' $header_file
     printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
-    echo -e ${bodytext}
+    echo -e ${btext}
     return 0
 }
 
 
 function parse_commits(){
-    # branch on number of commits
+    ##
+    ## branch on number of commits
+    ##
+    local branchref="$1"
+    local branchcur="$2"
+
     commits=$(cat $tmp_file | wc -l)
     if [ "$commits" -eq 0 ]; then
-        std_message "No differences between master and $DIFF_BRANCH." "INFO"
+        std_message "No differences between $branchref and $branchcur." "INFO"
         exit 0
     else
         echo $commits
@@ -72,10 +332,10 @@ function parse_commits(){
 
 
 function commit_diff(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
-    local sp="${frame}|${bodytext}"       # separator
+    local branchref="$1"
+    local branchcur="$2"
+    local header="$3"
+    local sp="${frame}|${btext}"       # separator
     local sum
     local pct
     local vw
@@ -83,45 +343,59 @@ function commit_diff(){
     git log --color=always --graph \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
-        --date=relative $branch1..$branch2  > $tmp_file
+        --date=relative ${branchref}..${branchcur}  > $tmp_file
 
-    commit_ct="$(parse_commits)"
+    commit_ct="$(parse_commits $branchref $branchcur)"
 
     # print section header
-    title_header "$DIFF_BRANCH" "$header"
+    title_header "$branchref" "$branchcur" "$header"
     # print section body
     sum=$(( 14 + 23 + 15 + 83))
     pct=$(echo "scale=2;90/$sum" | bc -l)
-    vw="$(float2int $(echo "scale=0;$pct*$twidth" | bc -l))"
+    vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
     awk -F '=' '{ printf "\t%-14s %-'$vw'.'$vw's %-23s %-15s\n", $1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
 }
 
 
 function file_diff(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    local branchref="$1"
+    local branchcur="$2"
+    local header="$3"
+
     # header
-    printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$DIFF_BRANCH${frame}"| indent04
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}${branchcur}${frame}"| indent04
+
     # files changed
-    git -c color.ui=always diff --stat origin/$branch1..origin/$branch2 | head -n -1 | indent20
+    if [ $ALT_BRANCH ]; then
+        git -c color.ui=always diff --stat ${branchref}..origin/${branchcur} | head -n -1 | indent20
+    else
+        git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur} | head -n -1 | indent20
+    fi
 }
 
 
 function overall_diff(){
-    local branch1="master"
-    local branch2="$1"
-    local header="$2"
+    local branchref="$1"
+    local branchcur="$2"
+    local header="$3"
     #
-    git -c color.ui=always diff --stat origin/$branch1..origin/$branch2  > $tmp_file
+    if [ $ALT_BRANCH ]; then
+        git -c color.ui=always diff --stat ${branchref}..origin/${branchcur}  > $tmp_file
+    else
+        git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur}  > $tmp_file
+    fi
+
+    # prepare display content
     files=$(cat "$tmp_file" | tail -n 1 | awk -F 'files' '{print $1}')
     inserts=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $1}' | awk '{print $NF}')
     deletes=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $2}' | grep -E -o "[0-9]+")
+
+    # print output
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
-    printf -- "\n${title}%s${bodytext}  :  %s\n\n" "$header" "master vs. ${yellow}$branch2${bodytext}"| indent04
-    printf -- "  ${title}%s${bodytext} Files, ${title}%s${bodytext} Insertions, ${title}%s${bodytext} Deletions\n" $files $inserts $deletes | indent20
-    printf -- "\n  %s\n\n" "Branch ${yellow}$branch2${bodytext} ahead of $branch1 by ${title}$commit_ct${bodytext} commits" | indent20
+    printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}$branchcur${btext}"| indent04
+    printf -- "  ${title}%s${btext} Files, ${title}%s${btext} Insertions, ${title}%s${btext} Deletions\n" $files $inserts $deletes | indent20
+    printf -- "\n  %s\n\n" "Branch ${yellow}$branchcur${btext} ahead of $branchref by ${title}$commit_ct${btext} commits" | indent20
 }
 
 
@@ -139,37 +413,138 @@ function std_error_exit(){
 }
 
 function codediff(){
-    ## displays line-by-line code diff ##
-    DIFF_BRANCH="$(current_branch)"
-    git diff master $DIFF_BRANCH
+    ##
+    ##  displays line-by-line code diff ##
+    ##
+    local alternate="$1"            # alternate branch name to compare to reference_branch
+    local reference_branch          # baseline ref branch; usually master branch
+    local diff_branch               # current branch to be baselined against reference
+
+    if [ $alternate ]; then
+        #
+        # check if in remote; if so use branchname from _remote_branches
+        #
+        #reference_branch="$alternate"
+        reference_branch="$(_branchname_reconcilliation $alternate)"
+
+    else
+        reference_branch="master"
+    fi
+
+    git diff "$reference_branch" "$(current_branch)"
+
     return 0
 }
 
+function valid_branch(){
+    ##
+    ##  determines if parameter is valid branch name
+    ##
+    ##  Returns:
+    ##      true | false
+    ##
+    local altbranch="$1"
+    declare -a arr_branches
 
-# ---  main  --------------------------------------------------------------------------------------
+    for b in $(git branch -a | grep remotes | tail -n +2); do
+
+        branchname=$(echo $b | awk -F '/' '{print $NF}')
+        arr_branches=(  ${arr_branches[@]} $branchname  )
+
+    done
+
+    if [ "$(echo "${arr_branches[@]}" | grep $altbranch)" ]; then
+        return 0
+    else
+        return 1
+    fi
+    #
+    # <--- end functino valid_branch --->
+}
 
 
 function branchdiff(){
-    # determine branch to diff with master
-    DIFF_BRANCH="$(current_branch)"
+    ##
+    ##   main:  determine branch to diff with master
+    ##
+    local alternate="$1"            # alternate branch name to compare to reference_branch
+    local reference_branch          # baseline ref branch; usually master branch
+    local diff_branch               # current branch to be baselined against reference
+
+    if [ $alternate ]; then
+        #
+        # check if in remote; if so use branchname from _remote_branches
+        #
+        reference_branch="$(_branchname_reconcilliation $alternate)"
+
+    else
+        reference_branch="master"
+    fi
+
+    diff_branch="$(current_branch)"
+
+    if [ $DEBUG ]; then
+        echo "Reference Branch: $reference_branch"
+        echo "DIFF BRANCH: $diff_branch"
+    fi
+
     # exit if on master
-    if [ ! "$(git branch -a 2>/dev/null | grep $DIFF_BRANCH)" ]; then
+    if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
+
         std_error_exit "Not a git repository - exit." $E_ERROR
-    elif [ "$DIFF_BRANCH" = "master" ]; then
+
+    elif [ "$diff_branch" = "master" ]; then
+
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
+
+    elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
+
+        std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
+
     else
         # output report
-        commit_diff "$DIFF_BRANCH" "BRANCH COMMITS"
-        file_diff "$DIFF_BRANCH" "FILE DIFF"
-        overall_diff "$DIFF_BRANCH" "OVERALL DIFF"
+        commit_diff "$reference_branch" "$diff_branch" "BRANCH COMMITS"
+        file_diff "$reference_branch" "$diff_branch" "FILE DIFF"
+        overall_diff "$reference_branch" "$diff_branch" "SUMMARY "
+
         # clean up
         rm -fr $tmp_file
         exit 0
     fi
 }
 
-if [ "$1" ]; then
-    codediff
-else
-    branchdiff
-fi
+
+# ---  main  --------------------------------------------------------------------------------------
+
+
+parse_parameters "$@"
+
+case $OPERATION in
+    'compare_master')
+        branchdiff
+        ;;
+
+    'compare_alternate')
+        branchdiff $ALT_BRANCH
+        ;;
+
+    'code')
+        codediff $ALT_BRANCH
+        ;;
+
+    'display_version')
+        display_program_version
+        shift 1
+        ;;
+
+    'help')
+        help_menu | more
+        ;;
+
+    *)
+        branchdiff
+        ;;
+esac
+
+
+exit 0      ##  end  ##
