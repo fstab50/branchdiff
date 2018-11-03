@@ -6,7 +6,7 @@
 ## About this repository
 
 * Purpose: 		Instantly know status of the current git working branch
-* Version:	     1.0.9
+* Version:	     1.0.10
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
