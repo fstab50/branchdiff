@@ -1,6 +1,7 @@
 {
     "Package": "deb",
     "Project": "branchdiff",
+    "Executable": "branchdiff",
     "ProjectUrl": "https://github.com/fstab50/branchdiff",
     "IssuesUrl": "https://github.com/fstab50/branchdiff/issues",
     "Description": "Utility for illustrating the status of a git working branch",
