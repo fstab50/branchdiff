@@ -333,10 +333,16 @@ function file_diff(){
     local branchref="$1"
     local branchcur="$2"
     local header="$3"
+
     # header
     printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}${branchcur}${frame}"| indent04
+
     # files changed
-    git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur} | head -n -1 | indent20
+    if [ $ALT_BRANCH ]; then
+        git -c color.ui=always diff --stat ${branchref}..origin/${branchcur} | head -n -1 | indent20
+    else
+        git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur} | head -n -1 | indent20
+    fi
 }
 
 
@@ -345,10 +351,18 @@ function overall_diff(){
     local branchcur="$2"
     local header="$3"
     #
-    git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur}  > $tmp_file
+    if [ $ALT_BRANCH ]; then
+        git -c color.ui=always diff --stat ${branchref}..origin/${branchcur}  > $tmp_file
+    else
+        git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur}  > $tmp_file
+    fi
+
+    # prepare display content
     files=$(cat "$tmp_file" | tail -n 1 | awk -F 'files' '{print $1}')
     inserts=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $1}' | awk '{print $NF}')
     deletes=$(cat "$tmp_file" | tail -n 1 | awk -F 'insertions' '{print $2}' | grep -E -o "[0-9]+")
+
+    # print output
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
     printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}$branchcur${btext}"| indent04
     printf -- "  ${title}%s${btext} Files, ${title}%s${btext} Insertions, ${title}%s${btext} Deletions\n" $files $inserts $deletes | indent20
