@@ -37,6 +37,7 @@ import inspect
 import re
 import subprocess
 import pdb
+import fileinput
 import tarfile
 from shutil import copy2 as copyfile
 from shutil import copytree, rmtree, which
@@ -623,17 +624,23 @@ def builddir_content_updates(param_dict, osimage, version):
             # update specfile - minor version
             for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('DEPLIST', deplist), end='')
-            stdout_message(f'Updated {control_filepath} with dependcies ({deplist})', prefix='OK')
+            stdout_message(
+                'Updated {} with dependcies ({})'.format(yl + control_filepath + rst, deplist),
+                prefix='OK')
 
             # update specfile - Dependencies
             for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('PROJECT_URL', project_url), end='')
-            stdout_message(f'Updated {control_filepath} with project url ({project_url})', prefix='OK')
+            stdout_message(
+                'Updated {} with project url ({})'.format(yl + control_filepath + rst, project_url),
+                prefix='OK')
 
             # update specfile - Dependencies
             for line in fileinput.input([control_filepath], inplace=True):
                 print(line.replace('BUILD_ARCH', buildarch), end='')
-            stdout_message(f'Updated {control_filepath} with arch ({buildarch})', prefix='OK')
+            stdout_message(
+                'Updated {} with arch ({})'.format(yl + control_filepath + rst, buildarch),
+                prefix='OK')
 
     except OSError as e:
         logger.exception(
