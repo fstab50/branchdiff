@@ -438,6 +438,11 @@ function branchdiff(){
 
     diff_branch="$(current_branch)"
 
+    if [ $DEBUG ]; then
+        echo "Reference Branch: $reference_branch"
+        echo "DIFF BRANCH: $diff_branch"
+    fi
+    
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
 
