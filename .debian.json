@@ -9,8 +9,8 @@
     "Release": "MINOR_VERSION",
     "PreInstall": ["", ""],
     "DependencyList": [
-        "bash >= 4.1",
-        "bc >= 1.0",
+        "bash (>= 4.1)",
+        "bc (>= 1.0)",
         "git",
         "coreutils",
         "bash-completion"
