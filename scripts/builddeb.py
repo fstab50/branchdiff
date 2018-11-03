@@ -523,6 +523,7 @@ def builddir_content_updates(param_dict, osimage, version):
     minor = version.split('.')[-1]
 
     # files
+    binary = param_dict['Executable']
     builddir = param_dict['ControlFile']['BuildDirName']
     version_module = param_dict['VersionModule']
     dockeruser = param_dict['DockerUser']
@@ -536,7 +537,7 @@ def builddir_content_updates(param_dict, osimage, version):
 
     # assemble dependencies
     deplist = None
-    for dep in param_dict['Dependencies']:
+    for dep in param_dict['DependencyList']:
         if deplist is None:
             deplist = str(dep)
         else:
@@ -665,7 +666,7 @@ def locate_deb(origin):
     return None
 
 
-def main(setVersion=None, force=False, debug=False):
+def main(setVersion, environment, force=False, debug=False):
     """
     Summary:
         Create build directories, populate contents, update contents
@@ -737,7 +738,7 @@ def options(parser, help_menu=False):
 
     """
     parser.add_argument("-b", "--build", dest='build', default=False, action='store_true', required=False)
-    parser.add_argument("-d", "--debug", dest='debug', default=False, action='store_true', required=False)
+    parser.add_argument("-D", "--debug", dest='debug', default=False, action='store_true', required=False)
     parser.add_argument("-d", "--distro", dest='distro', default='ubuntu16.04', nargs='?', type=str, required=False)
     parser.add_argument("-F", "--force", dest='force', default=False, action='store_true', required=False)
     parser.add_argument("-s", "--set-version", dest='set', default=None, nargs='?', type=str, required=False)
