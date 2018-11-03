@@ -20,7 +20,7 @@
     "DockerBuildScript": "docker-builddeb.sh",
     "BashCompletion": "branchdiff-completion.bash",
     "ControlFile": {
-        "Name": "branchdiff.spec",
+        "Name": "control",
         "Summary": "Utility for illustrating the status of a git working branch",
         "Description":  "",
         "BuildArch": "amd64",
