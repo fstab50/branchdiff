@@ -208,6 +208,7 @@ def current_version(binary, version_modpath):
 
         if which(pkgmgr):
             cmd = pkgmgr + ' show ' + binary + ' 2>/dev/null | grep Version | head -n1'
+
         elif which(pkgmgr_bkup):
             cmd = pkgmgr_bkup + ' policy ' + binary + ' 2>/dev/null | grep Installed'
 
@@ -331,7 +332,7 @@ def builddir_structure(root, builddir):
     """
     Summary.
 
-        - Updates path in binary exectuable
+        - Updates paths in binary exectuable
         - Updates
 
     Args:
@@ -347,8 +348,9 @@ def builddir_structure(root, builddir):
         Success | Failure, TYPE: bool
 
     """
-    project_dir = root.split('/')[-1]
-    build_root = root + '/packaging/deb'
+    root = git_root()
+    project_dirname = root.split('/')[-1]
+    build_root = TMPDIR
     core_dir = root + '/' + 'core'
     builddir_path = build_root + '/' + builddir
     debian_dir = 'DEBIAN'
@@ -489,7 +491,7 @@ def build_package(build_root, builddir):
     return True
 
 
-def builddir_content_updates(root, build_root, builddir, binary, version, version_module):
+def builddir_content_updates(param_dict, osimage, version):
     """
     Summary.
 
@@ -510,13 +512,35 @@ def builddir_content_updates(root, build_root, builddir, binary, version, versio
         Success | Failure, TYPE: bool
 
     """
-    project_dir = git_root().split('/')[-1]
-    builddir_path = build_root + '/' + builddir
+
+    root = git_root()
+    project_dirname = root.split('/')[-1]
+    build_root = TMPDIR
     debian_dir = 'DEBIAN'
+    control_file = param_dict['ControlFile']['Name']
+    deb_src = root + '/packaging/deb'
+    major = '.'.join(version.split('.')[:2])
+    minor = version.split('.')[-1]
+
+    # files
+    builddir = param_dict['ControlFile']['BuildDirName']
+    version_module = param_dict['VersionModule']
+    dockeruser = param_dict['DockerUser']
+
+    # full paths
+    builddir_path = build_root + '/' + builddir
     debian_path = builddir_path + '/' + debian_dir
-    control_file = 'control'
     binary_path = builddir_path + '/usr/local/bin'
-    lib_path = builddir_path + '/usr/local/lib/' + PROJECT
+    lib_src = root + '/' + 'core'
+    lib_dst = builddir_path + '/usr/local/lib/' + PROJECT
+
+    # assemble dependencies
+    deplist = None
+    for dep in param_dict['Dependencies']:
+        if deplist is None:
+            deplist = str(dep)
+        else:
+            deplist = deplist + ', ' + str(dep)
 
     try:
         # main exec bin: update pkg_lib path, LOG_DIR
@@ -547,6 +571,11 @@ def builddir_content_updates(root, build_root, builddir, binary, version, versio
                     newline = 'Version: ' + version + '\n'
                     f2[index] = newline
             f1.close()
+
+            # update specfile - Dependencies
+        for line in fileinput.input([debian_path + '/' + control_file], inplace=True):
+            print(line.replace('DEPLIST', deplist), end='')
+        stdout_message(f'Updated {control_file} file with Dependencies ({deplist})', prefix='OK')
 
         # rewrite file
         with open(debian_path + '/' + control_file, 'w') as f3:
@@ -649,6 +678,8 @@ def main(setVersion=None, force=False, debug=False):
     PROJECT_ROOT = git_root()
     global SCRIPT_DIR
     SCRIPT_DIR = PROJECT_ROOT + '/' + 'scripts'
+    global BUILD_ROOT
+    BUILD_ROOT = TMPDIR
     global LIB_DIR
     LIB_DIR = PROJECT_ROOT + '/' + 'core'
     global BUILD_ROOT
@@ -683,13 +714,12 @@ def main(setVersion=None, force=False, debug=False):
 
     VERSION_FILE = vars['VersionModule']
 
-
     if debug:
         print(json.dumps(vars, indent=True, sort_keys=True))
 
     if BUILDDIRNAME:
 
-        r_struture = builddir_structure(PROJECT_ROOT, BUILDDIRNAME)
+        r_struture = builddir_structure(vars, VERSION)
 
         r_updates = builddir_content_updates(
                 PROJECT_ROOT, BUILD_ROOT, BUILDDIRNAME,
