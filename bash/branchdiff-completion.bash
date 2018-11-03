@@ -37,7 +37,7 @@ function _local_branches(){
 }
 
 
-function _remote_branches(){
+function _remote_branchnames(){
     ##
     ##  returns an array of git branches listed by the
     ##  remote repository
@@ -110,7 +110,7 @@ function _branchdiff_completions(){
     commands='--branch --code --help --version'
 
     # subcommand sets
-    remote_branches=$(_remote_branches)
+    remote_branches=$(_remote_branchnames)
 
     case "${initcmd}" in
 
