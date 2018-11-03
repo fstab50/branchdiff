@@ -222,7 +222,7 @@ function _remote_branches(){
     ##
     declare -a remotes
 
-    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | tail -n +2 | awk -F '/' '{print $NF}')  )
+    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | grep -v HEAD)  )
     echo "${remotes[@]}"
     #
     # <--- end function _clean_subcommands --->
@@ -307,7 +307,7 @@ function commit_diff(){
     git log --color=always --graph \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
-        --date=relative $branchref..$branchcur  > $tmp_file
+        --date=relative ${branchref}..${branchcur}  > $tmp_file
 
     commit_ct="$(parse_commits $branchref $branchcur)"
 
@@ -413,12 +413,23 @@ function branchdiff(){
     local diff_branch               # current branch to be baselined against reference
 
     if [ $alternate ]; then
+        #
+        # check if in remote; if so use branchname from _remote_branches
+        #
+        _remotes=$(_remote_branches)
+
+        for branch in $(echo $_remotes); do
+            if [ "$(echo $branch | grep $alternate)" ]; then
+                alternate=$branch
+            fi
+        done
+
         reference_branch="$alternate"
     else
         reference_branch="master"
     fi
 
-    diff_branch=$(current_branch)
+    diff_branch="$(current_branch)"
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
@@ -434,6 +445,7 @@ function branchdiff(){
         commit_diff "$reference_branch" "$diff_branch" "BRANCH COMMITS"
         file_diff "$reference_branch" "$diff_branch" "FILE DIFF"
         overall_diff "$reference_branch" "$diff_branch" "SUMMARY "
+
         # clean up
         rm -fr $tmp_file
         exit 0
