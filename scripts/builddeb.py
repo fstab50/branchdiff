@@ -364,7 +364,7 @@ def builddir_structure(param_dict, version):
     builddir_path = build_root + '/' + builddir
     deb_src = root + '/packaging/deb'
     debian_dir = 'DEBIAN'
-    debian_path = build_root + '/' + debian_dir
+    debian_path = deb_src + '/' + debian_dir
     binary_path = builddir_path + '/usr/local/bin'
     lib_path = builddir_path + '/usr/local/lib/' + PROJECT
     comp_src = root + '/' + 'bash'
@@ -388,8 +388,8 @@ def builddir_structure(param_dict, version):
         if not os.path.exists(builddir_path + '/' + debian_dir):
             copytree(debian_path, builddir_path + '/' + debian_dir)
             # status msg
-            _src_path = '../' + project_dir + debian_path.split(project_dir)[1]
-            _dst_path = '../' + project_dir + (builddir_path + '/' + debian_dir).split(project_dir)[1]
+            _src_path = '../' + project_dirname + debian_path.split(project_dirname)[1]
+            _dst_path = '../' + project_dirname + (builddir_path + '/' + debian_dir).split(project_dirname)[1]
             stdout_message(
                     message='Copied:\t{} {} {}'.format(lk + _src_path + rst, arrow, lk + _dst_path + rst),
                     prefix='OK'
@@ -397,7 +397,7 @@ def builddir_structure(param_dict, version):
 
         if not os.path.exists(binary_path):
             os.makedirs(binary_path)
-            _dst_path = '../' + project_dir + binary_path.split(project_dir)[1]
+            _dst_path = '../' + project_dirname + binary_path.split(project_dirname)[1]
             stdout_message(
                     message='Created:\t{}'.format(lk + _dst_path + rst),
                     prefix='OK'
@@ -408,8 +408,8 @@ def builddir_structure(param_dict, version):
             binary_dst = binary_path + '/' + PROJECT
             copyfile(binary_src, binary_dst)
             # status msg
-            _src_path = '../' + project_dir + binary_src.split(project_dir)[1]
-            _dst_path = '../' + project_dir + binary_dst.split(project_dir)[1]
+            _src_path = '../' + project_dirname + binary_src.split(project_dirname)[1]
+            _dst_path = '../' + project_dirname + binary_dst.split(project_dirname)[1]
             stdout_message(
                     message='Copied:\t{} {} {}'.format(lk + _src_path + rst, arrow, lk + _dst_path + rst),
                     prefix='OK'
@@ -420,7 +420,7 @@ def builddir_structure(param_dict, version):
             os.makedirs(lib_path)     # create library dir in builddir
 
             # status msg branching
-            _dst_path = '../' + project_dir + lib_path.split(project_dir)[1]
+            _dst_path = '../' + project_dirname + lib_path.split(project_dir)[1]
             if os.path.exists(lib_path):
                 stdout_message(
                         message='Created:\t{}'.format(lk + _dst_path + rst),
@@ -446,8 +446,8 @@ def builddir_structure(param_dict, version):
                 lib_dst = lib_path + '/' + libfile
                 copyfile(lib_src, lib_dst)
                 # status msg
-                _src_path = '../' + project_dir + lib_src.split(project_dir)[1]
-                _dst_path = '../' + project_dir + lib_dst.split(project_dir)[1]
+                _src_path = '../' + project_dirname + lib_src.split(project_dir)[1]
+                _dst_path = '../' + project_dirname + lib_dst.split(project_dir)[1]
                 stdout_message(
                         message='Copied:\t{} {} {}'.format(lk + _src_path + rst, arrow, lk + _dst_path + rst),
                         prefix='OK'
@@ -456,7 +456,7 @@ def builddir_structure(param_dict, version):
         if not os.path.exists(comp_dst):
             # create path
             os.makedirs(comp_dst)
-            _dst_path = '../' + project_dir + comp_dst.split(project_dir)[1]
+            _dst_path = '../' + project_dirname + comp_dst.split(project_dir)[1]
             stdout_message(
                     message='Created:\t{}'.format(lk + _dst_path + rst),
                     prefix='OK'
@@ -581,7 +581,7 @@ def builddir_content_updates(param_dict, osimage, version):
         # rewrite bin
         with open(binary_path + '/' + binary, 'w') as f3:
             f3.writelines(f2)
-            path = project_dir + (binary_path + '/' + binary)[len(root):]
+            path = project_dirname + (binary_path + '/' + binary)[len(root):]
             stdout_message('Bin {} successfully updated.'.format(yl + path + rst))
 
         # debian control files
@@ -596,14 +596,14 @@ def builddir_content_updates(param_dict, osimage, version):
         # rewrite file
         with open(debian_path + '/' + control_file, 'w') as f3:
             f3.writelines(f2)
-            path = project_dir + (debian_path + '/' + control_file)[len(root):]
+            path = project_dirname + (debian_path + '/' + control_file)[len(root):]
             stdout_message('Control file {} successfully updated.'.format(yl + path + rst))
 
         # rewrite version file with current build version in case delta
         with open(lib_path + '/' + version_module, 'w') as f3:
             f2 = ['__version__=\"' + version + '\"\n']
             f3.writelines(f2)
-            path = project_dir + (lib_path + '/' + version_module)[len(root):]
+            path = project_dirname + (lib_path + '/' + version_module)[len(root):]
             stdout_message('Module {} successfully updated.'.format(yl + path + rst))
 
         if os.path.exists(build_root + '/' ):
@@ -877,7 +877,7 @@ def postbuild(version, version_module, builddir_path):
 
     """
     root = git_root()
-    project_dir = root.split('/')[-1]
+    project_dirname = root.split('/')[-1]
     package_path = locate_deb(root)
 
     try:
@@ -890,7 +890,7 @@ def postbuild(version, version_module, builddir_path):
         with open(root + '/core/' + version_module, 'w') as f3:
             f2 = ['__version__=\"' + version + '\"\n']
             f3.writelines(f2)
-            path = project_dir + (root + '/core/' + version_module)[len(root):]
+            path = project_dirname + (root + '/core/' + version_module)[len(root):]
             stdout_message(
                 '{}: Module {} successfully updated.'.format(inspect.stack()[0][3], yl + path + rst)
                 )
