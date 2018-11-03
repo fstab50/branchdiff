@@ -682,8 +682,6 @@ def main(setVersion=None, force=False, debug=False):
     BUILD_ROOT = TMPDIR
     global LIB_DIR
     LIB_DIR = PROJECT_ROOT + '/' + 'core'
-    global BUILD_ROOT
-    BUILD_ROOT = PROJECT_ROOT + '/packaging/deb'
     global CURRENT_VERSION
     CURRENT_VERSION = current_version(PROJECT_BIN, LIB_DIR + '/' 'version.py')
 
@@ -720,11 +718,7 @@ def main(setVersion=None, force=False, debug=False):
     if BUILDDIRNAME:
 
         r_struture = builddir_structure(vars, VERSION)
-
-        r_updates = builddir_content_updates(
-                PROJECT_ROOT, BUILD_ROOT, BUILDDIRNAME,
-                PROJECT_BIN, VERSION, VERSION_FILE
-            )
+        r_updates = builddir_content_updates(vars, environment, VERSION)
 
         if r_struture and r_updates and build_package(BUILD_ROOT, BUILDDIRNAME):
             return postbuild(VERSION, VERSION_FILE, BUILD_ROOT + '/' + BUILDDIRNAME)
@@ -744,6 +738,7 @@ def options(parser, help_menu=False):
     """
     parser.add_argument("-b", "--build", dest='build', default=False, action='store_true', required=False)
     parser.add_argument("-d", "--debug", dest='debug', default=False, action='store_true', required=False)
+    parser.add_argument("-d", "--distro", dest='distro', default='ubuntu16.04', nargs='?', type=str, required=False)
     parser.add_argument("-F", "--force", dest='force', default=False, action='store_true', required=False)
     parser.add_argument("-s", "--set-version", dest='set', default=None, nargs='?', type=str, required=False)
     parser.add_argument("-h", "--help", dest='help', default=False, action='store_true', required=False)
@@ -1016,6 +1011,7 @@ def init_cli():
 
             package = main(
                         setVersion=args.set,
+                        environment=args.distro,
                         force=args.force,
                         debug=args.debug
                     )
