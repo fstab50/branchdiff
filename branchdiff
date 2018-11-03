@@ -432,6 +432,7 @@ function branchdiff(){
         done
 
         reference_branch="$alternate"
+
     else
         reference_branch="master"
     fi
@@ -442,15 +443,16 @@ function branchdiff(){
         echo "Reference Branch: $reference_branch"
         echo "DIFF BRANCH: $diff_branch"
     fi
-    
+
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
-
         std_error_exit "Not a git repository - exit." $E_ERROR
 
     elif [ "$diff_branch" = "master" ]; then
-
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
+
+    elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
+        std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
 
     else
         # output report

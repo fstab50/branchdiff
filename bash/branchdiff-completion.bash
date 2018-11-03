@@ -108,6 +108,7 @@ function _branchdiff_completions(){
 
     # option strings
     commands='--branch --code --debug --help --version'
+    operations='--branch --code'
 
     # subcommand sets
     remote_branches=$(_remote_branchnames)
@@ -133,6 +134,11 @@ function _branchdiff_completions(){
         '--branch')
             #_complete_alternatebranch_commands "${local_branchnames}"
             COMPREPLY=( $(compgen -W "${remote_branches}" -- ${cur}) )
+            return 0
+            ;;
+
+        '--debug')
+            COMPREPLY=( $(compgen -W "${operations}" -- ${cur}) )
             return 0
             ;;
 
