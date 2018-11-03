@@ -127,6 +127,10 @@ function _branchdiff_completions(){
             return 0
             ;;
 
+        'branchdiff')
+            _complete_branchdiff_commands "${commands}"
+            return 0
+            ;;
     esac
 
     case "${prev}" in
