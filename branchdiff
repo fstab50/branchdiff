@@ -321,16 +321,17 @@ function title_header(){
 }
 
 
-function parse_commits(){
+function numof_commits(){
     ##
     ## branch on number of commits
     ##
     local branchref="$1"
     local branchcur="$2"
 
-    commits=$(cat $tmp_file | wc -l)
+    commits=$(git log ${branchref}..${branchcur} | grep Author\: | wc -l)
+
     if [ "$commits" -eq 0 ]; then
-        echo 1
+        echo 0
     else
         echo $commits
     fi
@@ -352,7 +353,7 @@ function commit_diff(){
         --abbrev-commit \
         --date=relative ${branchref}..${branchcur}  > $tmp_file
 
-    commit_ct="$(parse_commits $branchref $branchcur)"
+    commit_ct="$(numof_commits $branchref $branchcur)"
 
     # print section header
     title_header "$branchref" "$branchcur" "$header"
@@ -508,7 +509,7 @@ function branchdiff(){
     elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
         std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
 
-    elif [ "$(git log ${reference_branch}..${diff_branch} | wc -l)" = "0" ]; then
+    elif [ "$(numof_commits ${reference_branch} ${diff_branch})" = "0" ]; then
         std_message "Branch ${yellow}${diff_branch}${btext} and ${white}${reference_branch}${btext} are identical" "INFO"
         exit 0
 
