@@ -216,8 +216,8 @@ function _branchname_reconcilliation(){
     local _remotes          # remote branchnames
     local _locals           # local machine branchnames
 
-    _remotes=(  $(_remote_branches)  )
-    _locals=( $(_local_branches)  )
+    declare -a _remotes=(  $(_remote_branches)  )
+    declare -a _locals=( $(_local_branches)  )
 
     if [ "$(echo "${_locals[@]}" | grep $alternate)" ]; then
 
@@ -228,6 +228,7 @@ function _branchname_reconcilliation(){
 
             if [ "$(echo $branch | grep $alternate)" ]; then
                 printf -- '%s\n' "$branch"
+                break
             fi
 
         done
@@ -258,7 +259,9 @@ function _remote_branches(){
     ##
     declare -a remotes
 
-    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | grep -v HEAD)  )
+    for element in "$(for remote in "$(git branch -a 2>/dev/null | grep remotes | grep -v HEAD | awk '{print $1 $2 $3 $4}')"; do echo -e "$remote"; done)"; do
+        remotes=( "${remotes[@]}" $element )
+    done
     echo "${remotes[@]}"
     #
     # <--- end function _clean_subcommands --->
@@ -299,9 +302,14 @@ function title_header(){
 
     # age header spacing
     pct2=$(echo "scale=2;57/$refsum" | bc -l)   # percent width
-    cf=$(echo "scale=2;10/$refsum" | bc -l)     # correction factor percent
-    cfwidth=$(float2int "$(echo "scale=0;0.04*$refsum" | bc -l)")
-    age=$(( $(float2int "$(echo "scale=0;$pct2*$twidth" | bc -l)") + $cfwidth ))
+    cfpct=$(echo "scale=2;5/$refsum" | bc -l)     # correction factor percent
+
+    if [ $(tput cols) -ge '200' ]; then
+        cfwidth=$(float2int "$(echo "scale=0;$cfpct*$refsum" | bc -l)")
+    else
+        cfwidth='-5'
+    fi
+    age=$(( $(float2int "$(echo "scale=0;$pct2*$twidth" | bc -l)") - $cfwidth ))
 
     # author header spacing
     auth=14
@@ -486,6 +494,9 @@ function branchdiff(){
     if [ $DEBUG ]; then
         echo "Reference Branch: $reference_branch"
         echo "DIFF BRANCH: $diff_branch"
+        declare -a debug_branches=$(_remote_branches)
+        echo -e "_remote_branches output:\n ${debug_branches[@]}\n"
+        echo -e "Number elements returned: $(echo ${#debug_branches[@]} | wc -l)"
     fi
 
     # exit if on master
