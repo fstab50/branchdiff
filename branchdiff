@@ -302,9 +302,14 @@ function title_header(){
 
     # age header spacing
     pct2=$(echo "scale=2;57/$refsum" | bc -l)   # percent width
-    cf=$(echo "scale=2;10/$refsum" | bc -l)     # correction factor percent
-    cfwidth=$(float2int "$(echo "scale=0;0.04*$refsum" | bc -l)")
-    age=$(( $(float2int "$(echo "scale=0;$pct2*$twidth" | bc -l)") + $cfwidth ))
+    cfpct=$(echo "scale=2;5/$refsum" | bc -l)     # correction factor percent
+
+    if [ $(tput cols) -ge '200' ]; then
+        cfwidth=$(float2int "$(echo "scale=0;$cfpct*$refsum" | bc -l)")
+    else
+        cfwidth='-5'
+    fi
+    age=$(( $(float2int "$(echo "scale=0;$pct2*$twidth" | bc -l)") - $cfwidth ))
 
     # author header spacing
     auth=14
