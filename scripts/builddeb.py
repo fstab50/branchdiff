@@ -409,10 +409,6 @@ def builddir_structure(param_dict, version):
             binary_src = PROJECT_ROOT + '/' + binary
             binary_dst = binary_path + '/' + binary
             copyfile(binary_src, binary_dst)
-
-            srcpath = '/'.join(os.path.split(binary_src)[0].split(project_dirname)[1])
-            dstpath = '/'.join(os.path.split(binary_dst)[0].split(project_dirname)[1])
-
             # status msg
             _src_path = '../' + project_dirname + '/' + os.path.split(binary_src)[1]
             _dst_path = '../' + project_dirname + '/' + os.path.split(binary_dst)[1]
@@ -609,12 +605,23 @@ def builddir_content_updates(param_dict, osimage, version):
             path = project_dirname + (control_filepath)[len(root):]
             stdout_message('Control file {} version updated.'.format(yl + path + rst))
 
-        # rewrite version file with current build version in case delta
+        ## rewrite version file with current build version in case delta ##
+
+        # orig source version module
         with open(lib_src + '/' + version_module, 'w') as f3:
             f2 = ['__version__=\"' + version + '\"\n']
             f3.writelines(f2)
             path = project_dirname + (lib_src + '/' + version_module)[len(root):]
             stdout_message('Module {} successfully updated.'.format(yl + path + rst))
+
+        # package version module
+        with open(lib_dst + '/' + version_module, 'w') as f3:
+            f2 = ['__version__=\"' + version + '\"\n']
+            f3.writelines(f2)
+            path = project_dirname + (lib_dst + '/' + version_module)[len(root):]
+            stdout_message('Module {} successfully updated.'.format(yl + path + rst))
+
+        ## Debian control file content updates ##
 
         if os.path.exists(control_filepath):
             # update specfile - major version
