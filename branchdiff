@@ -216,8 +216,8 @@ function _branchname_reconcilliation(){
     local _remotes          # remote branchnames
     local _locals           # local machine branchnames
 
-    _remotes=(  $(_remote_branches)  )
-    _locals=( $(_local_branches)  )
+    declare -a _remotes=(  $(_remote_branches)  )
+    declare -a _locals=( $(_local_branches)  )
 
     if [ "$(echo "${_locals[@]}" | grep $alternate)" ]; then
 
@@ -228,6 +228,7 @@ function _branchname_reconcilliation(){
 
             if [ "$(echo $branch | grep $alternate)" ]; then
                 printf -- '%s\n' "$branch"
+                break
             fi
 
         done
