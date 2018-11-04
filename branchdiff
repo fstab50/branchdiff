@@ -506,7 +506,7 @@ function branchdiff(){
     elif [ "$diff_branch" = "master" ]; then
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
 
-    elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
+    elif [ "$reference_branch" = "$diff_branch" ]; then
         std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
 
     elif [ "$(numof_commits ${reference_branch} ${diff_branch})" = "0" ]; then
