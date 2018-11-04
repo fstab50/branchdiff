@@ -259,11 +259,9 @@ function _remote_branches(){
     ##
     declare -a remotes
 
-    remotes=(
-            "$(for remote in "$(git branch -a 2>/dev/null |  \
-            grep remotes | grep -v HEAD | \
-            awk '{print $1 $2 $3 $4}')"; do echo -e "$remote"; done)"
-        )
+    for element in "$(for remote in "$(git branch -a 2>/dev/null | grep remotes | grep -v HEAD | awk '{print $1 $2 $3 $4}')"; do echo -e "$remote"; done)"; do
+        remotes=( "${remotes[@]}" $element )
+    done
     echo "${remotes[@]}"
     #
     # <--- end function _clean_subcommands --->
@@ -491,9 +489,9 @@ function branchdiff(){
     if [ $DEBUG ]; then
         echo "Reference Branch: $reference_branch"
         echo "DIFF BRANCH: $diff_branch"
-        debug_branches=$(_remote_branches)
-        echo -e "_remove_branches output:\n $debug_branches\n"
-        echo -e "elements returned by _remote_branches: $(echo $debug_branches | wc -l)"
+        declare -a debug_branches=$(_remote_branches)
+        echo -e "_remote_branches output:\n ${debug_branches[@]}\n"
+        echo -e "Number elements returned: $(echo ${#debug_branches[@]} | wc -l)"
     fi
 
     # exit if on master
