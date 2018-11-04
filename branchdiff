@@ -501,16 +501,17 @@ function branchdiff(){
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
-
         std_error_exit "Not a git repository - exit." $E_ERROR
 
     elif [ "$diff_branch" = "master" ]; then
-
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
 
     elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
-
         std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
+
+    elif [ "$(git log ${reference_branch}..${diff_branch} | wc -l)" = "0" ]; then
+        std_message "Branch ${title}${diff_branch}${btext} and ${yellow}${reference_branch}${btext} are identical" "INFO"
+        exit 0
 
     else
         # output report
