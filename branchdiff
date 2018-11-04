@@ -330,8 +330,7 @@ function parse_commits(){
 
     commits=$(cat $tmp_file | wc -l)
     if [ "$commits" -eq 0 ]; then
-        std_message "No differences between $branchref and $branchcur." "INFO"
-        exit 0
+        echo 1
     else
         echo $commits
     fi
@@ -510,7 +509,7 @@ function branchdiff(){
         std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
 
     elif [ "$(git log ${reference_branch}..${diff_branch} | wc -l)" = "0" ]; then
-        std_message "Branch ${title}${diff_branch}${btext} and ${yellow}${reference_branch}${btext} are identical" "INFO"
+        std_message "Branch ${yellow}${diff_branch}${btext} and ${white}${reference_branch}${btext} are identical" "INFO"
         exit 0
 
     else
