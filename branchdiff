@@ -321,17 +321,17 @@ function title_header(){
 }
 
 
-function parse_commits(){
+function numof_commits(){
     ##
     ## branch on number of commits
     ##
     local branchref="$1"
     local branchcur="$2"
 
-    commits=$(cat $tmp_file | wc -l)
+    commits=$(git log ${branchref}..${branchcur} | grep Author\: | wc -l)
+
     if [ "$commits" -eq 0 ]; then
-        std_message "No differences between $branchref and $branchcur." "INFO"
-        exit 0
+        echo 0
     else
         echo $commits
     fi
@@ -353,7 +353,7 @@ function commit_diff(){
         --abbrev-commit \
         --date=relative ${branchref}..${branchcur}  > $tmp_file
 
-    commit_ct="$(parse_commits $branchref $branchcur)"
+    commit_ct="$(numof_commits $branchref $branchcur)"
 
     # print section header
     title_header "$branchref" "$branchcur" "$header"
@@ -501,16 +501,17 @@ function branchdiff(){
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
-
         std_error_exit "Not a git repository - exit." $E_ERROR
 
     elif [ "$diff_branch" = "master" ]; then
-
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
 
     elif [ "$(echo $reference_branch | grep $diff_branch)" ]; then
-
         std_error_exit "Cannot diff $diff_branch branch with itself - exit." $E_ERROR
+
+    elif [ "$(numof_commits ${reference_branch} ${diff_branch})" = "0" ]; then
+        std_message "Branch ${yellow}${diff_branch}${btext} and ${white}${reference_branch}${btext} are identical" "INFO"
+        exit 0
 
     else
         # output report
