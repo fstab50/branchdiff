@@ -107,7 +107,7 @@ function _branchdiff_completions(){
     numoptions=0
 
     # option strings
-    commands='--branch --code --debug --help --version'
+    commands='--branch --code --commit-log --debug --help --version'
     operations='--branch --code'
 
     # subcommand sets
@@ -120,7 +120,6 @@ function _branchdiff_completions(){
             ;;
 
     esac
-
     case "${cur}" in
 
         '--version')
@@ -132,7 +131,6 @@ function _branchdiff_completions(){
             return 0
             ;;
     esac
-
     case "${prev}" in
 
         '--branch')
@@ -155,7 +153,7 @@ function _branchdiff_completions(){
             return 0
             ;;
 
-        '--version' | '--help')
+        '--commit-log' | '--version' | '--help')
             return 0
             ;;
 
