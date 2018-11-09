@@ -67,6 +67,10 @@ function help_menu(){
             the branchname given as the parameter for --branch as the
             reference instead of master branch.
 
+        ${title}-l${btext}, ${title}--commit-log${btext}:  display line-by-line colorized view of the
+            commit log,  revision date time history,  and commit log
+            comments
+
         ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging
 
         ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
@@ -104,7 +108,7 @@ function parse_parameters(){
 
     if [[ ! "$*" ]]; then
 
-        OPERATION='compare_master'
+        OPERATION='compare-master'
         return 0
 
     else
@@ -117,7 +121,7 @@ function parse_parameters(){
 
                 '-b' | '--branch')
 
-                    OPERATION='compare_alternate'
+                    OPERATION='compare-alternate'
 
                     if [ "$2" ]; then
 
@@ -145,8 +149,13 @@ function parse_parameters(){
                     shift 1
                     ;;
 
+                '-l' | '--commit-log')
+                    OPERATION='commit-log'
+                    shift 1
+                    ;;
+
                 '-V' | '--version')
-                    OPERATION="display_version"
+                    OPERATION="display-version"
                     shift 1
                     ;;
 
@@ -268,6 +277,25 @@ function _remote_branches(){
 }
 
 
+function commit_log(){
+    ##
+    ##  Displays various colorized versions of the commit log
+    ##
+    local cl2 clsummary cldetail
+
+    cl2="$(git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all)"
+    cldetail="$(git log --graph --abbrev-commit --decorate --date=relative --all --color)"
+    clsummary="$(git log --graph --oneline --decorate --all --color)"
+
+    git log --graph --abbrev-commit --decorate \
+            --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) \
+                            %C(white)%s%C(reset) %C(dim white)- \
+                            %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+    return 0
+
+}
+
+
 function title_header(){
     ##
     ##  Calculates column spacing linearly proporational to screen wideth
@@ -304,7 +332,7 @@ function title_header(){
     pct2=$(echo "scale=2;57/$refsum" | bc -l)   # percent width
     cfpct=$(echo "scale=2;5/$refsum" | bc -l)     # correction factor percent
 
-    if [ $(tput cols) -ge '200' ]; then
+    if [ "$(tput cols)" -ge '200' ]; then
         cfwidth=$(float2int "$(echo "scale=0;$cfpct*$refsum" | bc -l)")
     else
         cfwidth='-5'
@@ -478,6 +506,7 @@ function branchdiff(){
     local alternate="$1"            # alternate branch name to compare to reference_branch
     local reference_branch          # baseline ref branch; usually master branch
     local diff_branch               # current branch to be baselined against reference
+    declare -a debug_branches
 
     if [ $alternate ]; then
         #
@@ -494,7 +523,7 @@ function branchdiff(){
     if [ $DEBUG ]; then
         echo "Reference Branch: $reference_branch"
         echo "DIFF BRANCH: $diff_branch"
-        declare -a debug_branches=$(_remote_branches)
+        debug_branches=$(_remote_branches)
         echo -e "_remote_branches output:\n ${debug_branches[*]}\n"
         echo -e "Number elements returned: $(echo ${#debug_branches[@]} | wc -l)"
     fi
@@ -532,21 +561,24 @@ function branchdiff(){
 parse_parameters "$@"
 
 case $OPERATION in
-    'compare_master')
+    'compare-master')
         branchdiff
         ;;
 
-    'compare_alternate')
+    'compare-alternate')
         branchdiff $ALT_BRANCH
+        ;;
+
+    'commit-log')
+        commit_log
         ;;
 
     'code')
         codediff $ALT_BRANCH
         ;;
 
-    'display_version')
+    'display-version')
         display_program_version
-        shift 1
         ;;
 
     'help')
