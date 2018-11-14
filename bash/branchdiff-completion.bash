@@ -53,7 +53,7 @@ function _remote_branchnames(){
 
 function _complete_alternatebranch_commands(){
     ##
-    ##
+    ##  Prints all local or remote branches
     ##
     local cmds="$1"
     local split='4'       # times to split screen width
