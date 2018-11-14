@@ -196,7 +196,7 @@ function display_program_version(){
 
 
 
-              ${_hic}$pkg${reset} version: ${title}$_version${reset}   |   git version ${title}$_gitver${reset}
+            ${_hic}$pkg${reset} version: ${title}$_version${reset}   |   git version ${title}$_gitver${reset}
 
 
 
@@ -619,7 +619,7 @@ case $OPERATION in
         ;;
 
     'help')
-        help_menu | more
+        help_menu | indent04 | more
         ;;
 
     *)
