@@ -90,6 +90,22 @@ function _complete_branchdiff_commands(){
 }
 
 
+function _complete_commitlog_commands(){
+    local cmds="$1"
+    local IFS=$' \t\n'
+    local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
+
+    for i in "${!formatted_cmds[@]}"; do
+        formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS))"  "${formatted_cmds[$i]}")"
+    done
+
+    COMPREPLY=( "${formatted_cmds[@]}")
+    return 0
+    #
+    # <-- end function _complete_branchdiff_commands -->
+}
+
+
 function _branchdiff_completions(){
     ##
     ##  Completion structures for branchdiff exectuable
@@ -108,6 +124,7 @@ function _branchdiff_completions(){
 
     # option strings
     commands='--branch --code --commit-log --debug --help --version'
+    commitlog_commands='abreviated details history summary'
     operations='--branch --code'
 
     # subcommand sets
@@ -115,7 +132,7 @@ function _branchdiff_completions(){
 
     case "${initcmd}" in
 
-        '--branch')
+        '--branch' | '--commit-log')
             return 0
             ;;
 
@@ -153,7 +170,13 @@ function _branchdiff_completions(){
             return 0
             ;;
 
-        '--commit-log' | '--version' | '--help')
+        '--commit-log')
+            #COMPREPLY=( $(compgen -W "${commitlog_commands}" -- ${cur}) )
+            _complete_commitlog_commands "${commitlog_commands}"
+            return 0
+            ;;
+
+        '--version' | '--help')
             return 0
             ;;
 
