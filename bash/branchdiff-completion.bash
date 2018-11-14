@@ -59,7 +59,7 @@ function _complete_alternatebranch_commands(){
     local split='4'       # times to split screen width
     local ct="0"
     local IFS=$' \t\n'
-    local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
+    local formatted_cmds=( $(compgen -W "${cmds}" -- "${cur}") )
 
     for i in "${!formatted_cmds[@]}"; do
         formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
@@ -92,11 +92,12 @@ function _complete_branchdiff_commands(){
 
 function _complete_commitlog_commands(){
     local cmds="$1"
+    local split='3'       # times to split screen width
     local IFS=$' \t\n'
-    local formatted_cmds=( $(compgen -W "${cmds}" -- "${COMP_WORDS[1]}") )
+    local formatted_cmds=( $(compgen -W "${cmds}" -- "${cur}") )
 
     for i in "${!formatted_cmds[@]}"; do
-        formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS))"  "${formatted_cmds[$i]}")"
+        formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
     done
 
     COMPREPLY=( "${formatted_cmds[@]}")
