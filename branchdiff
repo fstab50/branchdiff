@@ -151,7 +151,11 @@ function parse_parameters(){
 
                 '-l' | '--commit-log')
                     OPERATION='commit-log'
-                    shift 1
+                    if [ "$2" ]; then
+                        SUBOPERATION="$2"; shift 2
+                    else
+                        shift 1
+                    fi
                     ;;
 
                 '-V' | '--version')
@@ -214,6 +218,18 @@ function current_branch(){
 
 function float2int() {
   awk 'BEGIN{for (i=1; i<ARGC;i++) printf "%.0f\n", ARGV[i]}' "$@"
+}
+
+
+function valid_repository(){
+    ##
+    ##  binary test for valid git repository
+    ##
+    if [[ $(current_branch) ]]; then
+        return 0
+    else
+        std_error_exit "Not a git repository. Cursor must be positioned in a git project repository." $E_ERROR
+    fi
 }
 
 
@@ -281,14 +297,36 @@ function commit_log(){
     ##
     ##  Displays various colorized versions of the commit log
     ##
-    local cl2 clsummary cldetail
 
-    cl2="$(git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all)"
-    cldetail="$(git log --graph --abbrev-commit --decorate --date=relative --all --color)"
-    clsummary="$(git log --graph --oneline --decorate --all --color)"
+    local cl2 summary summary2 cldetail
+    local type="$1"
 
-    git log --graph --abbrev-commit --decorate \
-            --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+    if ! valid_repository; then
+        exit 1
+    fi
+
+    case $type in
+        'summary')
+            git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+            ;;
+
+        'cl2')
+            git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+            ;;
+
+        'cldetail')
+            git log --graph --abbrev-commit --decorate --date=relative --all --color
+            ;;
+
+        'summary')
+            git log --graph --oneline --decorate --all --color
+            ;;
+
+        *)
+            git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+            ;;
+    esac
+
     return 0
 
 }
@@ -528,7 +566,7 @@ function branchdiff(){
 
     # exit if on master
     if [ ! "$(git branch -a 2>/dev/null | grep $diff_branch 2>/dev/null)" ]; then
-        std_error_exit "Not a git repository. (position your cursor in a git project)." $E_ERROR
+        std_error_exit "Not a git repository. Cursor must be positioned in a git project repository." $E_ERROR
 
     elif [ "$diff_branch" = "master" ]; then
         std_error_exit "Cannot diff master branch with itself - exit." $E_ERROR
@@ -568,7 +606,7 @@ case $OPERATION in
         ;;
 
     'commit-log')
-        commit_log
+        commit_log "$SUBOPERATION"
         ;;
 
     'code')
