@@ -79,7 +79,7 @@ $ branchdiff --commit-log history
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commitlog-history.png" alt="branchdiff1"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commitlog-history.png" alt="commitlog-history"/>
 </p>
 
 [back to the top](#top)
