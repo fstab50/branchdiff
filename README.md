@@ -14,17 +14,24 @@
 ## Contents
 
 * [**SUMMARY**](#summary)
+
 * [**SUPPORTED LINUX DISTRIBUTIONS**](#supported-linux-distributions)
-* [**INSTALLATION**](#installation)
-* [**USAGE**](#usage)
-* [**SCREENSHOTS**](#screenshots)
+
+* [**Installation**](#installation)
+
+* [**Usage**](#usage)
+
+* [**Screenshots**](#screenshots)
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
     * [Commit Log History](#screenshots2)
     * [Line-by-Line Code Diff](#screenshots3)
-* [Author & Copyright](#author---copyright)
-* [License](#license)
-* [Disclaimer](#disclaimer)
+
+* [**Author & Copyright**](#author---copyright)
+
+* [**License**](#license)
+
+* [**Disclaimer**](#disclaimer)
 
 [back to the top](#top)
 
