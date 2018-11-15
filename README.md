@@ -120,6 +120,14 @@ $ branchdiff --commit-log history
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
 
+**Example 1**
+
+```bash
+$ branchdiff --code
+```
+
+**Example 1**
+
 ```bash
 $ cd <git project directory>
 
