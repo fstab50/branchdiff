@@ -25,7 +25,6 @@
 [back to the top](#top)
 
 * * *
-
 ## Summary
 
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
@@ -39,10 +38,43 @@
 [back to the top](#top)
 
 * * *
+## Supported Linux Distributions
+
+* Ubuntu,  Debian variants
+* Linux Mint 17, 18, 19
+* Redhat 7, CentOS 7
+* Fedora 28+
+
+[back to the top](#top)
+
+* * *
+## Installation
+
+* TBD
+
+[back to the top](#top)
+
+* * *
+## Usage
+
+To display the help menu:
+
+```bash
+    $ branchdiff  --help
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
+</p>
+
+
+[back to the top](#top)
+
+* * *
 ## Screenshots
 * * *
 
-### Working Branch Commit Status
+### [Screenshots](#screenshots) / Working Branch Status
 
 [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
 
@@ -57,6 +89,9 @@ $ branchdiff
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
 </p>
+
+* * *
+
 
 **Example 2**:  Extended commit history
 
@@ -97,36 +132,6 @@ $ branchdiff --code
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
 </p>
-
-[back to the top](#top)
-
-* * *
-## Supported Linux Distributions
-
-* TBD
-
-[back to the top](#top)
-
-* * *
-## Installation
-
-* TBD
-
-[back to the top](#top)
-
-* * *
-## Usage
-
-To display the help menu:
-
-```bash
-    $ branchdiff  --help
-```
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
-</p>
-
 
 [back to the top](#top)
 
