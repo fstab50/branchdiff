@@ -46,6 +46,8 @@
 
 [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
 
+**Example 1**
+
 ```bash
 $ cd <git project directory>
 
@@ -56,22 +58,28 @@ $ branchdiff
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
+**Example 2**:  Extended commit history
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
+</p>
+
 [back to the top](#top)
 
 * * *
 
-#### Comit Age
+#### Commit Log / History
 
 [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
 
 ```bash
 $ cd <git project directory>
 
-$ branchdiff code
+$ branchdiff --commit-log history
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commitlog-history.png" alt="commitlog-history"/>
 </p>
 
 [back to the top](#top)
@@ -87,7 +95,7 @@ $ branchdiff code
 ```bash
 $ cd <git project directory>
 
-$ branchdiff code
+$ branchdiff --code
 ```
 
 <p align="center">
