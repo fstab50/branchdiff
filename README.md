@@ -73,8 +73,6 @@ $ branchdiff
 [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
 
 ```bash
-$ cd <git project directory>
-
 $ branchdiff --commit-log history
 ```
 
