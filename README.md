@@ -18,8 +18,10 @@
 * [**INSTALLATION**](#installation)
 * [**USAGE**](#usage)
 * [**SCREENSHOTS**](#screenshots)
-    * [Working Branch Status](#screenshots-working-branch-status)
-    * [Branch Status (Extended)](#screenshots-extended-commit-history)
+    * [Working Branch Status](#screenshots)
+    * [Working Branch Status (Extended)](#screenshots1)
+    * [Commit Log History](#screenshots2)
+    * [Line-by-Line Code Diff](#screenshots3)
 * [Author & Copyright](#author---copyright)
 * [License](#license)
 * [Disclaimer](#disclaimer)
@@ -75,7 +77,7 @@ To display the help menu:
 * * *
 ## Screenshots
 * * *
-
+<a name="screenshots0"></a>
 #### [Screenshots](#screenshots) / Working Branch Status
 
 [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
@@ -90,7 +92,7 @@ $ branchdiff
 </p>
 
 * * *
-
+<a name="screenshots1"></a>
 #### [Screenshots](#screenshots) / Extended commit history
 
 ```bash
@@ -103,6 +105,7 @@ $ branchdiff
 [back to the top](#top)
 
 * * *
+<a name="screenshots2"></a>
 #### [Screenshots](#screenshots) / Commit Log / History
 
 [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
@@ -118,6 +121,7 @@ $ branchdiff --commit-log history
 [back to the top](#top)
 
 * * *
+<a name="screenshots3"></a>
 #### [Screenshots](#screenshots) / Code Diff
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
@@ -133,7 +137,6 @@ $ branchdiff --code
 [back to the top](#top)
 
 * * *
-
 ## Author & Copyright
 
 All works contained herein copyrighted via below author unless work is explicitly noted by an alternate author.
