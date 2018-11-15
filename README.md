@@ -13,11 +13,13 @@
 * * *
 ## Contents
 
-* [Summary](#summary)
-* [Supported Linux Distributions](#supported-linux-distributions)
-* [Installation](#installation)
-* [Usage](#usage)
-* [Screenshots](#screenshots)
+* [**SUMMARY**](#summary)
+* [**SUPPORTED LINUX DISTRIBUTIONS**](#supported-linux-distributions)
+* [**INSTALLATION**](#installation)
+* [**USAGE**](#usage)
+* [**SCREENSHOTS**](#screenshots)
+    * [Working Branch Status](#screenshots-working-branch-status)
+    * [Branch Status (Extended)](#screenshots-extended-commit-history)
 * [Author & Copyright](#author---copyright)
 * [License](#license)
 * [Disclaimer](#disclaimer)
@@ -120,22 +122,12 @@ $ branchdiff --commit-log history
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
 
-**Example 1**
-
 ```bash
-$ branchdiff --code
-```
-
-**Example 1**
-
-```bash
-$ cd <git project directory>
-
 $ branchdiff --code
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
