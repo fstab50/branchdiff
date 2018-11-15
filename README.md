@@ -80,11 +80,8 @@ To display the help menu:
 
 [branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
 
-**Example 1**
 
 ```bash
-$ cd <git project directory>
-
 $ branchdiff
 ```
 
@@ -96,6 +93,9 @@ $ branchdiff
 
 #### [Screenshots](#screenshots) / Extended commit history
 
+```bash
+$ branchdiff
+```
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
