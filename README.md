@@ -14,10 +14,10 @@
 ## Contents
 
 * [Summary](#summary)
-* [Screenshots](#screenshots)
 * [Supported Linux Distributions](#supported-linux-distributions)
 * [Installation](#installation)
 * [Usage](#usage)
+* [Screenshots](#screenshots)
 * [Author & Copyright](#author---copyright)
 * [License](#license)
 * [Disclaimer](#disclaimer)
@@ -25,7 +25,6 @@
 [back to the top](#top)
 
 * * *
-
 ## Summary
 
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
@@ -39,73 +38,12 @@
 [back to the top](#top)
 
 * * *
-## Screenshots
-* * *
-
-### Working Branch Commit Status
-
-[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
-
-**Example 1**
-
-```bash
-$ cd <git project directory>
-
-$ branchdiff
-```
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
-</p>
-
-**Example 2**:  Extended commit history
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
-</p>
-
-[back to the top](#top)
-
-* * *
-
-#### Commit Log / History
-
-[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
-
-```bash
-$ branchdiff --commit-log history
-```
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commitlog-history.png" alt="commitlog-history"/>
-</p>
-
-[back to the top](#top)
-
-* * *
-
-#### Code Updates
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
-</p>
-
-```bash
-$ cd <git project directory>
-
-$ branchdiff --code
-```
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
-</p>
-
-[back to the top](#top)
-
-* * *
 ## Supported Linux Distributions
 
-* TBD
+* Ubuntu,  Debian variants
+* Linux Mint 17, 18, 19
+* Redhat 7, CentOS 7
+* Fedora 28+
 
 [back to the top](#top)
 
@@ -129,6 +67,70 @@ To display the help menu:
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
 </p>
 
+
+[back to the top](#top)
+
+* * *
+## Screenshots
+* * *
+
+#### [Screenshots](#screenshots) / Working Branch Status
+
+[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
+
+**Example 1**
+
+```bash
+$ cd <git project directory>
+
+$ branchdiff
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
+</p>
+
+* * *
+
+#### [Screenshots](#screenshots) / Extended commit history
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
+</p>
+
+[back to the top](#top)
+
+* * *
+#### [Screenshots](#screenshots) / Commit Log / History
+
+[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
+
+```bash
+$ branchdiff --commit-log history
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commitlog-history.png" alt="commitlog-history"/>
+</p>
+
+[back to the top](#top)
+
+* * *
+#### [Screenshots](#screenshots) / Code Diff
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
+</p>
+
+```bash
+$ cd <git project directory>
+
+$ branchdiff --code
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
+</p>
 
 [back to the top](#top)
 
