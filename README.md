@@ -73,7 +73,8 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 2. Install the repository:
 
     ```
-    $ sudo echo "deb [arch=amd64] http://deb.awscloud.center <distribution> main" > /etc/apt/sources.list.d/debian-tools.list
+    $ sudo echo "deb [arch=amd64] http://deb.awscloud.center <distribution> main" > \
+        /etc/apt/sources.list.d/debian-tools.list
     ```
 
     **Where:** `<distribution>` is one of the following:
@@ -129,7 +130,7 @@ To display the help menu:
 <a name="screenshots0"></a>
 #### [Screenshots](#screenshots) / Working Branch Status
 
-[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the git project in which the cursor is located when the user invokes the program:
+[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch in which the cursor is located:
 
 
 ```bash
@@ -160,7 +161,7 @@ $ branchdiff
 <a name="screenshots2"></a>
 #### [Screenshots](#screenshots) / Commit Log / History
 
-[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located when user invokes the program:
+[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located:
 
 ```bash
 $ branchdiff --commit-log history
