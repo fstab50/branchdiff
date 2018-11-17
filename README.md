@@ -27,7 +27,7 @@
     * [Commit Log History](#screenshots2)
     * [Line-by-Line Code Diff](#screenshots3)
 
-* [**AUTHOR & COPYRIGHT**](#author-copyright)
+* [**AUTHOR & COPYRIGHT**](#authorcopyright)
 
 * [**LICENSE**](#license)
 
@@ -141,6 +141,7 @@ $ branchdiff --code
 
 [back to the top](#top)
 
+<a name="authorcopyright"></a>
 * * *
 ## Author & Copyright
 
