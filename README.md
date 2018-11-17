@@ -113,19 +113,27 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 ## Upgrading
 * * *
 
-To see if an upgrade is available, update your distribution's package repositories:
+1. See if an upgrade is available, update your distribution's package repositories:
 
 ```
 $  sudo apt update
 ```
 
-Issue a list command to see upgrades.  Alternatively, you may issue ```$ sudo apt upgrade``` command.
+2. Issue a list command to see upgrades.  Alternatively, you may issue ```$ sudo apt upgrade``` command.
 
 ```
 $  apt list branchdiff -a
 ```
 
 ![repo-contents](./assets/repo-contents.png)s
+
+3. Upgrade
+
+```
+$  sudo apt upgrade
+```
+
+[back to the top](#top)
 
 * * *
 ## Usage
