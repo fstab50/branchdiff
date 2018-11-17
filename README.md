@@ -79,10 +79,10 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 
     **Where:** `<distribution>` is one of the following:
 
-        * `trusty`:  Ubuntu 14.04, Ubuntu 14.04 based Linux distributions
-        * `xenial`:  Ubuntu 16.04, 16.04 based Linux distributions
-        * `bionic`:  Ubuntu 18.04, 18.04 based Linux distributions ([Linux Mint 19](https://www.linuxmint.com/download.php), etc)
-        * `cosmic`:  Ubuntu 18.10, 18.10 based Linux distributions
+    - `trusty`:  Ubuntu 14.04, Ubuntu 14.04 based Linux distributions
+    - `xenial`:  Ubuntu 16.04, 16.04 based Linux distributions
+    - `bionic`:  Ubuntu 18.04, 18.04 based Linux distributions ([Linux Mint 19](https://www.linuxmint.com/download.php), etc)
+    - `cosmic`:  Ubuntu 18.10, 18.10 based Linux distributions
 
 3. Verify package repository installation
 
