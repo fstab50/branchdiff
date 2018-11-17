@@ -33,6 +33,8 @@
 
 * [**DISCLAIMER**](#disclaimer)
 
+--
+
 [back to the top](#top)
 
 * * *
@@ -60,7 +62,7 @@
 * * *
 ## Installation
 
-The easiest way to install **buildpy** is via the Debian-tools repository:
+The easiest way to install **branchdiff** is via the Debian-tools repository:
 
 1. Download the public key:  
 
@@ -84,21 +86,21 @@ The easiest way to install **buildpy** is via the Debian-tools repository:
 3. Verify package repository installation
 
     ```
-    $ apt list buildpy -a
+    $ apt list branchdif -a
     ```
 
-    ![repository-contents](./assets/repo-contents.png)
+    ![repository-contents](./assets/apt-upgradeable.png)
 
 4. Update and install the package:
 
     ```
-    $ sudo apt update  &&  sudo apt install buildpy
+    $ sudo apt update  &&  sudo apt install branchdiff
     ```
 
 5. Verify Installation.  To verify a Debian (.deb) package installation:
 
     ```
-    $ apt show buildpy
+    $ apt show branchdiff
     ```
 
     ![apt](./assets/apt-show.png)
@@ -138,6 +140,8 @@ $ branchdiff
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
+[back to the top](#top)
+
 * * *
 <a name="screenshots1"></a>
 #### [Screenshots](#screenshots) / Extended commit history
@@ -145,6 +149,7 @@ $ branchdiff
 ```bash
 $ branchdiff
 ```
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
