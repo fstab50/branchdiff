@@ -17,21 +17,21 @@
 
 * [**SUPPORTED LINUX DISTRIBUTIONS**](#supported-linux-distributions)
 
-* [**Installation**](#installation)
+* [**INSTALLATION**](#installation)
 
-* [**Usage**](#usage)
+* [**USAGE**](#usage)
 
-* [**Screenshots**](#screenshots)
+* [**SCREENSHOTS**](#screenshots)
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
     * [Commit Log History](#screenshots2)
     * [Line-by-Line Code Diff](#screenshots3)
 
-* [**Author & Copyright**](#author---copyright)
+* [**AUTHOR & COPYRIGHT**](#author---copyright)
 
-* [**License**](#license)
+* [**LICENSE**](#license)
 
-* [**Disclaimer**](#disclaimer)
+* [**DISCLAIMER**](#disclaimer)
 
 [back to the top](#top)
 
@@ -41,9 +41,7 @@
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
 
 * Illustrates differences between current working branch and master branch
-
 * Details when commits were made to the current branch, by whom
-
 * Provides summary statistics
 
 [back to the top](#top)
