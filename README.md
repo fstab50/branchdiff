@@ -19,6 +19,8 @@
 
 * [**INSTALLATION**](#installation)
 
+* [**UPGRADING**](#upgrading)
+
 * [**USAGE**](#usage)
 
 * [**SCREENSHOTS**](#screenshots)
