@@ -61,6 +61,7 @@
 
 * * *
 ## Installation
+* * *
 
 The easiest way to install **branchdiff** is via the Debian-tools repository:
 
@@ -84,13 +85,13 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     - `bionic`:  Ubuntu 18.04, 18.04 based Linux distributions ([Linux Mint 19](https://www.linuxmint.com/download.php), etc)
     - `cosmic`:  Ubuntu 18.10, 18.10 based Linux distributions
 
-3. Verify package repository installation
+3. Verify **debian-tools** repository installation
 
     ```
-    $ apt list branchdif -a
+    $  grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/*
     ```
 
-    ![repository-contents](./assets/apt-upgradeable.png)
+    ![repository-contents](./assets/repo-install-verify.png)
 
 4. Update and install the package:
 
@@ -107,6 +108,24 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     ![apt](./assets/apt-show.png)
 
 [back to the top](#top)
+
+* * *
+## Upgrading
+* * *
+
+To see if an upgrade is available, update your distribution's package repositories:
+
+```
+$  sudo apt update
+```
+
+Issue a list command to see upgrades.  Alternatively, you may issue ```$ sudo apt upgrade``` command.
+
+```
+$  apt list branchdiff -a
+```
+
+![repo-contents](./assets/repo-contents.png)s
 
 * * *
 ## Usage
