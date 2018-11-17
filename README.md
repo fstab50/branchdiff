@@ -213,7 +213,7 @@ $ branchdiff --code
 ```
 
 <p align="center">
-  <img src="a" alt="branchdiff-code"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
