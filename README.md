@@ -91,7 +91,7 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     $  grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/*
     ```
 
-    ![repository-contents](./assets/repo-install-verify.png)
+    [![repository-contents](./assets/repo-install-verify.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png)
 
 4. Update and install the package:
 
@@ -203,7 +203,7 @@ $ branchdiff --code
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
+  <img src="a" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
