@@ -74,15 +74,15 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 
     ```
     $ sudo echo "deb [arch=amd64] http://deb.awscloud.center <distribution> main" > \
-        /etc/apt/sources.list.d/debian-tools.list
+                 /etc/apt/sources.list.d/debian-tools.list
     ```
 
     **Where:** `<distribution>` is one of the following:
 
-    * `trusty`:  Ubuntu 14.04, Ubuntu 14.04 based Linux distributions
-    * `xenial`:  Ubuntu 16.04, 16.04 based Linux distributions
-    * `bionic`:  Ubuntu 18.04, 18.04 based Linux distributions ([Linux Mint 19](https://www.linuxmint.com/download.php), etc)
-    * `cosmic`:  Ubuntu 18.10, 18.10 based Linux distributions
+        * `trusty`:  Ubuntu 14.04, Ubuntu 14.04 based Linux distributions
+        * `xenial`:  Ubuntu 16.04, 16.04 based Linux distributions
+        * `bionic`:  Ubuntu 18.04, 18.04 based Linux distributions ([Linux Mint 19](https://www.linuxmint.com/download.php), etc)
+        * `cosmic`:  Ubuntu 18.10, 18.10 based Linux distributions
 
 3. Verify package repository installation
 
