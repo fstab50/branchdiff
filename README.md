@@ -125,7 +125,7 @@ $  sudo apt update
 $  apt list branchdiff -a
 ```
 
-![repo-contents](./assets/repo-contents.png)s
+![repo-contents](./assets/repo-contents.png)
 
 3. Upgrade
 
