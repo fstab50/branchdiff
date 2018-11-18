@@ -186,7 +186,7 @@ function _branchdiff_completions(){
             ;;
 
         'abreviated' | 'details' | 'history' | 'summary')
-            # --commit-log subcommands
+            # --commit-log subcommands completed; stop
             return 0
             ;;
 
