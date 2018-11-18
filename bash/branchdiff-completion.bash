@@ -172,12 +172,16 @@ function _branchdiff_completions(){
             ;;
 
         '--commit-log')
-            #COMPREPLY=( $(compgen -W "${commitlog_commands}" -- ${cur}) )
             _complete_commitlog_commands "${commitlog_commands}"
             return 0
             ;;
 
         '--version' | '--help')
+            return 0
+            ;;
+
+        'abreviated' | 'details' | 'history' | 'summary')
+            # --commit-log subcommands
             return 0
             ;;
 
