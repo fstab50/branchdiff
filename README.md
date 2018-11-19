@@ -6,7 +6,7 @@
 ## About this repository
 
 * Purpose: 		Instantly know status of the current git working branch
-* Version:	     1.0.17
+* Version:	     1.0.18
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
@@ -56,14 +56,16 @@
 * Ubuntu14.04, Ubuntu 16.04, Ubuntu 18.04  
 * Linux Mint 17, 18, 19
 * Debian variants of Ubuntu / Linux Mint distributions above
-* Redhat 7+, CentOS 7+
-* Fedora 28+
+* Redhat 7+, CentOS 7+  (PENDING, NOT YET AVAILABLE)
+* Fedora 28+   (PENDING, NOT YET AVAILABLE)
 
 [back to the top](#top)
 
 * * *
 ## Installation
 * * *
+
+### Ubuntu, Linux Mint, Debian variants
 
 The easiest way to install **branchdiff** is via the Debian-tools repository:
 
@@ -110,6 +112,12 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     ![apt](./assets/apt-show.png)
 
 [back to the top](#top)
+
+* * *
+
+### Redhat, CentOS, Fedora
+
+NOT YET AVAILABLE
 
 * * *
 ## Upgrading
@@ -206,9 +214,7 @@ $ branchdiff --commit-log history
 <a name="screenshots3"></a>
 #### [Screenshots](#screenshots) / Code Diff
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff1"/>
-</p>
+[branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
 
 ```bash
 $ branchdiff --code
