@@ -90,7 +90,7 @@ function _complete_branchdiff_commands(){
 }
 
 
-function _complete_commitlog_commands(){
+function _complete_commitlog_subcommands(){
     local cmds="$1"
     local split='3'       # times to split screen width
     local IFS=$' \t\n'
@@ -125,7 +125,7 @@ function _branchdiff_completions(){
 
     # option strings
     commands='--branch --code --commit-log --debug --help --version'
-    commitlog_commands='abreviated details history summary'
+    commitlog_subcommands='abreviated details history summary'
     operations='--branch --code'
 
     # subcommand sets
@@ -172,12 +172,21 @@ function _branchdiff_completions(){
             ;;
 
         '--commit-log')
-            #COMPREPLY=( $(compgen -W "${commitlog_commands}" -- ${cur}) )
-            _complete_commitlog_commands "${commitlog_commands}"
+            if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
+                # display full completion subcommands
+                _complete_commitlog_subcommands "${commitlog_subcommands}"
+            else
+                COMPREPLY=( $(compgen -W "${commitlog_subcommands}" -- ${cur}) )
+            fi
             return 0
             ;;
 
         '--version' | '--help')
+            return 0
+            ;;
+
+        'abreviated' | 'details' | 'history' | 'summary')
+            # --commit-log subcommands completed; stop
             return 0
             ;;
 
