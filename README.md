@@ -56,14 +56,16 @@
 * Ubuntu14.04, Ubuntu 16.04, Ubuntu 18.04  
 * Linux Mint 17, 18, 19
 * Debian variants of Ubuntu / Linux Mint distributions above
-* Redhat 7+, CentOS 7+
-* Fedora 28+
+* Redhat 7+, CentOS 7+  (PENDING, NOT YET AVAILABLE)
+* Fedora 28+   (PENDING, NOT YET AVAILABLE)
 
 [back to the top](#top)
 
 * * *
 ## Installation
 * * *
+
+### Ubuntu, Linux Mint, Debian variants
 
 The easiest way to install **branchdiff** is via the Debian-tools repository:
 
@@ -110,6 +112,12 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     ![apt](./assets/apt-show.png)
 
 [back to the top](#top)
+
+* * *
+
+### Redhat, CentOS, Fedora
+
+NOT YET AVAILABLE
 
 * * *
 ## Upgrading
