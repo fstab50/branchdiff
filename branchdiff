@@ -298,7 +298,6 @@ function commit_log(){
     ##  Displays various colorized versions of the commit log
     ##
 
-    local cl2 summary summary2 cldetail
     local type="$1"
 
     if ! valid_repository; then
@@ -310,11 +309,11 @@ function commit_log(){
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
             ;;
 
-        'details' | 'detail')
+        'history-detail' )
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
             ;;
 
-        'abreviated')
+        'log-detail | ''details' | 'detail')
             git log --graph --abbrev-commit --decorate --date=relative --all --color
             ;;
 
@@ -327,9 +326,9 @@ function commit_log(){
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
             ;;
     esac
-
     return 0
-
+    #
+    # <--- end function commit_log --->
 }
 
 
