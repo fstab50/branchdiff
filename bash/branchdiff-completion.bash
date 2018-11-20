@@ -125,7 +125,7 @@ function _branchdiff_completions(){
 
     # option strings
     commands='--branch --code --commit-log --debug --help --version'
-    commitlog_subcommands='log-detail history history-detail summary'
+    commitlog_subcommands='commit-details history history-detail summary'
     operations='--branch --code'
 
     # subcommand sets
@@ -185,7 +185,7 @@ function _branchdiff_completions(){
             return 0
             ;;
 
-        'details' | 'history' | 'history-detail' | 'summary')
+        'commit-details' | 'history' | 'history-detail' | 'summary')
             # --commit-log subcommands completed; stop
             return 0
             ;;
