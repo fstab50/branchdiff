@@ -269,6 +269,14 @@ function _branchname_reconcilliation(){
 }
 
 
+function _git_root(){
+    ##
+    ##  determines full path to current git project root
+    ##
+    echo "$(git rev-parse --show-toplevel 2>/dev/null)"
+}
+
+
 function _local_branches(){
     ##
     ##  returns an array of git branches listed by the
@@ -498,6 +506,12 @@ function code_filediff(){
     local diff_file="$1"
     local alternate="$2"
     local reference_branch
+    local root cwd
+
+    # relative pathing (now moved to )
+    root=$(_git_root)       # prepend git root to all diff files; case pwd not root
+    cwd=$PWD
+    path_dif=$(echo ${cwd##$(echo $root)} | cut -c 2-100)    # diff between pwd and root
 
     if [ $alternate ]; then
         reference_branch="$alternate"
@@ -505,7 +519,7 @@ function code_filediff(){
         reference_branch="master"
     fi
 
-    git diff "$reference_branch..$(current_branch)" $diff_file
+    git diff "$reference_branch..$(current_branch)" "$diff_file"
     return 0
 }
 

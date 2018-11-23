@@ -33,13 +33,23 @@ function current_branch(){
 
 function _code_subcommands(){
     ##
-    ##  returns list of all files changed
+    ##  returns list of all files changed; relative paths
     ##
     local branch1="master"
-    local branch2="$(current_branch)"
+    local branch2=$(current_branch)
+    local root=$(_git_root)
+
     declare -a changed
-    changed=$(git diff --name-only $branch1..$branch2)
+    changed=$(git diff --name-only $branch1..$branch2 | xargs -I '{}' realpath --relative-to=. $root/'{}')
     echo "${changed[@]}"
+}
+
+
+function _git_root(){
+    ##
+    ##  determines full path to current git project root
+    ##
+    echo "$(git rev-parse --show-toplevel 2>/dev/null)"
 }
 
 
