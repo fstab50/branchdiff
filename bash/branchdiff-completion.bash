@@ -171,8 +171,13 @@ function _branchdiff_completions(){
 
     case "${initcmd}" in
 
-        '--branch' | '--commit-log')
-            return 0
+        '--branch')
+            if [ "$(${COMP_WORDS[@]} | grep '\-\-code')" ]; then
+                return 0
+            else
+                COMPREPLY=( $(compgen -W "--code" -- ${cur}) )
+                return 0
+            fi
             ;;
 
         '--code')
@@ -183,6 +188,10 @@ function _branchdiff_completions(){
                 return 0
             fi
             ;;
+
+        '--commit-log')
+           return 0
+           ;;
     esac
     case "${cur}" in
 
