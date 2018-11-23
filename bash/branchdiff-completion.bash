@@ -173,7 +173,7 @@ function _branchdiff_completions(){
     case "${initcmd}" in
 
         '--branch')
-            if [ "$(${COMP_WORDS[@]} | grep '\-\-code')" ]; then
+            if [ "$(echo ${COMP_WORDS[@]} | grep '\-\-code')" ]; then
                 return 0
             else
                 COMPREPLY=( $(compgen -W "--code" -- ${cur}) )
@@ -182,7 +182,7 @@ function _branchdiff_completions(){
             ;;
 
         '--code')
-            if [ "$(${COMP_WORDS[@]} | grep '\-\-branch')" ]; then
+            if [ "$(echo ${COMP_WORDS[@]} | grep '\-\-branch')" ]; then
                 return 0
             else
                 COMPREPLY=( $(compgen -W "--branch" -- ${cur}) )
