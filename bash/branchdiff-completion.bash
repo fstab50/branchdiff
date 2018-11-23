@@ -164,10 +164,11 @@ function _branchdiff_completions(){
     commands='--branch --code --commit-log --debug --help --version'
     commitlog_subcommands='detail history summary'
     operations='--branch --code'
-    changed_files=$(_code_subcommands)
 
     # subcommand sets
     remote_branches=$(_remote_branchnames)
+    changed_files=$(_code_subcommands)
+
 
     case "${initcmd}" in
 
