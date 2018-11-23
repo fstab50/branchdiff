@@ -23,6 +23,26 @@
 # SOFTWARE.
 
 
+function current_branch(){
+    ##
+    ##  returns current working branch
+    ##
+    echo "$(git branch 2>/dev/null | grep '\*' | awk '{print $2}')"
+}
+
+
+function _code_subcommands(){
+    ##
+    ##  returns list of all files changed
+    ##
+    local branch1="master"
+    local branch2="$(current_branch)"
+    declare -a changed
+    changed=$(git diff --name-only $branch1..$branch2)
+    echo "${changed[@]}"
+}
+
+
 function _local_branches(){
     ##
     ##  returns an array of git branches listed by the
@@ -90,6 +110,23 @@ function _complete_branchdiff_commands(){
 }
 
 
+function _complete_code_subcommands(){
+    local cmds="$1"
+    local split='3'       # times to split screen width
+    local IFS=$' \t\n'
+    local formatted_cmds=( $(compgen -W "${cmds}" -- "${cur}") )
+
+    for i in "${!formatted_cmds[@]}"; do
+        formatted_cmds[$i]="$(printf '%*s' "-$(($COLUMNS/$split))"  "${formatted_cmds[$i]}")"
+    done
+
+    COMPREPLY=( "${formatted_cmds[@]}")
+    return 0
+    #
+    # <-- end function _complete_code_subcommands -->
+}
+
+
 function _complete_commitlog_subcommands(){
     local cmds="$1"
     local split='1'       # times to split screen width
@@ -103,7 +140,7 @@ function _complete_commitlog_subcommands(){
     COMPREPLY=( "${formatted_cmds[@]}")
     return 0
     #
-    # <-- end function _complete_branchdiff_commands -->
+    # <-- end function _complete_commitlog_subcommands -->
 }
 
 
@@ -127,6 +164,7 @@ function _branchdiff_completions(){
     commands='--branch --code --commit-log --debug --help --version'
     commitlog_subcommands='detail history summary'
     operations='--branch --code'
+    changed_files=$(_code_subcommands)
 
     # subcommand sets
     remote_branches=$(_remote_branchnames)
@@ -158,12 +196,13 @@ function _branchdiff_completions(){
             ;;
 
         '--code')
-            if [[ $(echo "${COMP_WORDS[@]}" | grep '\-\-branch') ]]; then
-                return 0
+            if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
+                # display full completion subcommands
+                _complete_code_subcommands "$(_code_subcommands)"
             else
-                COMPREPLY=( $(compgen -W '--branch' -- ${cur}) )
-                return 0
+                COMPREPLY=( $(compgen -W "${changed_files}" -- ${cur}) )
             fi
+            return 0
             ;;
 
         '--debug')
