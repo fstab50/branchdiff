@@ -181,6 +181,39 @@ function parse_parameters(){
 }
 
 
+function _calc_maximum_fname_length(){
+    ##
+    ##
+    ##
+    local branchref="$1"
+    local branch2=$(current_branch)
+    local max_lenghth='0'
+    declare -a changed
+
+    # file all files changed
+    changed=$(_updated_files $branchref)
+    for file in "${changed[@]}"; do
+        if [[ ${#file} -gt $max_count ]]; then
+            max_count=${#file}
+        fi
+    done
+    echo "$max_count"
+}
+
+
+function _updated_files(){
+    ##
+    ##  returns list of all files changed; relative paths
+    ##
+    local branch1="$1"
+    local branch2=$(current_branch)
+
+    declare -a changed
+    changed=$(git diff --name-only $branch1..$branch2)
+    echo "${changed[@]}"
+}
+
+
 function display_program_version(){
     ##
     ## output script version info, license
@@ -448,15 +481,22 @@ function file_diff(){
     local branchref="$1"
     local branchcur="$2"
     local header="$3"
+    local twidth=$(tput cols)
+    local margins='30'
 
+    # max width of fname portion
+    width_filenames=$(_calc_maximum_fname_length $bramchref)
+
+    # stat width
+    swidth=$(( $twidth*4/7 - $width_filenames - $margins ))
     # header
     printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}${branchcur}${frame}"| indent04
 
     # files changed
     if [ $ALT_BRANCH ]; then
-        git -c color.ui=always diff --stat ${branchref}..origin/${branchcur} | head -n -1 | indent20
+        git -c color.ui=always diff --stat ${branchref}..origin/${branchcur} --stat-width=$swidth | head -n -1 | indent20
     else
-        git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur} | head -n -1 | indent20
+        git -c color.ui=always diff --stat origin/${branchref}..origin/${branchcur}  --stat-width=$swidth | head -n -1 | indent20
     fi
 }
 
