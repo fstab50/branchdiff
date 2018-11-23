@@ -494,22 +494,16 @@ function code_filediff(){
     ##  shows diff of a single file between branches
     ##
     local diff_file="$1"
-    local alternate="$ALT_BRANCH"
-    local reference_branch="master"
+    local alternate="$2"
+    local reference_branch
 
-    #if [ $alternate ]; then
-    #    #
-    #    # check if in remote; if so use branchname from _remote_branches
-    #    #
-    #    #reference_branch="$alternate"
-    #    reference_branch="$(_branchname_reconcilliation $alternate)"
-
-    #else
-    #    reference_branch="master"
-    #fi
+    if [ $alternate ]; then
+        reference_branch="$alternate"
+    else
+        reference_branch="master"
+    fi
 
     git diff "$reference_branch..$(current_branch)" $diff_file
-
     return 0
 }
 
@@ -534,7 +528,6 @@ function codediff(){
     fi
 
     git diff "$reference_branch" "$(current_branch)"
-
     return 0
 }
 
@@ -641,7 +634,7 @@ case $OPERATION in
 
     'code')
         if [ "$DIFF_FILE" ]; then
-            code_filediff "$DIFF_FILE"
+            code_filediff "$DIFF_FILE" $ALT_BRANCH
         else
             codediff $ALT_BRANCH
         fi
