@@ -103,7 +103,7 @@ function parse_parameters(){
     ##  Parse all command-line parameters
     ##
 
-    local var
+    local var command
     #local commandline=("${!1}")
 
     if [[ ! "$*" ]]; then
@@ -120,9 +120,7 @@ function parse_parameters(){
                     ;;
 
                 '-b' | '--branch')
-
-                    OPERATION='compare-alternate'
-
+                    command="BRANCH_SELECTED"
                     if [ "$2" ]; then
 
                         if valid_branch "$2"; then
@@ -132,7 +130,6 @@ function parse_parameters(){
                             std_warn "You must provide a valid branch name as a parameter"
                             exit $E_MISC
                         fi
-
                     else
                         std_warn "You must provide a valid branch name as a parameter"
                         shift 1
@@ -141,7 +138,11 @@ function parse_parameters(){
 
                 '-c' | '--code')
                     OPERATION="code"
-                    shift 1
+                    if [ "$2" ]; then
+                        DIFF_FILE="$2"; shift 2
+                    else
+                        shift 1
+                    fi
                     ;;
 
                 '-d' | '--debug')
@@ -169,6 +170,11 @@ function parse_parameters(){
                     ;;
             esac
         done
+    fi
+
+    # set op if --branch selected
+    if [ "$command" = "BRANCH_SELECTED" ] && [ ! "$OPERATION" ]; then
+        OPERATION='compare_alternate'
     fi
     #
     # <-- end function parse_parameters -->
@@ -298,7 +304,6 @@ function commit_log(){
     ##  Displays various colorized versions of the commit log
     ##
 
-    local cl2 summary summary2 cldetail
     local type="$1"
 
     if ! valid_repository; then
@@ -310,11 +315,11 @@ function commit_log(){
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
             ;;
 
-        'details' | 'detail')
+        'history-detail' )
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
             ;;
 
-        'abreviated')
+        'detail' | 'details' | 'detailed')
             git log --graph --abbrev-commit --decorate --date=relative --all --color
             ;;
 
@@ -327,9 +332,9 @@ function commit_log(){
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
             ;;
     esac
-
     return 0
-
+    #
+    # <--- end function commit_log --->
 }
 
 
@@ -485,6 +490,26 @@ function std_error_exit(){
     exit $status
 }
 
+
+function code_filediff(){
+    ##
+    ##  shows diff of a single file between branches
+    ##
+    local diff_file="$1"
+    local alternate="$2"
+    local reference_branch
+
+    if [ $alternate ]; then
+        reference_branch="$alternate"
+    else
+        reference_branch="master"
+    fi
+
+    git diff "$reference_branch..$(current_branch)" $diff_file
+    return 0
+}
+
+
 function codediff(){
     ##
     ##  displays line-by-line code diff ##
@@ -505,7 +530,6 @@ function codediff(){
     fi
 
     git diff "$reference_branch" "$(current_branch)"
-
     return 0
 }
 
@@ -611,7 +635,11 @@ case $OPERATION in
         ;;
 
     'code')
-        codediff $ALT_BRANCH
+        if [ "$DIFF_FILE" ]; then
+            code_filediff "$DIFF_FILE" $ALT_BRANCH
+        else
+            codediff $ALT_BRANCH
+        fi
         ;;
 
     'display-version')
