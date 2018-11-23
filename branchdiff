@@ -141,7 +141,11 @@ function parse_parameters(){
 
                 '-c' | '--code')
                     OPERATION="code"
-                    shift 1
+                    if [ "$2" ]; then
+                        DIFF_FILE="$2"; shift 2
+                    else
+                        shift 1
+                    fi
                     ;;
 
                 '-d' | '--debug')
@@ -484,6 +488,32 @@ function std_error_exit(){
     exit $status
 }
 
+
+function code_filediff(){
+    ##
+    ##  shows diff of a single file between branches
+    ##
+    local diff_file="$1"
+    local alternate="$ALT_BRANCH"
+    local reference_branch="master"
+
+    #if [ $alternate ]; then
+    #    #
+    #    # check if in remote; if so use branchname from _remote_branches
+    #    #
+    #    #reference_branch="$alternate"
+    #    reference_branch="$(_branchname_reconcilliation $alternate)"
+
+    #else
+    #    reference_branch="master"
+    #fi
+
+    git diff "$reference_branch..$(current_branch)" $diff_file
+
+    return 0
+}
+
+
 function codediff(){
     ##
     ##  displays line-by-line code diff ##
@@ -610,7 +640,11 @@ case $OPERATION in
         ;;
 
     'code')
-        codediff $ALT_BRANCH
+        if [ "$DIFF_FILE" ]; then
+            code_filediff "$DIFF_FILE"
+        else
+            codediff $ALT_BRANCH
+        fi
         ;;
 
     'display-version')
