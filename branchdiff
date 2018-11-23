@@ -103,7 +103,7 @@ function parse_parameters(){
     ##  Parse all command-line parameters
     ##
 
-    local var
+    local var command
     #local commandline=("${!1}")
 
     if [[ ! "$*" ]]; then
@@ -120,9 +120,7 @@ function parse_parameters(){
                     ;;
 
                 '-b' | '--branch')
-
-                    OPERATION='compare-alternate'
-
+                    command="BRANCH_SELECTED"
                     if [ "$2" ]; then
 
                         if valid_branch "$2"; then
@@ -132,7 +130,6 @@ function parse_parameters(){
                             std_warn "You must provide a valid branch name as a parameter"
                             exit $E_MISC
                         fi
-
                     else
                         std_warn "You must provide a valid branch name as a parameter"
                         shift 1
@@ -173,6 +170,11 @@ function parse_parameters(){
                     ;;
             esac
         done
+    fi
+
+    # set op if --branch selected
+    if [ "$command" = "BRANCH_SELECTED" ] && [ ! "$OPERATION" ]; then
+        OPERATION='compare_alternate'
     fi
     #
     # <-- end function parse_parameters -->
