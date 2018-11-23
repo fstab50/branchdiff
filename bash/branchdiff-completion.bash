@@ -175,6 +175,14 @@ function _branchdiff_completions(){
             return 0
             ;;
 
+        '--code')
+            if [ "$(${COMP_WORDS[@]} | grep '\-\-branch')" ]; then
+                return 0
+            else
+                COMPREPLY=( $(compgen -W "--branch" -- ${cur}) )
+                return 0
+            fi
+            ;;
     esac
     case "${cur}" in
 
