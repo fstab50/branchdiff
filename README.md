@@ -245,6 +245,10 @@ Code/core/dynamodb.py                                  requirements.txt
 A filename can be selected by typing the first few characters:
 
 ```bash
+$ branchdiff --code Code/con... <tab><tab>
+```
+
+```bash
 $ branchdiff --code Code/connectors/table.py
 ```
 
