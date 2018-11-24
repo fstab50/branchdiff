@@ -225,7 +225,7 @@ $ branchdiff --commit-log history
 
 * * *
 <a name="screenshots4"></a>
-#### [Screenshots](#screenshots) / Code Diff \<fileanme\>
+#### [Screenshots](#screenshots) / Code Diff \<filename\>
 
 Pressing the tab key twice autocompletes the names of all files that received updates in the current working branch.
 
