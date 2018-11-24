@@ -9,7 +9,6 @@ Build-Depends: debhelper (>=9)
 Depends:  DEPLIST
 Download-Size: 48 kB
 Standards-Version: 3.9.6
-Homepage: PROJECT_URL
 Architecture: BUILD_ARCH
 Description:  Instantly know status of the current git working branch
   branchdiff is a utility for use with git version control. branchdiff
@@ -17,7 +16,8 @@ Description:  Instantly know status of the current git working branch
   knowledge of advanced git syntax.
   .
   branch diff features:
-  * Illustration of differences between current working branch and master branch
-  * Details when commits were made to the current branch, by whom
-  * Summary statistics for all commits
-  * Advanced file difference illustration between branches
+    * Illustration of differences between current working branch and master branch
+    * Details when commits were made to the current branch, by whom
+    * Summary statistics for all commits
+    * Advanced file difference illustration between branches
+Homepage: PROJECT_URL
