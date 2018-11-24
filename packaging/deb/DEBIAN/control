@@ -11,15 +11,13 @@ Download-Size: 48 kB
 Standards-Version: 3.9.6
 Homepage: PROJECT_URL
 Architecture: BUILD_ARCH
-Description: Instantly know status of the current git working branch
+Description:  Instantly know status of the current git working branch
+  branchdiff is a utility for use with git version control. branchdiff
+  provides user access to advanced  git features without requiring any
+  knowledge of advanced git syntax.
   .
-  branchdiff (https://github.com/fstab50/branchdiff) is a utility for use with git version control.
-  .
-  The program:
-  .
-      * Illustrates differences between current working branch and master branch
-      * Details when commits were made to the current branch, by whom
-      * Provides summary statistics for all commits
-  .
-  Branchdiff resizes itself horizontally in an attempt to retain proper layout with different
-  screen resolutions.  At extreme resolutions and screen width
+  branch diff features:
+  * Illustrates differences between current working branch and master branch
+  * Details when commits were made to the current branch, by whom
+  * Provides summary statistics for all commits
+  * Advanced file difference illustration between branches
