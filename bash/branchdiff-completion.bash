@@ -174,10 +174,7 @@ function _branchdiff_completions(){
     commands='--branch --code --commit-log --debug --help --version'
     commitlog_subcommands='detail history summary'
     operations='--branch --code'
-
-    # subcommand sets
-    remote_branches=$(_remote_branchnames)
-    changed_files=$(_code_subcommands)
+    norepo_commands='--help --version'
 
 
     case "${initcmd}" in
@@ -218,16 +215,19 @@ function _branchdiff_completions(){
     case "${prev}" in
 
         '--branch')
+            remote_branches=$(_remote_branchnames)
             #_complete_alternatebranch_commands "${local_branchnames}"
             COMPREPLY=( $(compgen -W "${remote_branches}" -- ${cur}) )
             return 0
             ;;
 
         '--code')
+
             if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
                 # display full completion subcommands
                 _complete_code_subcommands "$(_code_subcommands)"
             else
+                changed_files=$(_code_subcommands)
                 COMPREPLY=( $(compgen -W "${changed_files}" -- ${cur}) )
             fi
             return 0
@@ -258,12 +258,16 @@ function _branchdiff_completions(){
             ;;
 
         "branchdiff")
-            if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
+            if [ "$(_git_root)" ]; then
+                if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
 
-                _complete_branchdiff_commands "${commands}"
-                return 0
-
+                    _complete_branchdiff_commands "${commands}"
+                    
+                fi
+            else
+                COMPREPLY=( $(compgen -W "${norepo_commands}" -- ${cur}) )
             fi
+            return 0
             ;;
     esac
 

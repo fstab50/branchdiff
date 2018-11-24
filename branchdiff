@@ -267,7 +267,7 @@ function valid_repository(){
     if [[ $(current_branch) ]]; then
         return 0
     else
-        std_error_exit "Not a git repository. Cursor must be positioned in a git project repository." $E_ERROR
+        std_error_exit "Not a git repository. Cursor must be positioned in a git project." $E_ERROR
     fi
 }
 
@@ -547,6 +547,8 @@ function code_filediff(){
     local alternate="$2"
     local reference_branch
     local root cwd
+
+    [[ $(valid_repository) ]] || exit 1
 
     # relative pathing (now moved to )
     root=$(_git_root)       # prepend git root to all diff files; case pwd not root
