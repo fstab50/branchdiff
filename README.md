@@ -26,8 +26,9 @@
 * [**SCREENSHOTS**](#screenshots)
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
-    * [Commit Log History](#screenshots2)
-    * [Line-by-Line Code Diff](#screenshots3)
+    * [Commit Log History (--commit-log)](#screenshots2)
+    * [Code Diff ( --code )](#screenshots3)
+    * [Code Diff ( --code <filename> )](#screenshots4)
 
 * [**AUTHOR & COPYRIGHT**](#authorcopyright)
 
@@ -216,12 +217,39 @@ $ branchdiff --commit-log history
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
+</p>
+
+[back to the top](#top)
+
+* * *
+<a name="screenshots4"></a>
+#### [Screenshots](#screenshots) / Code Diff <fileanme>
+
+Pressing the tab key twice autocompletes the names of all filenames that received updates in the current working branch.
+
 ```bash
-$ branchdiff --code
+$ branchdiff --code <tab><tab>
+
+    Ansible/deploy_configuration.yml                           Code/core/ec2prices.py                                   
+    attribute_defs.yml                                         Code/core/__init__.py                                    
+    cloudformation/dynamodb-table.template.yml                 Code/core/parameter_processing.py                        
+    cloudformation/serverless-monitor.template.yml             Code/core/_version.py                                    
+    Code/connectors/dynamodb.py                                Code/index.py                                            
+    Code/connectors/__init__.py                                Jenkinsfile                                              
+    Code/connectors/table.py                                   Makefile                                                 
+    Code/core/dynamodb.py                                      requirements.txt   
+```
+
+A filename can be selected by typing the first few characters:
+
+```bash
+$ branchdiff --code Code/connectors/table.py
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/code-filediff.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
