@@ -227,7 +227,7 @@ $ branchdiff --commit-log history
 <a name="screenshots4"></a>
 #### [Screenshots](#screenshots) / Code Diff <fileanme>
 
-Pressing the tab key twice autocompletes the names of all filenames that received updates in the current working branch.
+Pressing the tab key twice autocompletes the names of all files that received updates in the current working branch.
 
 ```bash
 $ branchdiff --code <tab><tab>
@@ -254,8 +254,8 @@ $ branchdiff --code Code/connectors/table.py
 
 [back to the top](#top)
 
-<a name="authorcopyright"></a>
 * * *
+<a name="authorcopyright"></a>
 ## Author & Copyright
 
 All works contained herein copyrighted via below author unless work is explicitly noted by an alternate author.
