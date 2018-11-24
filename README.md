@@ -225,21 +225,21 @@ $ branchdiff --commit-log history
 
 * * *
 <a name="screenshots4"></a>
-#### [Screenshots](#screenshots) / Code Diff <fileanme>
+#### [Screenshots](#screenshots) / Code Diff \<fileanme\>
 
 Pressing the tab key twice autocompletes the names of all files that received updates in the current working branch.
 
 ```bash
 $ branchdiff --code <tab><tab>
 
-Ansible/deploy_configuration.yml                           Code/core/ec2prices.py                             
-attribute_defs.yml                                         Code/core/__init__.py
-cloudformation/dynamodb-table.template.yml                 Code/core/parameter_processing.py
-cloudformation/serverless-monitor.template.yml             Code/core/_version.py
-Code/connectors/dynamodb.py                                Code/index.py
-Code/connectors/__init__.py                                Jenkinsfile
-Code/connectors/table.py                                   Makefile
-Code/core/dynamodb.py                                      requirements.txt
+Ansible/deploy_configuration.yml                       Code/core/ec2prices.py                             
+attribute_defs.yml                                     Code/core/__init__.py
+cloudformation/dynamodb-table.template.yml             Code/core/parameter_processing.py
+cloudformation/serverless-monitor.template.yml         Code/core/_version.py
+Code/connectors/dynamodb.py                            Code/index.py
+Code/connectors/__init__.py                            Jenkinsfile
+Code/connectors/table.py                               Makefile
+Code/core/dynamodb.py                                  requirements.txt
 ```
 
 A filename can be selected by typing the first few characters:
