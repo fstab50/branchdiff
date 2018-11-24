@@ -272,7 +272,7 @@ All works contained herein copyrighted via below author unless work is explicitl
 
 ## License
 
-* Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+* Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).  A copy of the license agreement is included with this repository [here](./LICENSE).
 
 [back to the top](#top)
 
