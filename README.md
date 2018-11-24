@@ -27,8 +27,8 @@
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
     * [Commit Log History (--commit-log)](#screenshots2)
-    * [Code Diff ( --code )](#screenshots3)
-    * [Code Diff ( --code <filename> )](#screenshots4)
+    * [Code Diff \( --code \)](#screenshots3)
+    * [Code Diff \( --code <filename> \)](#screenshots4)
 
 * [**AUTHOR & COPYRIGHT**](#authorcopyright)
 
@@ -232,14 +232,14 @@ Pressing the tab key twice autocompletes the names of all files that received up
 ```bash
 $ branchdiff --code <tab><tab>
 
-    Ansible/deploy_configuration.yml                           Code/core/ec2prices.py                             
-    attribute_defs.yml                                         Code/core/__init__.py
-    cloudformation/dynamodb-table.template.yml                 Code/core/parameter_processing.py
-    cloudformation/serverless-monitor.template.yml             Code/core/_version.py
-    Code/connectors/dynamodb.py                                Code/index.py
-    Code/connectors/__init__.py                                Jenkinsfile
-    Code/connectors/table.py                                   Makefile
-    Code/core/dynamodb.py                                      requirements.txt
+Ansible/deploy_configuration.yml                           Code/core/ec2prices.py                             
+attribute_defs.yml                                         Code/core/__init__.py
+cloudformation/dynamodb-table.template.yml                 Code/core/parameter_processing.py
+cloudformation/serverless-monitor.template.yml             Code/core/_version.py
+Code/connectors/dynamodb.py                                Code/index.py
+Code/connectors/__init__.py                                Jenkinsfile
+Code/connectors/table.py                                   Makefile
+Code/core/dynamodb.py                                      requirements.txt
 ```
 
 A filename can be selected by typing the first few characters:
