@@ -17,7 +17,7 @@ Description:  Instantly know status of the current git working branch
   knowledge of advanced git syntax.
   .
   branch diff features:
-  * Illustrates differences between current working branch and master branch
+  * Illustration of differences between current working branch and master branch
   * Details when commits were made to the current branch, by whom
-  * Provides summary statistics for all commits
+  * Summary statistics for all commits
   * Advanced file difference illustration between branches
