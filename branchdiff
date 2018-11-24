@@ -264,7 +264,7 @@ function valid_repository(){
     ##
     ##  binary test for valid git repository
     ##
-    if [[ $(current_branch) ]]; then
+    if [[ $(_git_root) ]]; then
         return 0
     else
         std_error_exit "Not a git repository. Cursor must be positioned in a git project." $E_ERROR
@@ -347,9 +347,7 @@ function commit_log(){
 
     local type="$1"
 
-    if ! valid_repository; then
-        exit 1
-    fi
+    if ! valid_repository; then return 1; fi
 
     case $type in
         'history')
@@ -548,7 +546,7 @@ function code_filediff(){
     local reference_branch
     local root cwd
 
-    [[ $(valid_repository) ]] || exit 1
+    if ! valid_repository; then return 1; fi
 
     # relative pathing (now moved to )
     root=$(_git_root)       # prepend git root to all diff files; case pwd not root
@@ -573,6 +571,8 @@ function codediff(){
     local alternate="$1"            # alternate branch name to compare to reference_branch
     local reference_branch          # baseline ref branch; usually master branch
     local diff_branch               # current branch to be baselined against reference
+
+    if ! valid_repository; then return 1; fi
 
     if [ $alternate ]; then
         #

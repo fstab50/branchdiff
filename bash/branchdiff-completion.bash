@@ -262,7 +262,9 @@ function _branchdiff_completions(){
                 if [ "$cur" = "" ] || [ "$cur" = "-" ] || [ "$cur" = "--" ]; then
 
                     _complete_branchdiff_commands "${commands}"
-                    
+
+                else
+                    COMPREPLY=( $(compgen -W "${commands}" -- ${cur}) )
                 fi
             else
                 COMPREPLY=( $(compgen -W "${norepo_commands}" -- ${cur}) )
