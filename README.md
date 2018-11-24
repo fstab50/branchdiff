@@ -27,7 +27,7 @@
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
     * [Commit Log History (--commit-log)](#screenshots2)
-    * [Code Diff \( --code \)](#screenshots3)
+    * [Code Diff (default, --code \)](#screenshots3)
     * [Code Diff (single file, --code <filename\> \)](#screenshots4)
 
 * [**AUTHOR & COPYRIGHT**](#authorcopyright)
