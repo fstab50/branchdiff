@@ -27,8 +27,8 @@
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
     * [Commit Log History (--commit-log)](#screenshots2)
-    * [Code Diff (default, --code \)](#screenshots3)
-    * [Code Diff (single file, --code <filename\> \)](#screenshots4)
+    * [Code Diff ( --code \)](#screenshots3)
+    * [Code Diff ( --code <filename\> \)](#screenshots4)
 
 * [**AUTHOR & COPYRIGHT**](#authorcopyright)
 
@@ -245,6 +245,10 @@ Code/core/dynamodb.py                                  requirements.txt
 A filename can be selected by typing the first few characters:
 
 ```bash
+$ branchdiff --code Code/con... <tab><tab>
+```
+
+```bash
 $ branchdiff --code Code/connectors/table.py
 ```
 
@@ -268,7 +272,7 @@ All works contained herein copyrighted via below author unless work is explicitl
 
 ## License
 
-* Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+* Software contained in this repository is licensed under the [MIT License](https://opensource.org/licenses/MIT).  A copy of the license agreement is included with this repository [here](./LICENSE).
 
 [back to the top](#top)
 
