@@ -1106,6 +1106,13 @@ def init_cli():
         stdout_message(str(e), 'ERROR')
         return exit_codes['E_MISC']['Code']
 
+    if not os.path.isfile(args.parameter_file):
+        stdout_message(
+            message='Path to parmeters file not found. Abort',
+            prefix='WARN'
+        )
+        return exit_codes['E_DEPENDENCY']['Code']
+
     if args.debug:
         print(debug_header)
         stdout_message(
@@ -1138,8 +1145,7 @@ def init_cli():
         return exit_codes['EX_OK']['Code']
 
     elif args.build:
-        if valid_version(args.set) and os.path.isfile(args.parameter_file) \
-        and prebuild(TMPDIR, VOLMNT, git_root() + '/' + args.parameter_file):
+        if valid_version(args.set) and prebuild(TMPDIR, VOLMNT, git_root() + '/' + args.parameter_file):
             package = main(
                         setVersion=args.set,
                         environment=args.distro,
