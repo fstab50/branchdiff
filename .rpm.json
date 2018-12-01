@@ -6,11 +6,12 @@
     "Version": "MAJOR_VERSION",
     "Release": "MINOR_VERSION",
     "PreInstall": ["rpm-build", "rpmdevtools"],
-    "Dependencies": [
-        "bash >= 4.1",
-        "bc >= 1.0",
-        "git",
-        "coreutils"
+    "DependencyList": [
+        "bash (>= 4.1)",
+        "bc (>= 1.0)",
+        "git (>= 1.9.1)",
+        "coreutils (>= 8.0)",
+        "bash-completion"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
@@ -20,7 +21,7 @@
     "SpecFile": {
         "Name": "branchdiff.spec",
         "Summary": "Utility for illustrating the status of a git working branch",
-        "Group":  "TecAdmin",
+        "Group":  "Development Tools",
         "BuildArch": "noarch",
         "License": "MIT",
         "Source": "branchdiff-MAJOR_VERSION.MINOR_VERSION.tar.gz",
