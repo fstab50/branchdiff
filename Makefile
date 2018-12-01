@@ -81,8 +81,9 @@ buildrpm:      ## Build Redhat distribution (.rpm) os package
 	@echo "Building RPM package format of $(PROJECT)"; \
 	if [ ! -e $(VENV_DIR) ]; then $(MAKE) setup-venv; fi; \
 	if [ $(VERSION) ]; then . $(VENV_DIR)/bin/activate && \
-	$(PYTHON3_PATH) $(SCRIPT_DIR)/buildrpm.py --build --set-version $(VERSION); \
-	else cd $(CUR_DIR) && . $(VENV_DIR)/bin/activate && $(PYTHON3_PATH) $(SCRIPT_DIR)/buildrpm.py --build; fi
+	$(PYTHON3_PATH) $(SCRIPT_DIR)/buildrpm.py --build -p .rpm.json --set-version $(VERSION); \
+	else cd $(CUR_DIR) && . $(VENV_DIR)/bin/activate && \
+	$(PYTHON3_PATH) $(SCRIPT_DIR)/buildrpm.py --build -p .rpm.json; fi
 
 
 .PHONY: installdeb
