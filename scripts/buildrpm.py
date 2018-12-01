@@ -57,7 +57,6 @@ module = os.path.basename(__file__)
 TMPDIR = '/tmp/build'
 VOLMNT = '/tmp/rpm'
 CONTAINER_VOLMNT = '/mnt/rpm'
-PACKAGE_CONFIG = '.package.rpm'
 DISTRO_LIST = ['centos7', 'amazonlinux', 'redhat7']
 
 # docker
@@ -108,18 +107,21 @@ def help_menu():
             $ python3  ''' + act + module + rst + '''  --build  [ --force-version <VERSION> ]
 
                          -b, --build
-                         -d, --distro <value>
+                         -d, --distro  <value>
                         [-D, --debug  ]
                         [-f, --force  ]
                         [-h, --help   ]
+                        [-p, --parameter-file  <value> ]
                         [-s, --set-version  <value> ]
 
-        ''' + bd + '''-b''' + rst + ''', ''' + bd + '''--build''' + rst + ''':  Build Operating System package (.deb, Debian systems)
+        ''' + bd + '''-b''' + rst + ''', ''' + bd + '''--build''' + rst + ''':  Build Operating System package ( *.rpm, Redhat systems )
             When given without the --set-version parameter switch, build ver-
             sion is extracted from the project repository information
 
-        ''' + bd + '''-d''' + rst + ''', ''' + bd + '''--distro''' + rst + ''':  Specifies the Docker Operating System Image to use when
-            building.  Allowable Values:
+        ''' + bd + '''-d''' + rst + ''', ''' + bd + '''--debug''' + rst + ''': Debug mode, verbose output.
+
+        ''' + bd + '''-d''' + rst + ''', ''' + bd + '''--distro''' + rst + '''  <value>:  Specifies the Docker Operating System Image to
+            use when building.  Allowable Values:
 
                     -   centos7 (DEFAULT)
                     -   amazonlinux
@@ -128,13 +130,17 @@ def help_menu():
         ''' + bd + '''-F''' + rst + ''', ''' + bd + '''--force''' + rst + ''':  When given, overwrites any pre-existing build artifacts.
             DEFAULT: False
 
-        ''' + bd + '''-s''' + rst + ''', ''' + bd + '''--set-version''' + rst + '''  (string):  When given, overrides all version infor-
+        ''' + bd + '''-h''' + rst + ''', ''' + bd + '''--help''' + rst + ''': Print this help menu
+
+        ''' + bd + '''-p''' + rst + ''', ''' + bd + '''--parameter-file''' + rst + ''' <value>: Optional json format configuration file
+            containing all configuration parameters to build rpm package (key,
+            value format)
+
+        ''' + bd + '''-s''' + rst + ''', ''' + bd + '''--set-version''' + rst + ''' (string): When given, overrides all version infor-
             mation contained in the project to build the exact version speci-
             fied by VERSION parameter
 
-        ''' + bd + '''-d''' + rst + ''', ''' + bd + '''--debug''' + rst + ''': Debug mode, verbose output.
 
-        ''' + bd + '''-h''' + rst + ''', ''' + bd + '''--help''' + rst + ''': Print this help menu
     '''
     print(menu)
     return True
@@ -737,12 +743,14 @@ def docker_init(src, builddir, osimage, debug):
     return None
 
 
-def main(setVersion, environment, force=False, debug=False):
+def main(setVersion, environment, package_configpath, force=False, debug=False):
     """
     Summary:
         Create build directories, populate contents, update contents
     Args:
-        :version (str): version number of rpm created
+        :setVersion (str): version number of rpm created
+        :environment (str):
+        :package_configpath (str): full path to json configuration file
         :data (dict): build parameters for rpm build process
         :force (bool): If True, overwrites any pre-existing build artifacts
     Returns:
@@ -780,7 +788,7 @@ def main(setVersion, environment, force=False, debug=False):
     BUILDDIRNAME = PROJECT + '-' + '.'.join(VERSION.split('.')[:2])
 
     # sub in current values
-    parameter_obj = ParameterSet(PROJECT_ROOT + '/' + PACKAGE_CONFIG, VERSION)
+    parameter_obj = ParameterSet(package_configpath, VERSION)
     vars = parameter_obj.create()
 
     VERSION_FILE = vars['VersionModule']
@@ -825,6 +833,7 @@ def options(parser, help_menu=False):
     parser.add_argument("-D", "--debug", dest='debug', default=False, action='store_true', required=False)
     parser.add_argument("-d", "--distro", dest='distro', default='centos7', nargs='?', type=str, required=False)
     parser.add_argument("-F", "--force", dest='force', default=False, action='store_true', required=False)
+    parser.add_argument("-p", "--parameter-file", dest='parameter_file', default='.rpm.json', nargs='?', required=False)
     parser.add_argument("-s", "--set-version", dest='set', default=None, nargs='?', type=str, required=False)
     parser.add_argument("-h", "--help", dest='help', default=False, action='store_true', required=False)
     return parser.parse_args()
@@ -1112,6 +1121,10 @@ def init_cli():
                 prefix='DBUG'
             )
         stdout_message(
+                message='Parameter File (--parameters):\t{}'.format(args.parameter_file),
+                prefix='DBUG'
+            )
+        stdout_message(
                 message='Debug Flag:\t\t{}'.format(args.debug),
                 prefix='DBUG'
             )
@@ -1125,10 +1138,12 @@ def init_cli():
         return exit_codes['EX_OK']['Code']
 
     elif args.build:
-        if valid_version(args.set) and prebuild(TMPDIR, VOLMNT, git_root() + '/' + PACKAGE_CONFIG):
+        if valid_version(args.set) and os.path.isfile(args.parameter_file) \
+        and prebuild(TMPDIR, VOLMNT, git_root() + '/' + args.parameter_file):
             package = main(
                         setVersion=args.set,
                         environment=args.distro,
+                        package_configpath=args.parameter_file,
                         force=args.force,
                         debug=args.debug
                     )
