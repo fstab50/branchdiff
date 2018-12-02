@@ -51,6 +51,8 @@
 * Details when commits were made to the current branch, by whom
 * Provides summary statistics
 
+[![branchdiff default view](./assets/summary.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/summary.png)
+
 [back to the top](#top)
 
 * * *
