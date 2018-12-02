@@ -107,13 +107,12 @@ if [ $SUDO_USER ]; then
     elif [ -f "/home/$SUDO_USER/.profile" ]; then
         printf -- '%s\n\n' 'PATH=$PATH:/usr/local/bin' >> "/home/$SUDO_USER/.profile"
         printf -- '%s\n' 'export PATH' >> "/home/$SUDO_USER/.profile"
-
     fi
 
 fi
 
 
-##   install bash_completion, amazonlinux 1   ##
+##   install bash_completion, amazonlinux 1 only   ##
 
 if [ -f '/usr/local/lib/buildpy/os_distro.sh' ]; then
     if [ "$(sh /usr/local/lib/buildpy/os_distro.sh | awk '{print $2}')" -eq "1" ]; then

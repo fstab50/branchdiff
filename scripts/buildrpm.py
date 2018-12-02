@@ -182,29 +182,29 @@ def read(fname):
     return open(os.path.join(basedir, fname)).read()
 
 
-def masterbranch_version():
+def masterbranch_version(version_module):
     """
     Returns version denoted in the master branch of the repository
     """
     branch = current_branch(git_root())
-    cmds = ['git checkout master', 'git checkout {}'.format(branch)]
+    commands = ['git checkout master', 'git checkout {}'.format(branch)]
 
     try:
         # checkout master
-        stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(cmds[0]))
-        masterversion = read(SCRIPT_DIR + '/version.py').split('=')[1].strip().strip('"')
+        #stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(commands[0]))
+        masterversion = read(version_module).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(
-            'Returning to working branch: checkout %s\n\n%s' %
-            (branch, subprocess.getoutput(cmds[1]))
-            )
+            'Returning to working branch: checkout %s\n\n%s'.format(branch)
+        )
+        stdout_message(subprocess.getoutput(f'git checkout {branch}'))
     except Exception:
         return None
     return masterversion
 
 
-def current_version(binary):
+def current_version(binary, version_modpath):
     """
     Summary:
         Returns current binary package version if locally
@@ -239,7 +239,7 @@ def current_version(binary):
             logger.info(
                 '%s: Build binary %s not installed, comparing current branch version to master branch version' %
                 (inspect.stack()[0][3], binary))
-    return greater_version(masterbranch_version(), __version__)
+    return greater_version(masterbranch_version(version_modpath), __version__)
 
 
 def greater_version(versionA, versionB):
@@ -767,8 +767,10 @@ def main(setVersion, environment, package_configpath, force=False, debug=False):
     BUILD_ROOT = TMPDIR
     global RPM_SRC
     RPM_SRC = PROJECT_ROOT + '/packaging/rpm'
+    global LIB_DIR
+    LIB_DIR = PROJECT_ROOT + '/' + 'core'
     global CURRENT_VERSION
-    CURRENT_VERSION = current_version(PROJECT_BIN)
+    CURRENT_VERSION = current_version(PROJECT_BIN, LIB_DIR + '/' 'version.py')
 
     # sort out version numbers, forceVersion is overwrite of pre-existing build artifacts
     global VERSION
@@ -1149,7 +1151,7 @@ def init_cli():
             package = main(
                         setVersion=args.set,
                         environment=args.distro,
-                        package_configpath=args.parameter_file,
+                        package_configpath=git_root() + '/' + args.parameter_file,
                         force=args.force,
                         debug=args.debug
                     )
