@@ -402,7 +402,7 @@ def builddir_structure(param_dict, force):
         if os.path.exists(comp_dst):
             stdout_message(
                 message='Copied:  {} {} {}'.format(
-                    lk + comp_src + '/' + compfile + rst, arrow, lk + comp_dst + '/' + compfile + rst),
+                    lk + comp_src + rst, arrow, lk + comp_dst + rst),
                 prefix='OK')
 
     except OSError as e:
@@ -488,7 +488,7 @@ def builddir_content_updates(param_dict, osimage, version):
 
     # dependencies
     deplist = None
-    for dep in param_dict['Dependencies']:
+    for dep in param_dict['DependencyList']:
         if deplist is None:
             deplist = str(dep)
         else:
