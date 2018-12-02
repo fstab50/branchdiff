@@ -368,7 +368,9 @@ def builddir_structure(param_dict, force):
 
         # place library dependencies
         for libfile in os.listdir(lib_path):
-            if not os.path.exists(builddir_path + '/' + libfile):
+            if libfile.endswith('.pyc') or libfile.endswith('.pyo'):
+                continue
+            else:
                 lib_src = lib_path + '/' + libfile
                 lib_dst = builddir_path + '/' + libfile
                 copyfile(lib_src, lib_dst)
@@ -589,7 +591,7 @@ def cp_dockerfiles(src, dst):
     Copy dockerfiles and associated build artifacts to build_root
     """
     # place docker build script
-    script_src = rpm_src + '/' + dockerscript
+    script_src = src + '/' + dockerscript
     script_dst = build_root + '/' + dockerscript
 
     build_list = os.listdir(src)
