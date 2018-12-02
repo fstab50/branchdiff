@@ -119,7 +119,7 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 * * *
 <a name="redhat-distro-install"></a>
 ### Redhat, CentOS, Fedora, Amazon Linux
-The easiest way to install **buildpy** on redhat-based Linux distributions is via the developer-tools package repository:
+The easiest way to install **branchdiff** on redhat-based Linux distributions is via the developer-tools package repository:
 
 1. Download and install the repo definition file
 
@@ -127,7 +127,9 @@ The easiest way to install **buildpy** on redhat-based Linux distributions is vi
     $ sudo yum install wget
     ```
 
-    ![rpm install](./assets/rpm-install-1.png)
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-1.png" alt="redhat-install1"/>
+    </p>
 
     ```
     $ wget http://awscloud.center.s3-website.us-east-2.amazonaws.com/rpm/developer-tools.repo
@@ -149,11 +151,16 @@ The easiest way to install **buildpy** on redhat-based Linux distributions is vi
     $ sudo yum install branchdiff
     ```
 
-    ![rpm install](./assets/rpm-install-2.png)
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-2.png" alt="redhat-install2"/>
+    </p>
+
 
     Answer "y":
 
-    ![rpm install](./assets/rpm-install-3.png)
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-3.png" alt="redhat-install3"/>
+    </p>
 
 
 4. Verify Installation
@@ -162,7 +169,9 @@ The easiest way to install **buildpy** on redhat-based Linux distributions is vi
     $ yum info branchdiff
     ```
 
-    ![verify-rpm](./assets/rpm-install-4.png)
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-4.png" alt="redhat-install4"/>
+    </p>
 
 [back to the top](#top)
 
