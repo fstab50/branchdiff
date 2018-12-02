@@ -6,7 +6,7 @@
 ## About this repository
 
 * Purpose: 		Instantly know status of the current git working branch
-* Version:	     1.1.3
+* Version:	     1.1.4
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
@@ -59,8 +59,8 @@
 * Ubuntu14.04, Ubuntu 16.04, Ubuntu 18.04  
 * Linux Mint 17, 18, 19
 * Debian variants of Ubuntu / Linux Mint distributions above
-* Redhat 7+, CentOS 7+  (PENDING, NOT YET AVAILABLE)
-* Fedora 28+   (PENDING, NOT YET AVAILABLE)
+* Redhat 7+, CentOS 7+  
+* Fedora 28+   (PENDING)
 
 [back to the top](#top)
 

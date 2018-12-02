@@ -27,11 +27,11 @@ bbc=$(echo -e ${bold}${a_brightcyan})
 title=$(echo -e ${bold}${a_brightwhite})              # title color, white + bold
 hic=$(echo -e ${bold}${a_brightyellowgreen})          # help menu accent 1
 bin=$(echo -e ${bold}${a_orange})                     # help menu binary accent
-ul=$(echo -e ${underline})                          # std underline
-bd=$(echo -e ${bold})                               # std bold
+ul=$(echo -e ${underline})                            # std underline
+bd=$(echo -e ${bold})                                 # std bold
 wt=$(echo -e ${a_brightwhite})                        # help menu accent 2
-fs=$(echo -e ${yellow})                             # file path color
-btext=${reset}                                      # clear accents; rtn to native term colors
+fs=$(echo -e ${yellow})                               # file path color
+btext=${reset}                                        # clear accents; rtn to native term colors
 frame=${btext}
 
 
@@ -291,12 +291,14 @@ function _branchname_reconcilliation(){
         for branch in "${_remotes[@]}"; do
 
             if [ "$(echo $branch | grep $alternate)" ]; then
+                #git checkout "origin/$branch"
                 printf -- '%s\n' "$branch"
                 break
             fi
 
         done
     fi
+    return 0
     #
     # <--- end function _branchname_reconcilliation --->
 }
@@ -324,7 +326,7 @@ function _local_branches(){
 }
 
 
-function _remote_branches(){
+function _remote_branches_orig(){
     ##
     ##  returns an array of git branches listed by the
     ##  remote repository
@@ -334,6 +336,20 @@ function _remote_branches(){
     for element in "$(for remote in "$(git branch -a 2>/dev/null | grep remotes | grep -v HEAD | awk '{print $1 $2 $3 $4}')"; do echo -e "$remote"; done)"; do
         remotes=( "${remotes[@]}" $element )
     done
+    echo "${remotes[@]}"
+    #
+    # <--- end function _clean_subcommands --->
+}
+
+
+function _remote_branchnames(){
+    ##
+    ##  returns an array of git branches listed by the
+    ##  remote repository
+    ##
+    declare -a remotes
+
+    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | tail -n +2 | awk -F '/' '{print $NF}')  )
     echo "${remotes[@]}"
     #
     # <--- end function _clean_subcommands --->

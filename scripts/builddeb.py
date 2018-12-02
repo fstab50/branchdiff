@@ -177,7 +177,7 @@ def masterbranch_version(version_module):
     try:
         # checkout master
         #stdout_message('Checkout master branch:\n\n%s' % subprocess.getoutput(commands[0]))
-        masterversion = read(version_modpath).split('=')[1].strip().strip('"')
+        masterversion = read(version_module).split('=')[1].strip().strip('"')
 
         # return to working branch
         stdout_message(

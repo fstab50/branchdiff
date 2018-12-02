@@ -127,9 +127,7 @@ alias his='history | tail -n 75'
 alias mutt="mutt -F ~/.mutt/.muttrc"
 alias dockbash='docker run -e HIST_FILE=/root/.bash_history -v=$HOME/.bash_history:/root/.bash_history'
 alias docker=basher
-alias rkhunter='sudo /usr/bin/rkhunter'
 
 # git Aliases
 alias gitb='git branch'
 alias gits='git status'
-alias branchdiff="sh $HOME/git/library-utilities/git-utils/branch-diff.sh"

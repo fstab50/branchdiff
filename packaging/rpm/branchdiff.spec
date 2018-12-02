@@ -1,13 +1,12 @@
 #
-#   RPM spec: buildpy, 2018 Sept 18
+#   RPM spec: branchdiff, 2018 dec
 #
-%define name        buildpy
+%define name        branchdiff
 %define version     MAJOR_VERSION
 %define release     MINOR_VERSION
 %define _bindir     usr/local/bin
-%define _libdir     usr/local/lib/buildpy
+%define _libdir     usr/local/lib/branchdiff
 %define _compdir    etc/bash_completion.d
-%define _logdir     var/log
 %define _topdir     /home/DOCKERUSER/rpmbuild
 %define buildroot   %{_topdir}/%{name}-%{version}
 
@@ -15,31 +14,35 @@ BuildRoot:      %{buildroot}
 Name:           %{name}
 Version:        %{version}
 Release:        %{release}
-Summary:        A Utility for Compiling and Installing Python3 on Linux
+Summary:        A Utility for visualizing the status of the current git working branch
 
 Group:          Development/Tools
 BuildArch:      noarch
 License:        GPL
-URL:            https://bitbucket.org/blakeca00/buildpython3
+URL:            PROJECT_URL
 Source:         %{name}-%{version}.%{release}.tar.gz
 Prefix:         /usr
 Requires:      DEPLIST
 
 %if 0%{?rhel}%{?amzn2}
-Requires: bash-completion procps-ng
+Requires: bash-completion
 %endif
 
 %if 0%{?amzn1}
-Requires: epel-release procps
+Requires: epel-release
 %endif
 
+
 %description
-Utility for compiling and installing any Python version
-from source.
-
-Supports Amazon Linux v1, Amazon Linux v2, CentOS 6,
-CentOS 7, Redhat Enterprise Linux 6 and 7
-
+branchdiff is a utility for use with git version control. branchdiff
+provides user access to advanced  git features without requiring any
+knowledge of advanced git syntax.
+.
+branch diff features:
+  * Illustration of differences between current working branch and master branch
+  * Details when commits were made to the current branch, by whom
+  * Summary statistics for all commits
+  * Advanced file difference illustration between branches
 
 %prep
 
@@ -51,27 +54,20 @@ CentOS 7, Redhat Enterprise Linux 6 and 7
 %install
 install -m 0755 -d $RPM_BUILD_ROOT/%{_bindir}
 install -m 0755 -d $RPM_BUILD_ROOT/%{_libdir}
-install -m 0755 -d $RPM_BUILD_ROOT/%{_logdir}
 install -m 0755 -d $RPM_BUILD_ROOT/%{_compdir}
-install -m 0755 buildpy $RPM_BUILD_ROOT/%{_bindir}/buildpy
+install -m 0755 branchdiff $RPM_BUILD_ROOT/%{_bindir}/branchdiff
 install -m 0644 std_functions.sh $RPM_BUILD_ROOT/%{_libdir}/std_functions.sh
 install -m 0644 os_distro.sh $RPM_BUILD_ROOT/%{_libdir}/os_distro.sh
 install -m 0644 colors.sh $RPM_BUILD_ROOT/%{_libdir}/colors.sh
 install -m 0644 exitcodes.sh $RPM_BUILD_ROOT/%{_libdir}/exitcodes.sh
 install -m 0644 version.py $RPM_BUILD_ROOT/%{_libdir}/version.py
-install -m 0444 bc.pkg $RPM_BUILD_ROOT/%{_libdir}/bc.pkg
-install -m 0444 curl.pkg $RPM_BUILD_ROOT/%{_libdir}/curl.pkg
-install -m 0444 gawk.pkg $RPM_BUILD_ROOT/%{_libdir}/gawk.pkg
-install -m 0666 buildpy.log $RPM_BUILD_ROOT/%{_logdir}/buildpy.log
-install -m 0666 console.log $RPM_BUILD_ROOT/%{_logdir}/console.log
-install -m 0644 buildpy-completion.bash $RPM_BUILD_ROOT/%{_compdir}/buildpy-completion.bash
+install -m 0644 branchdiff-completion.bash $RPM_BUILD_ROOT/%{_compdir}/branchdiff-completion.bash
+
 
 %files
  %defattr(-,root,root)
 /%{_libdir}
-/%{_bindir}/buildpy
-/%{_logdir}/buildpy.log
-/%{_logdir}/console.log
+/%{_bindir}
 /%{_compdir}
 
 
@@ -110,27 +106,12 @@ if [ $SUDO_USER ]; then
     elif [ -f "/home/$SUDO_USER/.profile" ]; then
         printf -- '%s\n\n' 'PATH=$PATH:/usr/local/bin' >> "/home/$SUDO_USER/.profile"
         printf -- '%s\n' 'export PATH' >> "/home/$SUDO_USER/.profile"
-
     fi
 
 fi
 
 
-# update sudoers path
-if [ -f /etc/sudoers ]; then
-
-    var=$(grep secure_path /etc/sudoers)
-    cur_path="$(echo ${var##*=})"
-
-    if [[ -z "$(echo $cur_path | grep $BIN_PATH)" ]]; then
-        # append secure_path (single quotes mandatory)
-        sed -i 's/secure_path\ =\ .*/secure_path\ =\ \/sbin:\/bin:\/usr\/sbin:\/usr\/bin:\/usr\/local\/bin/g' /etc/sudoers
-    fi
-
-fi
-
-
-##   install bash_completion, amazonlinux 1   ##
+##   install bash_completion, amazonlinux 1 only   ##
 
 if [ -f '/usr/local/lib/buildpy/os_distro.sh' ]; then
     if [ "$(sh /usr/local/lib/buildpy/os_distro.sh | awk '{print $2}')" -eq "1" ]; then
@@ -138,36 +119,6 @@ if [ -f '/usr/local/lib/buildpy/os_distro.sh' ]; then
     fi
 fi
 
-
-##   enable bash_completion   ##
-
-# - /etc/bash_completion.d
-# - /usr/local/etc/bash_completion.d
-# - /usr/share/bash-completion/completions
-
-if [ -f '/etc/bash_completion' ]; then
-    . /etc/bash_completion
-
-elif [ -d '/etc/bash_completion.d' ]; then
-    . /etc/bash_completion.d/buildpy-completion.bash
-
-elif [ -f '/usr/share/bash-completion/bash_completion' ]; then
-    . /usr/share/bash-completion/bash_completion
-
-elif [ -f '/usr/local/etc/bash_completion.d/buildpy-completion.bash' ]; then
-    . /usr/local/etc/bash_completion.d/buildpy-completion.bash
-fi
-
-# source local profile
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-
-elif [ -f ~/.bash_profile ]; then
-    . ~/.bash_profile
-
-if [ -f ~/.profile ]; then
-    . ~/.profile
-fi
 
 ##   end post install   ##
 exit 0
