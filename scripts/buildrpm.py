@@ -479,9 +479,9 @@ def builddir_content_updates(param_dict, osimage, version):
     builddir = param_dict['SpecFile']['BuildDirName']
     version_module = param_dict['VersionModule']
     dockeruser = param_dict['DockerUser']
+    project_url = param_dict['ProjectUrl']
 
     # full paths
-    spec_path = rpm_src + '/' + specfile
     builddir_path = build_root + '/' + builddir
     binary_path = builddir_path + '/' + PROJECT_BIN
     lib_src = root + '/' + 'core'
@@ -555,6 +555,11 @@ def builddir_content_updates(param_dict, osimage, version):
             for line in fileinput.input([build_root + '/' + specfile], inplace=True):
                 print(line.replace('DEPLIST', deplist), end='')
             stdout_message(f'Updated {specfile} with Dependencies ({deplist})', prefix='OK')
+
+            # update specfile - major version
+            for line in fileinput.input([build_root + '/' + specfile], inplace=True):
+                print(line.replace('PROJECT_URL', project_url), end='')
+            stdout_message(f'Updated {specfile} with PROJECT_URL', prefix='OK')
 
         else:
             stdout_message(

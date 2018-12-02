@@ -19,7 +19,7 @@ Summary:        A Utility for visualizing the status of the current git working 
 Group:          Development/Tools
 BuildArch:      noarch
 License:        GPL
-URL:
+URL:            PROJECT_URL
 Source:         %{name}-%{version}.%{release}.tar.gz
 Prefix:         /usr
 Requires:      DEPLIST
