@@ -18,6 +18,8 @@
 * [**SUPPORTED LINUX DISTRIBUTIONS**](#supported-linux-distributions)
 
 * [**INSTALLATION**](#installation)
+    * [Ubuntu, Linux Mint, Debian-based Distributions](#installation)
+    * [Redhat, CentOS, Fedora, Amazon Linux](#redhat-distro-install)
 
 * [**UPGRADING**](#upgrading)
 
@@ -115,10 +117,54 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 [back to the top](#top)
 
 * * *
+<a name="redhat-distro-install"></a>
+### Redhat, CentOS, Fedora, Amazon Linux
+The easiest way to install **buildpy** on redhat-based Linux distributions is via the developer-tools package repository:
 
-### Redhat, CentOS, Fedora
+1. Download and install the repo definition file
 
-NOT YET AVAILABLE
+    ```
+    $ sudo yum install wget
+    ```
+
+    ![rpm install](./assets/rpm-install-1.png)
+
+    ```
+    $ wget http://awscloud.center.s3-website.us-east-2.amazonaws.com/rpm/developer-tools.repo
+    ```
+
+    ```
+    $ sudo mv developer-tools.repo /etc/yum.repos.d/  &&  sudo chown 0:0 developer-tools.repo
+    ```
+
+2. Update local repository cache
+
+    ```
+    $ sudo yum update -y
+    ```
+
+3. Install **branchdiff** os package
+
+    ```
+    $ sudo yum install branchdiff
+    ```
+
+    ![rpm install](./assets/rpm-install-2.png)
+
+    Answer "y":
+
+    ![rpm install](./assets/rpm-install-3.png)
+
+
+4. Verify Installation
+
+    ```
+    $ yum info branchdiff
+    ```
+
+    ![verify-rpm](./assets/rpm-install-4.png)
+
+[back to the top](#top)
 
 * * *
 ## Upgrading
