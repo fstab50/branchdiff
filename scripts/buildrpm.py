@@ -294,6 +294,9 @@ def tar_archive(archive, source_dir):
 
     """
     try:
+        for artifact in os.listdir(source_dir):
+            if artifact.endswith('.pyc') or artifact.endswith('.pyo'):
+                os.remove(artifact)
 
         with tarfile.open(archive, "w:gz") as tar:
             tar.add(source_dir, arcname=os.path.basename(source_dir))
@@ -452,7 +455,7 @@ def build_package(build_root, builddir):
     return True
 
 
-def builddir_content_updates(param_dict, osimage, version):
+def builddir_content_updates(param_dict, osimage, version, debug):
     """
     Summary:
         Updates builddir contents:
@@ -575,8 +578,15 @@ def builddir_content_updates(param_dict, osimage, version):
                                 lambda x: x.endswith('.pyc') or x.endswith('.pyo'), os.listdir(builddir_path)
                             )
                         )
+        if debug:
+            stdout_message(
+                    message=f'bytecode_list contents: {bytecode_list}',
+                    prefix='DEBUG'
+                )
+
         for artifact in bytecode_list:
             os.remove(builddir_path + '/' + artifact)
+
 
     except OSError as e:
         logger.exception(
@@ -806,7 +816,7 @@ def main(setVersion, environment, package_configpath, force=False, debug=False):
         print(json.dumps(vars, indent=True, sort_keys=True))
 
     r_struture = builddir_structure(vars, VERSION)
-    r_updates = builddir_content_updates(vars, environment, VERSION)
+    r_updates = builddir_content_updates(vars, environment, VERSION, debug)
 
     # create tar archive
     target_archive = BUILD_ROOT + '/' + PROJECT_BIN + '-' + VERSION + '.tar.gz'
