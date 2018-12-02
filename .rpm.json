@@ -10,6 +10,7 @@
         "bash >= 4.1",
         "bc >= 1.0",
         "git >= 1.8.3",
+        "epel-release",
         "coreutils >= 8.0",
         "bash-completion",
         "xclip"
