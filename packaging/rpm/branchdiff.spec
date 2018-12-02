@@ -69,7 +69,6 @@ install -m 0644 branchdiff-completion.bash $RPM_BUILD_ROOT/%{_compdir}/branchdif
 /%{_libdir}
 /%{_bindir}
 /%{_compdir}
-#/%{_bindir}/branchdiff
 
 
 %post
