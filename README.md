@@ -18,6 +18,8 @@
 * [**SUPPORTED LINUX DISTRIBUTIONS**](#supported-linux-distributions)
 
 * [**INSTALLATION**](#installation)
+    * [Ubuntu, Linux Mint, Debian-based Distributions](#installation)
+    * [Redhat, CentOS, Fedora, Amazon Linux](#redhat-distro-install)
 
 * [**UPGRADING**](#upgrading)
 
@@ -115,10 +117,63 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
 [back to the top](#top)
 
 * * *
+<a name="redhat-distro-install"></a>
+### Redhat, CentOS, Fedora, Amazon Linux
+The easiest way to install **branchdiff** on redhat-based Linux distributions is via the developer-tools package repository:
 
-### Redhat, CentOS, Fedora
+1. Download and install the repo definition file
 
-NOT YET AVAILABLE
+    ```
+    $ sudo yum install wget
+    ```
+
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-1.png" alt="redhat-install1"/>
+    </p>
+
+    ```
+    $ wget http://awscloud.center.s3-website.us-east-2.amazonaws.com/rpm/developer-tools.repo
+    ```
+
+    ```
+    $ sudo mv developer-tools.repo /etc/yum.repos.d/  &&  sudo chown 0:0 developer-tools.repo
+    ```
+
+2. Update local repository cache
+
+    ```
+    $ sudo yum update -y
+    ```
+
+3. Install **branchdiff** os package
+
+    ```
+    $ sudo yum install branchdiff
+    ```
+
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-2.png" alt="redhat-install2"/>
+    </p>
+
+
+    Answer "y":
+
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-3.png" alt="redhat-install3"/>
+    </p>
+
+
+4. Verify Installation
+
+    ```
+    $ yum info branchdiff
+    ```
+
+    <p align="center">
+      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-4.png" alt="redhat-install4"/>
+    </p>
+
+[back to the top](#top)
 
 * * *
 ## Upgrading
