@@ -722,6 +722,10 @@ case $OPERATION in
         help_menu | indent04 | more
         ;;
 
+    'repository-url')
+        copy_repository_url
+        ;;
+
     *)
         branchdiff
         ;;

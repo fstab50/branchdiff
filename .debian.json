@@ -13,7 +13,8 @@
         "bc (>= 1.0)",
         "git (>= 1.8.3)",
         "coreutils (>= 8.0)",
-        "bash-completion"
+        "bash-completion",
+        "xclip"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",

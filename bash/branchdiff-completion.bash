@@ -171,7 +171,7 @@ function _branchdiff_completions(){
     numoptions=0
 
     # option strings
-    commands='--branch --code --commit-log --debug --help --version'
+    commands='--branch --code --commit-log --debug --help --repository-url --version'
     commitlog_subcommands='detail history summary'
     operations='--branch --code'
     norepo_commands='--help --version'
@@ -248,7 +248,7 @@ function _branchdiff_completions(){
             return 0
             ;;
 
-        '--version' | '--help')
+        '--version' | '--help' | '--repository-url')
             return 0
             ;;
 
