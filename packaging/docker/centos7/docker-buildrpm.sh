@@ -292,18 +292,18 @@ if [ ! -d $BUILDDIR ]; then
 fi
 
 # place spec file
-cp ~/buildpy.spec $BUILDDIR/SPECS/
+cp ~/branchdiff.spec $BUILDDIR/SPECS/
 std_message "cp specfile to build dir. Contents of target dir: $(ls -lh $BUILDDIR/SPECS)" "INFO" $LOG_FILE
 
 # create sources
-cp ~/buildpy*.tar.gz $BUILDDIR/SOURCES/
+cp ~/branchdiff*.tar.gz $BUILDDIR/SOURCES/
 std_message "cp TARfile to build dir. Contents of target dir: $(ls -lh $BUILDDIR/SOURCES)" "INFO" $LOG_FILE
 
 cd ~/rpmbuild
 std_message "Changed to rpmbuild working directory. (PWD: $PWD)" "INFO" $LOG_FILE
 
 # build rpm
-rpmbuild -ba SPECS/buildpy.spec
+rpmbuild -ba SPECS/branchdiff.spec
 std_message "executed rpmbuild" "INFO" $LOG_FILE
 
 std_message "copy completed rpm to volume mount: $VOLMNT" "INFO" $LOG_FILE
