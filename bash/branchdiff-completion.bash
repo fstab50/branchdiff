@@ -180,10 +180,19 @@ function _branchdiff_completions(){
     case "${initcmd}" in
 
         '--branch')
-            if [ "$(echo ${COMP_WORDS[@]} | grep '\-\-code')" ]; then
+            if [ "$(echo ${COMP_WORDS[@]} | grep '\-\-code')" ] && [ "$(echo ${COMP_WORDS[@]} | grep '\-\-debug')" ]; then
                 return 0
-            else
+
+            elif [ "$(echo ${COMP_WORDS[@]} | grep '\-\-code')" ]; then
+                COMPREPLY=( $(compgen -W "--debug" -- ${cur}) )
+                return 0
+
+            elif [ "$(echo ${COMP_WORDS[@]} | grep '\-\-debug')" ]; then
                 COMPREPLY=( $(compgen -W "--code" -- ${cur}) )
+                return 0
+
+            else
+                COMPREPLY=( $(compgen -W "--code --debug" -- ${cur}) )
                 return 0
             fi
             ;;
@@ -234,8 +243,17 @@ function _branchdiff_completions(){
             ;;
 
         '--debug')
-            COMPREPLY=( $(compgen -W "${operations}" -- ${cur}) )
-            return 0
+            if [ "$(echo ${COMP_WORDS[@]} | grep '\-\-branch')" ] && [ "$(echo ${COMP_WORDS[@]} | grep '\-\-code')" ]; then
+                return 0
+
+            elif [ "$(echo ${COMP_WORDS[@]} | grep '\-\-branch')" ]; then
+                COMPREPLY=( $(compgen -W "--code" -- ${cur}) )
+                return 0
+
+            elif [ "$(echo ${COMP_WORDS[@]} | grep '\-\-code')" ]; then
+                COMPREPLY=( $(compgen -W "--branch" -- ${cur}) )
+                return 0
+            fi
             ;;
 
         '--commit-log')
