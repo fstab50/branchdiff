@@ -743,7 +743,7 @@ case $OPERATION in
         ;;
 
     'help')
-        help_menu | indent04 | more
+        help_menu | indent04
         ;;
 
     'repository-url')
