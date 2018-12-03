@@ -54,7 +54,9 @@ function help_menu(){
                          [-b | --branch <value> ]
                          [-c | --code    ]
                          [-h | --help    ]
+                         [-r | --repository-url ]
                          [-V | --version ]
+
   ${title}OPTIONS${btext}
 
         ${title}-b${btext}, ${title}--branch${btext}  <value> :  When provided, parameter uses branch
@@ -71,6 +73,10 @@ function help_menu(){
             commit log,  revision date time history,  and commit log
             comments
 
+        ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
+            repository and copy it to the clipboard. This url can be
+            used for cloning
+
         ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging
 
         ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
@@ -78,7 +84,6 @@ function help_menu(){
         ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information
 
   ${title}EXAMPLES${btext}
-
             ${title}Status of working branch vs. master${btext}
                     $  $pkg
 
@@ -157,6 +162,11 @@ function parse_parameters(){
                     else
                         shift 1
                     fi
+                    ;;
+
+                '-r' | '--repository-url')
+                    OPERATION="repository-url"
+                    shift 1
                     ;;
 
                 '-V' | '--version')
@@ -605,6 +615,20 @@ function codediff(){
     return 0
 }
 
+
+function copy_repository_url(){
+    ##
+    ##  display remote repository url; copy to clipboard
+    ##
+    url=$(git remote -v | head -n1 | awk '{print $2}')
+    if [[ $(which xclip) ]]; then
+        echo -n "$url" | xclip -selection clipboard
+    fi
+    echo $url
+    return 0
+}
+
+
 function valid_branch(){
     ##
     ##  determines if parameter is valid branch name
@@ -723,7 +747,9 @@ case $OPERATION in
         ;;
 
     'repository-url')
-        copy_repository_url
+        if valid_repository; then
+            copy_repository_url
+        fi
         ;;
 
     *)
