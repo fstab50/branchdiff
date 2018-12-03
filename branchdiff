@@ -54,7 +54,9 @@ function help_menu(){
                          [-b | --branch <value> ]
                          [-c | --code    ]
                          [-h | --help    ]
+                         [-r | --repository-url ]
                          [-V | --version ]
+
   ${title}OPTIONS${btext}
 
         ${title}-b${btext}, ${title}--branch${btext}  <value> :  When provided, parameter uses branch
@@ -71,14 +73,17 @@ function help_menu(){
             commit log,  revision date time history,  and commit log
             comments
 
-        ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging
+        ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
+            repository and copy it to the clipboard. This url can be
+            used for cloning the repository.
 
-        ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
+        ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging.
 
-        ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information
+        ${title}-h${btext}, ${title}--help${btext}:  Display this help menu.
+
+        ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information.
 
   ${title}EXAMPLES${btext}
-
             ${title}Status of working branch vs. master${btext}
                     $  $pkg
 
@@ -122,7 +127,6 @@ function parse_parameters(){
                 '-b' | '--branch')
                     command="BRANCH_SELECTED"
                     if [ "$2" ]; then
-
                         if valid_branch "$2"; then
                             ALT_BRANCH="$2"
                             shift 2
@@ -157,6 +161,11 @@ function parse_parameters(){
                     else
                         shift 1
                     fi
+                    ;;
+
+                '-r' | '--repository-url')
+                    OPERATION="repository-url"
+                    shift 1
                     ;;
 
                 '-V' | '--version')
@@ -292,7 +301,7 @@ function _branchname_reconcilliation(){
 
             if [ "$(echo $branch | grep $alternate)" ]; then
                 #git checkout "origin/$branch"
-                printf -- '%s\n' "$branch"
+                printf -- '%s\n' "${branch##remotes/}"
                 break
             fi
 
@@ -326,30 +335,14 @@ function _local_branches(){
 }
 
 
-function _remote_branches_orig(){
+function _remote_branches(){
     ##
     ##  returns an array of git branches listed by the
     ##  remote repository
     ##
     declare -a remotes
 
-    for element in "$(for remote in "$(git branch -a 2>/dev/null | grep remotes | grep -v HEAD | awk '{print $1 $2 $3 $4}')"; do echo -e "$remote"; done)"; do
-        remotes=( "${remotes[@]}" $element )
-    done
-    echo "${remotes[@]}"
-    #
-    # <--- end function _clean_subcommands --->
-}
-
-
-function _remote_branchnames(){
-    ##
-    ##  returns an array of git branches listed by the
-    ##  remote repository
-    ##
-    declare -a remotes
-
-    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | tail -n +2 | awk -F '/' '{print $NF}')  )
+    remotes=(  $(git branch -a 2>/dev/null |  grep remotes | tail -n +2)  )
     echo "${remotes[@]}"
     #
     # <--- end function _clean_subcommands --->
@@ -605,6 +598,20 @@ function codediff(){
     return 0
 }
 
+
+function copy_repository_url(){
+    ##
+    ##  display remote repository url; copy to clipboard
+    ##
+    url=$(git remote -v | head -n1 | awk '{print $2}')
+    if [[ $(which xclip) ]]; then
+        echo -n "$url" | xclip -selection clipboard 2>/dev/null
+    fi
+    echo $url
+    return 0
+}
+
+
 function valid_branch(){
     ##
     ##  determines if parameter is valid branch name
@@ -636,7 +643,7 @@ function branchdiff(){
     ##
     ##   main:  determine branch to diff with master
     ##
-    local alternate="$1"            # alternate branch name to compare to reference_branch
+    local alternate="$ALT_BRANCH"            # alternate branch name to compare to reference_branch
     local reference_branch          # baseline ref branch; usually master branch
     local diff_branch               # current branch to be baselined against reference
     declare -a debug_branches
@@ -646,7 +653,6 @@ function branchdiff(){
         # check if in remote; if so use branchname from _remote_branches
         #
         reference_branch="$(_branchname_reconcilliation $alternate)"
-
     else
         reference_branch="master"
     fi
@@ -654,11 +660,19 @@ function branchdiff(){
     diff_branch="$(current_branch)"
 
     if [ $DEBUG ]; then
+        echo "OPERATION: $OPERATION"
         echo "Reference Branch: $reference_branch"
         echo "DIFF BRANCH: $diff_branch"
+        echo "ALT_BRANCH: $ALT_BRANCH"
+        echo "alternate: $alternate"
+
         debug_branches=$(_remote_branches)
-        echo -e "_remote_branches output:\n ${debug_branches[*]}\n"
-        echo -e "Number elements returned: $(echo ${#debug_branches[@]} | wc -l)"
+
+        echo -e "\n_remote_branches output:"
+        for repo in ${debug_branches[*]}; do
+            printf -- '\t%s\n' "$repo"
+        done
+        echo -e "Number elements returned: ${#debug_branches[@]}"
     fi
 
     # exit if on master
@@ -699,7 +713,7 @@ case $OPERATION in
         ;;
 
     'compare-alternate')
-        branchdiff $ALT_BRANCH
+        branchdiff "$ALT_BRANCH"
         ;;
 
     'commit-log')
@@ -719,7 +733,13 @@ case $OPERATION in
         ;;
 
     'help')
-        help_menu | indent04 | more
+        help_menu | indent04
+        ;;
+
+    'repository-url')
+        if valid_repository; then
+            copy_repository_url
+        fi
         ;;
 
     *)
