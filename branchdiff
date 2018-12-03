@@ -622,7 +622,7 @@ function copy_repository_url(){
     ##
     url=$(git remote -v | head -n1 | awk '{print $2}')
     if [[ $(which xclip) ]]; then
-        echo -n "$url" | xclip -selection clipboard
+        echo -n "$url" | xclip -selection clipboard 2>/dev/null
     fi
     echo $url
     return 0
