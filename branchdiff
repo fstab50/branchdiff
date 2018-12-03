@@ -75,13 +75,13 @@ function help_menu(){
 
         ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
             repository and copy it to the clipboard. This url can be
-            used for cloning
+            used for cloning the repository.
 
-        ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging
+        ${title}-d${btext}, ${title}--debug${btext}:  Enable additional debug logging.
 
-        ${title}-h${btext}, ${title}--help${btext}:  Display this help menu
+        ${title}-h${btext}, ${title}--help${btext}:  Display this help menu.
 
-        ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information
+        ${title}-V${btext}, ${title}--version${btext}:  Show $pkg version & license information.
 
   ${title}EXAMPLES${btext}
             ${title}Status of working branch vs. master${btext}
