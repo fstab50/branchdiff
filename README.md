@@ -129,9 +129,7 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ sudo yum install wget
     ```
 
-    <p align="center">
-      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-1.png" alt="redhat-install1"/>
-    </p>
+    [![rpm-install1](./assets/rpm-install-1.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-1.png)
 
     ```
     $ wget http://awscloud.center.s3-website.us-east-2.amazonaws.com/rpm/developer-tools.repo
@@ -153,16 +151,12 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ sudo yum install branchdiff
     ```
 
-    <p align="center">
-      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-2.png" alt="redhat-install2"/>
-    </p>
+    [![rpm-install2](./assets/rpm-install-2.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-2.png)
 
 
     Answer "y":
 
-    <p align="center">
-      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-3.png" alt="redhat-install3"/>
-    </p>
+    [![rpm-install3](./assets/rpm-install-3.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-3.png)
 
 
 4. Verify Installation
@@ -171,9 +165,7 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ yum info branchdiff
     ```
 
-    <p align="center">
-      <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-4.png" alt="redhat-install4"/>
-    </p>
+    [![rpm-install4](./assets/rpm-install-4.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-4.png)
 
 [back to the top](#top)
 
@@ -272,7 +264,11 @@ $ branchdiff --commit-log history
 <a name="screenshots3"></a>
 #### [Screenshots](#screenshots) / Code Diff
 
-[branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines updated in the current working branch compared to the master branch.
+[branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines in all files updated in the current working branch compared to the master branch.
+
+```bash
+$ branchdiff --code
+```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
