@@ -364,7 +364,7 @@ function commit_log(){
             ;;
 
         'detail' | 'details' | 'detailed')
-            git log --graph --decorate --abbrev-commit --format=format:'  Commit:  %C(bold blue)%h%C(reset)%n  Date:    %C(bold cyan)%aD%C(reset) - %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''  Comment: %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), %C(reset)%ae%C(reset)%n' --all
+            git log --graph --decorate --abbrev-commit --format=format:'  Commit:  %C(white)%H%C(reset)%n  Date:    %C(bold cyan)%aD%C(reset) - %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''  Comment: %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), %C(reset)%ae%C(reset)%n' --all
             ;;
 
         'unused')
