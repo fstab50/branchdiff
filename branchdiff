@@ -407,12 +407,16 @@ function commit_log_help(){
 
   ${title}DESCRIPTION${btext}
 
-            Options for use with --commit-log parameter
+        Options for use with --commit-log parameter
 
   ${title}SYNOPSIS${btext}
 
-            $ ${bin}$pkg${reset} --commit-log ${bbc}[ ${btext}history ${bbc}|${btext} detail ${bbc}|${btext} summary ${bbc}]${btext}
+        $ ${bin}$pkg${reset}  --commit-log  <value>
 
+                    ${bbc}[${btext}  history  ${bbc}]${btext}
+                    ${bbc}[${btext}  detail   ${bbc}|${btext}
+                    ${bbc}[${btext}  summary  ${bbc}]${btext}
+                    ${bbc}[${btext}  help     ${bbc}]${btext}
   ${title}OPTIONS${btext}
 
         ${title}history${btext} : Option to display the complete commit log history with
@@ -427,6 +431,10 @@ function commit_log_help(){
         ${title}summary${btext}
 
             $ ${bin}$pkg${reset}  --commit-log ${cyan}summary${btext}
+
+        ${title}help${btext}
+
+            $ ${bin}$pkg${reset}  --commit-log ${cyan}help${btext}
 
 
     ${reset}
