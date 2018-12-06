@@ -373,12 +373,17 @@ function commit_log(){
             git log --graph --decorate --abbrev-commit --format=format:'  Commit:  '${bbc}'%H%C(reset)%n  Date:    '${pv_bluebold}'%aD%C(reset) - %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''  Comment: %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), '${url}'%ae%C(reset)%n' --all
             ;;
 
-        'unused')
+        'history-detail')
             git log --graph --abbrev-commit --decorate --date=relative --all --color
             ;;
 
         'summary')
             git log --graph --oneline --decorate --all --color
+            ;;
+
+        'help')
+            ##  commit-log help msg
+            commit_log_help
             ;;
 
         *)
@@ -389,6 +394,40 @@ function commit_log(){
     return 0
     #
     # <--- end function commit_log --->
+}
+
+
+function commit_log_help(){
+    ##
+    ##  --commit-log help
+    ##
+    cat <<EOM
+
+                ${title}commit-log${btext} subcommand help
+
+      ${title}DESCRIPTION${btext}
+
+            Options for use with --commit-log parameter
+
+      ${title}SYNOPSIS${btext}
+
+            $ ${bin}$pkg${reset} --commit-log ${bbc}[ ${btext}history ${bbc}|${btext} detail ${bbc}|${btext} summary ${bbc}]${btext}
+
+
+      ${title}history${btext}
+            $ ${bin}$pkg${reset}  --commit-log ${cyan}history${btext}
+
+      ${title}detail${btext}
+            $ ${bin}$pkg${reset}  --commit-log ${cyan}detail${btext}
+
+      ${title}summary${btext}
+            $ ${bin}$pkg${reset}  --commit-log ${cyan}summary${btext}
+
+
+    ${reset}
+EOM
+    #
+    # <-- end function commit_log_help -->
 }
 
 
