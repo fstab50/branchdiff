@@ -72,7 +72,7 @@ function help_menu(){
 
         ${title}-l${btext}, ${title}--commit-log${btext}:  display line-by-line colorized view of the
             commit log,  revision date time history,  and commit log
-            comments. 3 options available for use with this option:
+            comments. Use with 'help' for detail on options.
 
               $ $pkg --commit-log ${bbc}[${btext}history ${bbc}|${btext} detail ${bbc}|${btext} summary${bbc}]${btext}
 
