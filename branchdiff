@@ -74,7 +74,7 @@ function help_menu(){
             commit log,  revision date time history,  and commit log
             comments. 3 options available for use with this option:
 
-            $ $pkg  --commit-log ${bbc}[${btext} history | detail | summary ${bbc}]${btext}
+              $ $pkg --commit-log ${bbc}[${btext}history ${bbc}|${btext} detail ${bbc}|${btext} summary${bbc}]${btext}
 
         ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
             repository and copy it to the clipboard. This url can be
