@@ -383,7 +383,7 @@ function commit_log(){
 
         'help')
             ##  commit-log help msg
-            commit_log_help
+            commit_log_help | indent04
             ;;
 
         *)
@@ -405,22 +405,27 @@ function commit_log_help(){
 
                 ${title}commit-log${btext} subcommand help
 
-      ${title}DESCRIPTION${btext}
+  ${title}DESCRIPTION${btext}
 
             Options for use with --commit-log parameter
 
-      ${title}SYNOPSIS${btext}
+  ${title}SYNOPSIS${btext}
 
             $ ${bin}$pkg${reset} --commit-log ${bbc}[ ${btext}history ${bbc}|${btext} detail ${bbc}|${btext} summary ${bbc}]${btext}
 
+  ${title}OPTIONS${btext}
 
-      ${title}history${btext}
+        ${title}history${btext} : Option to display the complete commit log history with
+        relative time stamps from present day.
+
             $ ${bin}$pkg${reset}  --commit-log ${cyan}history${btext}
 
-      ${title}detail${btext}
+        ${title}detail${btext}
+
             $ ${bin}$pkg${reset}  --commit-log ${cyan}detail${btext}
 
-      ${title}summary${btext}
+        ${title}summary${btext}
+
             $ ${bin}$pkg${reset}  --commit-log ${cyan}summary${btext}
 
 
