@@ -52,8 +52,9 @@ function help_menu(){
            $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
 
                          [-b | --branch <value> ]
-                         [-c | --code    ]
-                         [-h | --help    ]
+                         [-l | --commit-log <value> ]
+                         [-c | --code  ]
+                         [-h | --help  ]
                          [-r | --repository-url ]
                          [-V | --version ]
 
@@ -71,7 +72,9 @@ function help_menu(){
 
         ${title}-l${btext}, ${title}--commit-log${btext}:  display line-by-line colorized view of the
             commit log,  revision date time history,  and commit log
-            comments
+            comments. 3 options available for use with this option:
+
+            $ $pkg  --commit-log ${bbc}[${btext} history | detail | summary ${bbc}]${btext}
 
         ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
             repository and copy it to the clipboard. This url can be
