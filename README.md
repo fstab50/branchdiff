@@ -261,17 +261,6 @@ $ branchdiff --commit-log history
 
 [back to the top](#top)
 
-From an alternate git repository directory:
-
-```bash
-$ branchdiff --commit-log history
-```
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-history2.png" alt="commitlog-history"/>
-</p>
-
-[back to the top](#top)
 
 * * *
 
@@ -288,9 +277,6 @@ $ branchdiff --commit-log detail
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail.png" alt="commitlog-history"/>
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail2.png" alt="commitlog-history"/>
-</p>
 
 [back to the top](#top)
 
