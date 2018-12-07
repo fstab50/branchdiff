@@ -367,10 +367,14 @@ function commit_log(){
             ;;
 
         'detail' | 'details' | 'detailed')
-            cid=$(echo -e ${underline}${a_bluepurple})
-            by2=$(echo -e ${bold}${a_brightyellow2})
-            bbc=$(echo -e ${bold}${a_brightcyan})
-            git log --graph --decorate --abbrev-commit --format=format:'  Commit:  '${bbc}'%H%C(reset)%n  Date:    '${pv_bluebold}'%aD%C(reset) - %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''  Comment: %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), '${url}'%ae%C(reset)%n' --all
+            medblue='\033[38;5;95;38;5;27m'                 # medium dark blue
+            darkblue='\033[38;5;95;38;5;21m'
+            brightgreen='\033[38;5;95;38;5;155m'
+            mb=$(echo -e ${medblue})
+            bg=$(echo -e ${brightgreen})
+            bbc=$(echo -e ${a_brightcyan})
+            bp=$(echo -e ${bold}${a_bluepurple})
+            git log --graph --decorate --abbrev-commit --format=format:'  Commit:'${btext}'  '${bp}'%H%C(reset)%n  Date:'${btext}'    '${wgray}'%aD%C(reset) - %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''  Comment:'${btext}' %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), '${url}'%ae%C(reset)%n' --all
             ;;
 
         'history-detail')
@@ -441,7 +445,7 @@ function commit_log_help(){
         ${title}help${btext}:  Option to display the commit-log help menu contents
 
                 $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}help${btext}
-        ____________________________________________________________   
+        ____________________________________________________________
     ${reset}
 EOM
     #
