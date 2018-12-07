@@ -441,7 +441,7 @@ function commit_log_help(){
         ${title}help${btext}:  Option to display the commit-log help menu contents
 
                 $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}help${btext}
-
+        ____________________________________________________________   
     ${reset}
 EOM
     #
