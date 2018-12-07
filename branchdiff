@@ -419,8 +419,8 @@ function commit_log_help(){
                         ${bbc}[${btext}  help     ${bbc}]${btext}
   ${title}OPTIONS${btext}
 
-        ${title}history${btext}:  Option to display the complete commit log history.
-        Includes commit id, commit message, author name, relative
+        ${title}history${btext}: Option to display the complete commit log history
+        Includes commit id,  commit message, author name, relative
         time stamp of each commit representing duration in history
         from the present day.
 
@@ -432,9 +432,9 @@ function commit_log_help(){
 
                     $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}detail${btext}
 
-        ${title}summary${btext}:  Option to display the commit log abbreviated sum-
-        mary format, which is a shortened version of the history
-        format. Includes commit log graphical merge map.
+        ${title}summary${btext}:  Option to display graphical details of the commit
+        log abbreviated summary format,  a shortened version of the
+        history format. Includes commit log graphical merge map.
 
                     $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}summary${btext}
 
