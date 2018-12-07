@@ -24,7 +24,7 @@ host=$(hostname)
 system=$(uname)
 
 # this file
-VERSION="2.8.8"
+VERSION="2.9.2"
 
 if [ ! $pkg ] || [ ! $pkg_path ]; then
     echo -e "\npkg and pkg_path errors - both are null"
@@ -535,6 +535,9 @@ function progress_dots(){
     ##
     ##      Exists when long-running-command completes
     ##
+    ##  Quiet Mode:
+    ##      if QUIET = true, runs timer, no stdout printing
+    ##
     ##  Dependencies:
     ##      - requires colors.sh (source of indent function)
     ##
@@ -578,7 +581,10 @@ function progress_dots(){
     titlestop=$(( $stop - $len ))           # stop column on text msg row
 
     # title
-    printf -- '\n\n%s' "$text" | indent04
+    if [[ ! $QUIET ]]; then
+        printf -- '\n\n%s' "$text" | indent04
+    fi
+
     # output progress dots
     while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
 
@@ -591,7 +597,7 @@ function progress_dots(){
             counter="0"
             stop=$stopmarker
 
-        else
+        elif [[ ! $QUIET ]]; then
             printf -- '%s' "."
         fi
 
@@ -712,40 +718,51 @@ function std_message(){
     local format="$4"
     local rst=${reset}
 
-    if [ $log_file ] && { [ "$prefix" = "ok" ] || [ "$prefix" = "OK" ] || [ "$prefix" = "DONE" ]; }; then
+    if [ "$4" ]; then format=''; else format='\n'; fi
 
-        # ensure info log message written to log
-        std_logger "$msg" "DONE" "$log_file"
+    if [ "$3" ]; then
+        case "$prefix" in
+            'ok' | 'OK' | 'DONE')
+                std_logger "$msg" "INFO" "$log_file"
+                prefix="OK"
+                ;;
 
-    elif [ $log_file ]; then
+            'INSTALLED' | 'AVAILABLE' | 'NOT-FOUND')
+                filtered=$(echo $msg | sed 's/[|]//g')
+                std_logger "$filtered" "INFO" "$log_file"
+                ;;
 
-        std_logger "$msg" "$prefix" "$log_file"
-
+            *)
+                # info log message written to log
+                std_logger "$msg" "$prefix" "$log_file"
+                ;;
+        esac
     fi
 
-    [[ $QUIET ]] && return
-    shift
-    pref="----"
+    if [[ $QUIET ]]; then return 0; fi
 
-    if [[ $1 ]]; then
-        pref="${1:0:5}"
-        shift
-    fi
+    case "$prefix" in
+        'ok' | 'OK')
+            echo -e "${format}${yellow}[  $green${BOLD}$prefix${rst}${yellow}  ]${rst}  $msg${format}" | indent04
+            ;;
 
-    # output
-    if [ $format ]; then
+        'INSTALLED')
+            echo -e "${format}$green${BOLD}$prefix${rst}  |  $msg${format}" | indent04
+            ;;
 
-        echo -e "${yellow}[ $cyan$pref$yellow ]$reset  $msg" | indent04
+        'AVAILABLE')
+            echo -e "${format}$prefix${rst}  |  $msg${format}" | indent04
+            ;;
 
-    elif [ "$prefix" = "OK" ] || [ "$prefix" = "ok" ]; then
+        'NOT-FOUND')
+            echo -e "${format}${red}${BOLD}$prefix${rst}  |  $msg${format}" | indent04
+            ;;
 
-        echo -e "\n${yellow}[  $green${BOLD}$pref${rst}${yellow}  ]${rst}  $msg\n" | indent04
-
-    else
-
-        echo -e "\n${yellow}[ $cyan$pref$yellow ]${rst}  $msg\n" | indent04
-
-    fi
+        *)
+            echo -e "${format}${yellow}[ $cyan$prefix$yellow ]${rst}  $msg${format}" | indent04
+            ;;
+    esac
+    return 0
     #
     # <<-- end function std_message -->>
 }

@@ -6,7 +6,7 @@
 ## About this repository
 
 * Purpose: 		Instantly know status of the current git working branch
-* Version:	     1.1.5
+* Version:	     1.1.6
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
@@ -28,9 +28,11 @@
 * [**SCREENSHOTS**](#screenshots)
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
-    * [Commit Log History (--commit-log)](#screenshots2)
-    * [Code Diff ( --code \)](#screenshots3)
-    * [Code Diff ( --code <filename\> \)](#screenshots4)
+    * [Commit Log Option (--commit-log)](#screenshots2)
+        * [Commit Log History (--commit-log history)](#screenshots2)
+        * [Comit Log Detail (--commit-log detail)](#screenshots3)
+    * [Code Diff ( --code \)](#screenshots4)
+    * [Code Diff ( --code <filename\> \)](#screenshots5)
 
 * [**AUTHOR & COPYRIGHT**](#authorcopyright)
 
@@ -58,11 +60,10 @@
 * * *
 ## Supported Linux Distributions
 
-* Ubuntu14.04, Ubuntu 16.04, Ubuntu 18.04  
-* Linux Mint 17, 18, 19
+* Ubuntu 16.04, Ubuntu 18.04  
+* Linux Mint 18, 19
 * Debian variants of Ubuntu / Linux Mint distributions above
 * Redhat 7+, CentOS 7+  
-* Fedora 28+   (PENDING)
 
 [back to the top](#top)
 
@@ -246,7 +247,7 @@ $ branchdiff
 
 * * *
 <a name="screenshots2"></a>
-#### [Screenshots](#screenshots) / Commit Log / History
+#### [Screenshots](#screenshots) / Commit Log / history
 
 [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located:
 
@@ -255,14 +256,47 @@ $ branchdiff --commit-log history
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commitlog-history.png" alt="commitlog-history"/>
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-history.png" alt="commitlog-history"/>
+</p>
+
+[back to the top](#top)
+
+From an alternate git repository directory:
+
+```bash
+$ branchdiff --commit-log history
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-history2.png" alt="commitlog-history"/>
 </p>
 
 [back to the top](#top)
 
 * * *
+
 <a name="screenshots3"></a>
-#### [Screenshots](#screenshots) / Code Diff
+#### [Screenshots](#screenshots) / [Commit Log](screenshots3) / detail
+
+[branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located:
+
+```bash
+$ branchdiff --commit-log detail
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail.png" alt="commitlog-history"/>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail2.png" alt="commitlog-history"/>
+</p>
+
+[back to the top](#top)
+
+* * *
+<a name="screenshots4"></a>
+#### [Screenshots](#screenshots) / [Code Diff](screenshots4)
 
 [branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines in all files updated in the current working branch compared to the master branch.
 
@@ -277,8 +311,8 @@ $ branchdiff --code
 [back to the top](#top)
 
 * * *
-<a name="screenshots4"></a>
-#### [Screenshots](#screenshots) / Code Diff \<filename\>
+<a name="screenshots5"></a>
+#### [Screenshots](#screenshots) / [Code Diff \<filename\>](screenshots5)
 
 Pressing the tab key twice autocompletes the names of all files that received updates in the current working branch.
 

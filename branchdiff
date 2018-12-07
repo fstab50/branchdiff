@@ -49,11 +49,12 @@ function help_menu(){
 
   ${title}SYNOPSIS${btext}
 
-           $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
+          $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
 
                          [-b | --branch <value> ]
-                         [-c | --code    ]
-                         [-h | --help    ]
+                         [-l | --commit-log <value> ]
+                         [-c | --code  ]
+                         [-h | --help  ]
                          [-r | --repository-url ]
                          [-V | --version ]
 
@@ -71,7 +72,9 @@ function help_menu(){
 
         ${title}-l${btext}, ${title}--commit-log${btext}:  display line-by-line colorized view of the
             commit log,  revision date time history,  and commit log
-            comments
+            comments. Use with 'help' for detail on options.
+
+                    $ $pkg --commit-log  ${bbc}[ ${btext}subcommand ${bbc}]${btext}
 
         ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
             repository and copy it to the clipboard. This url can be
@@ -363,16 +366,28 @@ function commit_log(){
             git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white) - %an%C(reset)%C(bold yellow)%d%C(reset)' --all
             ;;
 
-        'history-detail' )
-            git log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+        'detail' | 'details' | 'detailed')
+            medblue='\033[38;5;95;38;5;27m'                 # medium dark blue
+            darkblue='\033[38;5;95;38;5;21m'
+            brightgreen='\033[38;5;95;38;5;155m'
+            mb=$(echo -e ${medblue})
+            bg=$(echo -e ${brightgreen})
+            bbc=$(echo -e ${a_brightcyan})
+            bp=$(echo -e ${bold}${a_bluepurple})
+            git log --graph --decorate --abbrev-commit --format=format:'  Commit:'${btext}'  %C(white)%H%C(reset)  %C(bold yellow)%d%C(reset)%n  Date:'${btext}'    '${title}'%aD%C(reset) - %C(bold green)(%ar)%C(reset)%n''  Comment:'${btext}' %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), '${url}'%ae%C(reset)%n' --all
             ;;
 
-        'detail' | 'details' | 'detailed')
+        'history-detail')
             git log --graph --abbrev-commit --decorate --date=relative --all --color
             ;;
 
         'summary')
             git log --graph --oneline --decorate --all --color
+            ;;
+
+        'help')
+            ##  commit-log help msg
+            commit_log_help | indent04
             ;;
 
         *)
@@ -383,6 +398,58 @@ function commit_log(){
     return 0
     #
     # <--- end function commit_log --->
+}
+
+
+function commit_log_help(){
+    ##
+    ##  --commit-log help
+    ##
+    cat <<EOM
+
+                  ${title}commit-log${btext} subcommand help
+
+  ${title}DESCRIPTION${btext}
+
+        Commit log ( --commit-log ) option parameter subcommands
+
+  ${title}SYNOPSIS${btext}
+
+            $ ${bin}$pkg${reset}  --commit-log  <${cyan}value${btext}>
+
+                          ${bbc}[${btext}  history  ${bbc}]${btext}
+                          ${bbc}[${btext}  detail   ${bbc}|${btext}
+                          ${bbc}[${btext}  summary  ${bbc}]${btext}
+                          ${bbc}[${btext}  help     ${bbc}]${btext}
+  ${title}OPTIONS${btext}
+
+        ${title}history${btext}: Option to display the complete commit log history
+        Includes commit id,  commit message, author name, relative
+        time stamp of each commit representing duration in history
+        from the present day.
+
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}history${btext}
+
+        ${title}detail${btext}:  Option to display the complete commit log history
+        detail format. Includes detailed timestamp, author, email,
+        and commit log graphical merge map.
+
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}detail${btext}
+
+        ${title}summary${btext}:  Option to display graphical details of the commit
+        log abbreviated summary format,  a shortened version of the
+        history format. Includes commit log graphical merge map.
+
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}summary${btext}
+
+        ${title}help${btext}:  Option to display the commit-log help menu contents
+
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}help${btext}
+        ____________________________________________________________
+    ${reset}
+EOM
+    #
+    # <-- end function commit_log_help -->
 }
 
 
