@@ -407,16 +407,16 @@ function commit_log_help(){
 
   ${title}DESCRIPTION${btext}
 
-        Options for use with --commit-log option parameter
+        Commit log ( --commit-log ) option parameter subcommands
 
   ${title}SYNOPSIS${btext}
 
             $ ${bin}$pkg${reset}  --commit-log  <${cyan}value${btext}>
 
-                        ${bbc}[${btext}  history  ${bbc}]${btext}
-                        ${bbc}[${btext}  detail   ${bbc}|${btext}
-                        ${bbc}[${btext}  summary  ${bbc}]${btext}
-                        ${bbc}[${btext}  help     ${bbc}]${btext}
+                          ${bbc}[${btext}  history  ${bbc}]${btext}
+                          ${bbc}[${btext}  detail   ${bbc}|${btext}
+                          ${bbc}[${btext}  summary  ${bbc}]${btext}
+                          ${bbc}[${btext}  help     ${bbc}]${btext}
   ${title}OPTIONS${btext}
 
         ${title}history${btext}: Option to display the complete commit log history
@@ -424,23 +424,23 @@ function commit_log_help(){
         time stamp of each commit representing duration in history
         from the present day.
 
-                $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}history${btext}
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}history${btext}
 
         ${title}detail${btext}:  Option to display the complete commit log history
         detail format. Includes detailed timestamp, author, email,
         and commit log graphical merge map.
 
-                $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}detail${btext}
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}detail${btext}
 
         ${title}summary${btext}:  Option to display graphical details of the commit
         log abbreviated summary format,  a shortened version of the
         history format. Includes commit log graphical merge map.
 
-                $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}summary${btext}
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}summary${btext}
 
         ${title}help${btext}:  Option to display the commit-log help menu contents
 
-                $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}help${btext}
+                $ ${BOLD}$pkg${reset}  --commit-log  ${cyan}help${btext}
 
     ${reset}
 EOM
