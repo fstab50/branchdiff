@@ -5,7 +5,7 @@
 
 ## About this repository
 
-* Purpose: 		Instantly know status of the current git working branch
+* Purpose: 		Access advanced git commands without code for instant visibility into the status of your working branch
 * Version:	     1.1.6
 * Repo: 		https://github.com/fstab50/branchdiff
 
@@ -48,9 +48,10 @@
 
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
 
-* Illustrates differences between current working branch and master branch
-* Details when commits were made to the current branch, by whom
-* Provides summary statistics
+* Instantly see differences between current working branch and any other branch 
+* Access advanced git functionality without any code or typing syntax
+* Graphical view of when commits were made to the current branch, by whom
+* Graphical merge maps
 
 [![branchdiff default view](./assets/summary.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/summary.png)
 
@@ -281,7 +282,7 @@ $ branchdiff --commit-log detail
 
 * * *
 <a name="screenshots4"></a>
-#### [Screenshots](#screenshots) / Code Diff 
+#### [Screenshots](#screenshots) / Code Diff
 
 When used without a subcommand, the code option (--code) triggers [branchdiff](https://github.com/fstab50/branchdiff) to show the lines changed in all files updated in the current working branch compared to the master branch.
 
