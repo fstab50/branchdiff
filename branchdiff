@@ -374,7 +374,7 @@ function commit_log(){
             bg=$(echo -e ${brightgreen})
             bbc=$(echo -e ${a_brightcyan})
             bp=$(echo -e ${bold}${a_bluepurple})
-            git log --graph --decorate --abbrev-commit --format=format:'  Commit:'${btext}'  '${bp}'%H%C(reset)%n  Date:'${btext}'    '${wgray}'%aD%C(reset) - %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''  Comment:'${btext}' %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), '${url}'%ae%C(reset)%n' --all
+            git log --graph --decorate --abbrev-commit --format=format:'  Commit:'${btext}'  %C(white)%H%C(reset)  %C(bold yellow)%d%C(reset)%n  Date:'${btext}'    '${title}'%aD%C(reset) - %C(bold green)(%ar)%C(reset)%n''  Comment:'${btext}' %C(white)%s%C(reset)%n  Author:  %C(dim white)%an%C(reset), '${url}'%ae%C(reset)%n' --all
             ;;
 
         'history-detail')
