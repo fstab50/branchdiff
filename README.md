@@ -28,11 +28,10 @@
 * [**SCREENSHOTS**](#screenshots)
     * [Working Branch Status](#screenshots)
     * [Working Branch Status (Extended)](#screenshots1)
-    * [Commit Log Option (--commit-log)](#screenshots2)
-        * [Commit Log History (--commit-log history)](#screenshots2)
-        * [Comit Log Detail (--commit-log detail)](#screenshots3)
-    * [Code Diff ( --code \)](#screenshots4)
-    * [Code Diff ( --code <filename\> \)](#screenshots5)
+    * [Commit Log History (--commit-log history)](#screenshots2)
+    * [Comit Log Detail (--commit-log detail)](#screenshots3)
+    * [Code Diff (--code)](#screenshots4)
+    * [Code Diff (--code <filename\>)](#screenshots5)
 
 * [**AUTHOR & COPYRIGHT**](#authorcopyright)
 
@@ -282,9 +281,9 @@ $ branchdiff --commit-log detail
 
 * * *
 <a name="screenshots4"></a>
-#### [Screenshots](#screenshots) / [Code Diff](screenshots4)
+#### [Screenshots](#screenshots) / Code Diff 
 
-[branchdiff](https://github.com/fstab50/branchdiff) shows the actual lines in all files updated in the current working branch compared to the master branch.
+When used without a subcommand, the code option (--code) triggers [branchdiff](https://github.com/fstab50/branchdiff) to show the lines changed in all files updated in the current working branch compared to the master branch.
 
 ```bash
 $ branchdiff --code
@@ -298,7 +297,7 @@ $ branchdiff --code
 
 * * *
 <a name="screenshots5"></a>
-#### [Screenshots](#screenshots) / [Code Diff \<filename\>](screenshots5)
+#### [Screenshots](#screenshots) / Code Diff \<filename\>
 
 Pressing the tab key twice autocompletes the names of all files that received updates in the current working branch.
 
