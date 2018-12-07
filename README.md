@@ -261,7 +261,7 @@ $ branchdiff --commit-log history
 
 [back to the top](#top)
 
-cd to different git repository directory:
+From an alternate git repository directory:
 
 ```bash
 $ branchdiff --commit-log history
