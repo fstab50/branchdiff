@@ -403,39 +403,44 @@ function commit_log_help(){
     ##
     cat <<EOM
 
-                ${title}commit-log${btext} subcommand help
+                  ${title}commit-log${btext} subcommand help
 
   ${title}DESCRIPTION${btext}
 
-        Options for use with --commit-log parameter
+        Options for use with --commit-log option parameter
 
   ${title}SYNOPSIS${btext}
 
-        $ ${bin}$pkg${reset}  --commit-log  <value>
+            $ ${bin}$pkg${reset}  --commit-log  <${cyan}value${btext}>
 
-                    ${bbc}[${btext}  history  ${bbc}]${btext}
-                    ${bbc}[${btext}  detail   ${bbc}|${btext}
-                    ${bbc}[${btext}  summary  ${bbc}]${btext}
-                    ${bbc}[${btext}  help     ${bbc}]${btext}
+                        ${bbc}[${btext}  history  ${bbc}]${btext}
+                        ${bbc}[${btext}  detail   ${bbc}|${btext}
+                        ${bbc}[${btext}  summary  ${bbc}]${btext}
+                        ${bbc}[${btext}  help     ${bbc}]${btext}
   ${title}OPTIONS${btext}
 
-        ${title}history${btext} : Option to display the complete commit log history with
-        relative time stamps from present day.
+        ${title}history${btext}:  Option to display the complete commit log history.
+        Includes commit id, commit message, author name, relative
+        time stamp of each commit representing duration in history
+        from the present day.
 
-            $ ${bin}$pkg${reset}  --commit-log ${cyan}history${btext}
+                    $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}history${btext}
 
-        ${title}detail${btext}
+        ${title}detail${btext}:  Option to display the complete commit log history
+        detail format. Includes detailed timestamp, author, email,
+        and commit log graphical merge map.
 
-            $ ${bin}$pkg${reset}  --commit-log ${cyan}detail${btext}
+                    $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}detail${btext}
 
-        ${title}summary${btext}
+        ${title}summary${btext}:  Option to display the commit log abbreviated sum-
+        mary format, which is a shortened version of the history
+        format. Includes commit log graphical merge map.
 
-            $ ${bin}$pkg${reset}  --commit-log ${cyan}summary${btext}
+                    $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}summary${btext}
 
-        ${title}help${btext}
+        ${title}help${btext}:  Option to display the commit-log help menu contents
 
-            $ ${bin}$pkg${reset}  --commit-log ${cyan}help${btext}
-
+                    $ ${pv_orange}$pkg${reset}  --commit-log  ${cyan}help${btext}
 
     ${reset}
 EOM
