@@ -139,7 +139,7 @@ function _complete_code_subcommands(){
 
 function _complete_commitlog_subcommands(){
     local cmds="$1"
-    local split='1'       # times to split screen width
+    local split='3'       # times to split screen width
     local IFS=$' \t\n'
     local formatted_cmds=( $(compgen -W "${cmds}" -- "${cur}") )
 
@@ -172,7 +172,7 @@ function _branchdiff_completions(){
 
     # option strings
     commands='--branch --code --commit-log --debug --help --repository-url --version'
-    commitlog_subcommands='detail history summary'
+    commitlog_subcommands='detail help history summary'
     operations='--branch --code'
     norepo_commands='--help --version'
 
@@ -218,6 +218,12 @@ function _branchdiff_completions(){
 
         'branchdiff')
             _complete_branchdiff_commands "${commands}"
+            return 0
+            ;;
+
+        '--commit-log')
+             _complete_commitlog_subcommands "${commitlog_subcommands}"
+            #COMPREPLY=( $(compgen -W "${commitlog_subcommands}" -- ${cur}) )
             return 0
             ;;
     esac
