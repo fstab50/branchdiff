@@ -899,17 +899,19 @@ def ospackages(pkg_list):
     return True
 
 
-def prebuild(builddir, volmnt, parameter_file):
+def prebuild(builddir, libsrc, volmnt, parameter_file):
     """Summary:
         Prerequisites and dependencies for build execution
     Returns:
         Success | Failure, TYPE: bool
     """
-    def preclean(dir):
-        """ Cleans residual build artifacts """
+    def preclean(dir, artifact=''):
+        """Cleans residual build artifacts by removing """
         try:
-            if os.path.exists(dir):
-                rmtree(dir)
+            if artifact:
+                rmtree(dir + '/' + artifact)    # clean artifact from inside an existing dir
+            elif os.path.exists(dir):
+                rmtree(dir)     # rm entire directory
         except OSError as e:
             logger.exception(
                 '%s: Error while cleaning residual build artifacts: %s' %
@@ -921,7 +923,7 @@ def prebuild(builddir, volmnt, parameter_file):
 
     try:
 
-        if preclean(builddir) and preclean(volmnt):
+        if preclean(builddir) and preclean(volmnt) and preclean(libsrc, '__pycache__'):
             stdout_message(f'Removed pre-existing build artifacts ({builddir}, {volmnt})')
         os.makedirs(builddir)
         os.makedirs(volmnt)
@@ -1165,7 +1167,8 @@ def init_cli():
         return exit_codes['EX_OK']['Code']
 
     elif args.build:
-        if valid_version(args.set) and prebuild(TMPDIR, VOLMNT, git_root() + '/' + args.parameter_file):
+        libsrc = git_root() + '/' + 'core'
+        if valid_version(args.set) and prebuild(TMPDIR, libsrc, VOLMNT, git_root() + '/' + args.parameter_file):
             package = main(
                         setVersion=args.set,
                         environment=args.distro,
