@@ -666,7 +666,7 @@ def docker_daemon_up():
     return False
 
 
-def docker_init(src, builddir, osimage, debug):
+def docker_init(src, builddir, osimage, param_dict, debug):
     """
     Summary:
         Creates docker image and container
@@ -674,10 +674,10 @@ def docker_init(src, builddir, osimage, debug):
     Returns:
         Container id (Name) | Failure (None)
     """
-    iname = 'rpmbuild'                     # image name
-    cname = iname + 'C'                    # container id
-    host_mnt = VOLMNT                      # host volume mount point
-    container_mnt = CONTAINER_VOLMNT       # container volume internal mnt pt
+    iname = param_dict['DockerImage']          # image name
+    cname = param_dict'DockerContainer']       # container id
+    host_mnt = VOLMNT                          # host volume mount point
+    container_mnt = CONTAINER_VOLMNT           # container volume internal mnt pt
     bash_cmd = '/bin/sleep 30'
     buildscript = 'docker-buildrpm.sh'
 
@@ -691,7 +691,7 @@ def docker_init(src, builddir, osimage, debug):
         # if image rpmbuild not exist, create
         try:
 
-            image = dclient.images.get('centos7:%s' % iname)
+            image = dclient.images.get(iname)
 
             if image:
                 stdout_message('Image already exists. Creating Container...')
@@ -834,6 +834,7 @@ def main(setVersion, environment, package_configpath, force=False, debug=False):
                 PROJECT_ROOT + '/packaging/docker/' + environment,
                 BUILD_ROOT,
                 environment,
+                vars,
                 debug
             )
         if container:
