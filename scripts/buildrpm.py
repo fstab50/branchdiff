@@ -674,10 +674,10 @@ def docker_init(src, builddir, osimage, param_dict, debug):
     Returns:
         Container id (Name) | Failure (None)
     """
-    iname = param_dict['DockerImage']          # image name
-    cname = param_dict'DockerContainer']       # container id
-    host_mnt = VOLMNT                          # host volume mount point
-    container_mnt = CONTAINER_VOLMNT           # container volume internal mnt pt
+    imagename = osimage + ':' + param_dict['DockerImage']        # image name
+    cname = param_dict['DockerContainer']                    # container id
+    host_mnt = VOLMNT                                        # host volume mount point
+    container_mnt = CONTAINER_VOLMNT                         # container volume internal mnt pt
     bash_cmd = '/bin/sleep 30'
     buildscript = 'docker-buildrpm.sh'
 
@@ -691,7 +691,7 @@ def docker_init(src, builddir, osimage, param_dict, debug):
         # if image rpmbuild not exist, create
         try:
 
-            image = dclient.images.get(iname)
+            image = dclient.images.get(imagename)
 
             if image:
                 stdout_message('Image already exists. Creating Container...')
@@ -699,14 +699,14 @@ def docker_init(src, builddir, osimage, param_dict, debug):
         except Exception:
             # create new docker image
             os.chdir(src)
-            cmd = 'docker build -t centos7:rpmbuild .'
+            cmd = 'docker build -t {} . '.format(imagename)
             subprocess.call([cmd], shell=True, cwd=src)
             stdout_message('Built image', prefix='OK')
 
         # start container detached
         container = dclient.containers.run(
                 name=cname,
-                image=osimage + ':' + iname,
+                image=imagename,
                 command=bash_cmd,
                 volumes={host_mnt: {'bind': container_mnt, 'mode': 'rw'}},
                 detach=True
@@ -732,7 +732,7 @@ def docker_init(src, builddir, osimage, param_dict, debug):
         if debug:
             print(f'buildfile_list contains:\n\n\t%s' % export_json_object(buildfile_list))
             print(f'osimage is: {osimage}')
-            print(f'iname is: {iname}')
+            print(f'imagename is: {imagename}')
             print(f'container name is: {container.name}')
 
         for file in buildfile_list:
