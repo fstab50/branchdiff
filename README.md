@@ -48,7 +48,7 @@
 
 [branchdiff](https://github.com/fstab50/branchdiff) is a utility for use with git version control.  The program:
 
-* Instantly see differences between current working branch and any other branch 
+* Instantly see differences between current working branch and any other branch
 * Access advanced git functionality without any code or typing syntax
 * Graphical view of when commits were made to the current branch, by whom
 * Graphical merge maps
@@ -269,12 +269,24 @@ $ branchdiff --commit-log history
 
 [branchdiff](https://github.com/fstab50/branchdiff) accurately provides the commit age of the working branch where the cursor is located:
 
+Simple repository with minimal branches and merges:
+
 ```bash
 $ branchdiff --commit-log detail
 ```
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail.png" alt="commitlog-history"/>
+</p>
+
+Git repository with many working branches and complex merge cadence:
+
+```bash
+$ branchdiff --commit-log detail
+```
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail2.png" alt="commitlog-history"/>
 </p>
 
 

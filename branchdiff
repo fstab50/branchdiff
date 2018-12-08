@@ -71,10 +71,10 @@ function help_menu(){
             reference instead of master branch.
 
         ${title}-l${btext}, ${title}--commit-log${btext}:  display line-by-line colorized view of the
-            commit log,  revision date time history,  and commit log
-            comments. Use with 'help' for detail on options.
+            commit log, the revision datetime history, and commit log
+            comments.  Use with subcommand 'help' to display options.
 
-                    $ $pkg --commit-log  ${bbc}[ ${btext}subcommand ${bbc}]${btext}
+                  $ $pkg --commit-log  ${bbc}[ ${btext}subcommand ${bbc}]${btext}
 
         ${title}-r${btext}, ${title}--repository-url${btext}:  Display the (fetch) url of the remote
             repository and copy it to the clipboard. This url can be
