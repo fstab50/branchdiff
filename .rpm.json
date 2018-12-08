@@ -18,6 +18,8 @@
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
+    "DockerImage": "centos7:rpmbuildD",
+    "DockerContiner": "buildbranchdiff",
     "DockerUser": "builder",
     "DockerBuildScript": "docker-buildrpm.sh",
     "BashCompletion": "branchdiff-completion.bash",
