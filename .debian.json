@@ -19,6 +19,8 @@
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
+    "DockerImage": "centos7:debbuildD",
+    "DockerContiner": "builddeb-branchdiff",
     "DockerUser": "builder",
     "DockerBuildScript": "docker-builddeb.sh",
     "BashCompletion": "branchdiff-completion.bash",

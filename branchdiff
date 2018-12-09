@@ -533,7 +533,7 @@ function commit_diff(){
     local pct
     local vw
     # output
-    git log --color=always --graph \
+    git log --color=always \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
         --date=relative ${branchref}..${branchcur}  > $tmp_file

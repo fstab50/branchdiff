@@ -666,7 +666,7 @@ def docker_daemon_up():
     return False
 
 
-def docker_init(src, builddir, osimage, debug):
+def docker_init(src, builddir, osimage, param_dict, debug):
     """
     Summary:
         Creates docker image and container
@@ -674,10 +674,10 @@ def docker_init(src, builddir, osimage, debug):
     Returns:
         Container id (Name) | Failure (None)
     """
-    iname = 'rpmbuild'                     # image name
-    cname = iname + 'C'                    # container id
-    host_mnt = VOLMNT                      # host volume mount point
-    container_mnt = CONTAINER_VOLMNT       # container volume internal mnt pt
+    imagename = osimage + ':' + param_dict['DockerImage']        # image name
+    cname = param_dict['DockerContainer']                    # container id
+    host_mnt = VOLMNT                                        # host volume mount point
+    container_mnt = CONTAINER_VOLMNT                         # container volume internal mnt pt
     bash_cmd = '/bin/sleep 30'
     buildscript = 'docker-buildrpm.sh'
 
@@ -691,7 +691,7 @@ def docker_init(src, builddir, osimage, debug):
         # if image rpmbuild not exist, create
         try:
 
-            image = dclient.images.get('centos7:%s' % iname)
+            image = dclient.images.get(imagename)
 
             if image:
                 stdout_message('Image already exists. Creating Container...')
@@ -699,14 +699,14 @@ def docker_init(src, builddir, osimage, debug):
         except Exception:
             # create new docker image
             os.chdir(src)
-            cmd = 'docker build -t centos7:rpmbuild .'
+            cmd = 'docker build -t {} . '.format(imagename)
             subprocess.call([cmd], shell=True, cwd=src)
             stdout_message('Built image', prefix='OK')
 
         # start container detached
         container = dclient.containers.run(
                 name=cname,
-                image=osimage + ':' + iname,
+                image=imagename,
                 command=bash_cmd,
                 volumes={host_mnt: {'bind': container_mnt, 'mode': 'rw'}},
                 detach=True
@@ -732,7 +732,7 @@ def docker_init(src, builddir, osimage, debug):
         if debug:
             print(f'buildfile_list contains:\n\n\t%s' % export_json_object(buildfile_list))
             print(f'osimage is: {osimage}')
-            print(f'iname is: {iname}')
+            print(f'imagename is: {imagename}')
             print(f'container name is: {container.name}')
 
         for file in buildfile_list:
@@ -834,6 +834,7 @@ def main(setVersion, environment, package_configpath, force=False, debug=False):
                 PROJECT_ROOT + '/packaging/docker/' + environment,
                 BUILD_ROOT,
                 environment,
+                vars,
                 debug
             )
         if container:
@@ -898,17 +899,19 @@ def ospackages(pkg_list):
     return True
 
 
-def prebuild(builddir, volmnt, parameter_file):
+def prebuild(builddir, libsrc, volmnt, parameter_file):
     """Summary:
         Prerequisites and dependencies for build execution
     Returns:
         Success | Failure, TYPE: bool
     """
-    def preclean(dir):
-        """ Cleans residual build artifacts """
+    def preclean(dir, artifact=''):
+        """Cleans residual build artifacts by removing """
         try:
-            if os.path.exists(dir):
-                rmtree(dir)
+            if artifact and os.path.exists(libsrc + '/' + artifact):
+                rmtree(libsrc + '/' + artifact)    # clean artifact from inside an existing dir
+            elif os.path.exists(dir):
+                rmtree(dir)     # rm entire directory
         except OSError as e:
             logger.exception(
                 '%s: Error while cleaning residual build artifacts: %s' %
@@ -920,7 +923,7 @@ def prebuild(builddir, volmnt, parameter_file):
 
     try:
 
-        if preclean(builddir) and preclean(volmnt):
+        if preclean(builddir) and preclean(volmnt) and preclean(libsrc, '__pycache__'):
             stdout_message(f'Removed pre-existing build artifacts ({builddir}, {volmnt})')
         os.makedirs(builddir)
         os.makedirs(volmnt)
@@ -1164,7 +1167,8 @@ def init_cli():
         return exit_codes['EX_OK']['Code']
 
     elif args.build:
-        if valid_version(args.set) and prebuild(TMPDIR, VOLMNT, git_root() + '/' + args.parameter_file):
+        libsrc = git_root() + '/' + 'core'
+        if valid_version(args.set) and prebuild(TMPDIR, libsrc, VOLMNT, git_root() + '/' + args.parameter_file):
             package = main(
                         setVersion=args.set,
                         environment=args.distro,

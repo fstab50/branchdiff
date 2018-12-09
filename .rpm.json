@@ -13,11 +13,12 @@
         "epel-release",
         "coreutils >= 8.0",
         "bash-completion",
-        "xclip",
         "which"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
+    "DockerImage": "rpmbuildD",
+    "DockerContainer": "buildbranchdiff",
     "DockerUser": "builder",
     "DockerBuildScript": "docker-buildrpm.sh",
     "BashCompletion": "branchdiff-completion.bash",
