@@ -908,8 +908,8 @@ def prebuild(builddir, libsrc, volmnt, parameter_file):
     def preclean(dir, artifact=''):
         """Cleans residual build artifacts by removing """
         try:
-            if artifact:
-                rmtree(dir + '/' + artifact)    # clean artifact from inside an existing dir
+            if artifact and os.path.exists(libsrc + '/' + artifact):
+                rmtree(libsrc + '/' + artifact)    # clean artifact from inside an existing dir
             elif os.path.exists(dir):
                 rmtree(dir)     # rm entire directory
         except OSError as e:
