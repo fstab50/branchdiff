@@ -24,14 +24,6 @@ Source:         %{name}-%{version}.%{release}.tar.gz
 Prefix:         /usr
 Requires:      DEPLIST
 
-%if 0%{?rhel}%{?amzn2}
-Requires: bash-completion
-%endif
-
-%if 0%{?amzn1}
-Requires: epel-release
-%endif
-
 
 %description
 branchdiff is a utility for use with git version control. branchdiff
@@ -44,7 +36,11 @@ branch diff features:
   * Summary statistics for all commits
   * Advanced file difference illustration between branches
 
-%prep
+
+%pre
+#!/usr/bin/env bash
+yum -y install epel-release         ##   install epel prerequisite   ##
+
 
 %setup -q
 
@@ -108,17 +104,6 @@ if [ $SUDO_USER ]; then
         printf -- '%s\n' 'export PATH' >> "/home/$SUDO_USER/.profile"
     fi
 
-fi
-
-
-##   install bash_completion (amazonlinux 1 only); other epel pkgs   ##
-
-if [ -f '/usr/local/lib/buildpy/os_distro.sh' ]; then
-    if [ "$(sh /usr/local/lib/buildpy/os_distro.sh | awk '{print $2}')" -eq "1" ]; then
-        yum -y install bash-completion xclip  --enablerepo=epel
-    fi
-else
-    yum -y install xclip --enablerepo=epel
 fi
 
 

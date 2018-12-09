@@ -13,6 +13,7 @@
         "epel-release",
         "coreutils >= 8.0",
         "bash-completion",
+        "xclip",
         "which"
     ],
     "LogFiles": [ ],
