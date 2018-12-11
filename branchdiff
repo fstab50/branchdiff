@@ -546,7 +546,7 @@ function commit_diff(){
     sum=$(( 14 + 23 + 15 + 83))
     pct=$(echo "scale=2;90/$sum" | bc -l)
     vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
-    awk -F '=' '{ printf "\t%-14s %-'$vw'.'$vw's %-23s %-15s\n", $1, $2, $3, $4}' $tmp_file
+    awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-23s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
 }
 
