@@ -41,7 +41,7 @@ frame=${btext}
 function help_menu(){
     cat <<EOM
 
-                     ${title}branchdiff${btext} help contents
+                        ${title}branchdiff${btext} help contents
 
   ${title}DESCRIPTION${btext}
 
@@ -407,7 +407,7 @@ function commit_log_help(){
     ##
     cat <<EOM
 
-                  ${title}commit-log${btext} subcommand help
+                     ${title}commit-log${btext} subcommand help
 
   ${title}DESCRIPTION${btext}
 
@@ -415,12 +415,12 @@ function commit_log_help(){
 
   ${title}SYNOPSIS${btext}
 
-            $ ${bin}$pkg${reset}  --commit-log  <${cyan}value${btext}>
+                $ ${bin}$pkg${reset}  --commit-log  <${cyan}value${btext}>
 
-                          ${bbc}[${btext}  history  ${bbc}]${btext}
-                          ${bbc}[${btext}  detail   ${bbc}|${btext}
-                          ${bbc}[${btext}  summary  ${bbc}]${btext}
-                          ${bbc}[${btext}  help     ${bbc}]${btext}
+                             ${bbc}[${btext}  history  ${bbc}]${btext}
+                             ${bbc}[${btext}  detail   ${bbc}|${btext}
+                             ${bbc}[${btext}  summary  ${bbc}]${btext}
+                             ${bbc}[${btext}  help     ${bbc}]${btext}
   ${title}OPTIONS${btext}
 
         ${title}history${btext}: Option to display the complete commit log history
