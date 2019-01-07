@@ -41,7 +41,7 @@ frame=${btext}
 function help_menu(){
     cat <<EOM
 
-                        ${title}branchdiff${btext} help contents
+                         ${title}branchdiff${btext} help contents
 
   ${title}DESCRIPTION${btext}
 
