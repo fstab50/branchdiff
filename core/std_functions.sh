@@ -24,7 +24,7 @@ host=$(hostname)
 system=$(uname)
 
 # this file
-VERSION="2.9.2"
+VERSION="2.9.3"
 
 if [ ! $pkg ] || [ ! $pkg_path ]; then
     echo -e "\npkg and pkg_path errors - both are null"
@@ -415,7 +415,7 @@ function pkg_info(){
     local version=$VERSION
     source $pkg_path/colors.sh
     bd=$(echo -e ${bold})
-    act=$(echo -e ${orange})
+    act=$(echo -e ${a_orange})
     rst=$(echo -e ${reset})
 
     # generate list of functions
