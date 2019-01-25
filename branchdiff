@@ -51,12 +51,12 @@ function help_menu(){
 
           $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
 
-                         [-b | --branch <value> ]
-                         [-l | --commit-log <value> ]
-                         [-c | --code  ]
-                         [-h | --help  ]
-                         [-r | --repository-url ]
-                         [-V | --version ]
+                       [-b | --branch <value> ]
+                       [-l | --commit-log <value> ]
+                       [-c | --code  ]
+                       [-h | --help  ]
+                       [-r | --repository-url ]
+                       [-V | --version ]
 
   ${title}OPTIONS${btext}
 
