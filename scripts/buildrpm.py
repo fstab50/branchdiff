@@ -1005,14 +1005,20 @@ def prebuild(builddir, libsrc, volmnt, parameter_file):
     return False
 
 
-def locate_rpm(origin):
-    """ Finds rpm file object after creation
+def locate_artifact(filext, origin):
+    """
+    Summary.
+
+        Finds rpm file object after creation
+    Args:
+        :filext (str): File extension searching for (".rpm")
+        :origin (str): Starting directory for recursive search
     Returns:
         full path to rpm file | None if not found
     """
     for root, dirs, files in os.walk(origin):
         for file in files:
-            if file.endswith('.rpm'):
+            if file.endswith(filext):
                 return os.path.abspath(os.path.join(root, file))
     return None
 
@@ -1038,9 +1044,9 @@ def postbuild(root, container, rpm_root, scripts_dir, version_module, version):
     try:
 
         # cp rpm created to repo
-        package = locate_rpm(volmnt)
+        package = locate_artifact('.rpm', volmnt)
         if package:
-            copyfile(locate_rpm(volmnt), rpm_root)
+            copyfile(locate_artifact('.rpm', volmnt), rpm_root)
             package_path = rpm_root + '/' + os.path.split(package)[1]
 
         # rpm contents text file
