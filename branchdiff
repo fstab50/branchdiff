@@ -49,7 +49,7 @@ function help_menu(){
 
   ${title}SYNOPSIS${btext}
 
-          $  ${bin}$pkg${reset}   ${bbc}[${btext} --branch <value> ${bbc}]${btext} ${bbc}[${btext} --code ${bbc}]${btext}
+      $ ${bin}$pkg${reset}  ${bbc}[${btext} --branch <value> ${bbc}]${btext}  ${bbc}[${btext} --code  ${bbc}|${btext}  --commit-log  ${bbc}]${btext}
 
                        [-b | --branch <value> ]
                        [-l | --commit-log <value> ]
