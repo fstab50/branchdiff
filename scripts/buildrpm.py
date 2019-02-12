@@ -1040,6 +1040,7 @@ def postbuild(root, container, rpm_root, scripts_dir, version_module, version):
     major = '.'.join(version.split('.')[:2])
     minor = version.split('.')[-1]
     volmnt = VOLMNT
+    delete = True
 
     try:
 
