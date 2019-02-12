@@ -146,6 +146,29 @@ def help_menu():
     return True
 
 
+def clean(directory, debug):
+    """
+    Summary.
+
+        rm residual installation files from build directory
+
+    """
+    bytecode_list = list(
+                        filter(
+                            lambda x: x.endswith('.pyc') or x.endswith('.pyo'), os.listdir(directory)
+                        )
+                    )
+    if debug:
+        stdout_message(
+                message=f'bytecode_list contents: {bytecode_list}',
+                prefix='DEBUG'
+            )
+    for artifact in bytecode_list:
+        os.remove(directory + '/' + artifact)
+        logger.info('Artifact {} cleaned from {}'.format(artifact, directory))
+    return True
+
+
 def current_branch(path):
     """
     Returns:
@@ -282,7 +305,7 @@ def increment_version(current):
     return major + '.' + str(inc_minor)
 
 
-def tar_archive(archive, source_dir):
+def tar_archive(archive, source_dir, debug):
     """
     Summary.
 
@@ -294,9 +317,8 @@ def tar_archive(archive, source_dir):
 
     """
     try:
-        for artifact in os.listdir(source_dir):
-            if artifact.endswith('.pyc') or artifact.endswith('.pyo'):
-                os.remove(artifact)
+        # rm any python byte-code artifacts
+        clean(source_dir, debug)
 
         with tarfile.open(archive, "w:gz") as tar:
             tar.add(source_dir, arcname=os.path.basename(source_dir))
@@ -573,20 +595,7 @@ def builddir_content_updates(param_dict, osimage, version, debug):
             sys.exit(1)
 
         # rm residual installation files from build directory
-        bytecode_list = list(
-                            filter(
-                                lambda x: x.endswith('.pyc') or x.endswith('.pyo'), os.listdir(builddir_path)
-                            )
-                        )
-        if debug:
-            stdout_message(
-                    message=f'bytecode_list contents: {bytecode_list}',
-                    prefix='DEBUG'
-                )
-
-        for artifact in bytecode_list:
-            os.remove(builddir_path + '/' + artifact)
-
+        clean(builddir_path, debug)
 
     except OSError as e:
         logger.exception(
@@ -821,7 +830,7 @@ def main(setVersion, environment, package_configpath, force=False, debug=False):
     # create tar archive
     target_archive = BUILD_ROOT + '/' + PROJECT_BIN + '-' + VERSION + '.tar.gz'
     source_dir = BUILD_ROOT + '/' + BUILDDIRNAME
-    r_tarfile = tar_archive(target_archive, source_dir)
+    r_tarfile = tar_archive(target_archive, source_dir, debug)
 
     # launch docker container and execute final build steps
     if r_struture and r_updates and r_tarfile:
