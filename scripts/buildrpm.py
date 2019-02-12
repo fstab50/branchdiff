@@ -661,6 +661,51 @@ def container_running(cid, debug=False):
     return False
 
 
+def display_package_contents(rpm_path, contents):
+    """
+    Summary:
+        Output newly built package contents.
+    Args:
+        :build_root (str):  location of newly built rpm package
+        :version (str):  current version string, format:  '{major}.{minor}.{patch num}'
+    Returns:
+        Success | Failure, TYPE: bool
+    """
+    tab = '\t'.expandtabs(2)
+    tab4 = '\t'.expandtabs(4)
+    width = 90
+    package = os.path.split(rpm_path)[1]
+    path, discard = os.path.split(contents)
+    pwd = os.getcwd()
+    os.chdir('.') if not path else os.chdir(path)
+
+    with open(contents) as f1:
+        unformatted = f1.readlines()
+
+    # title header and subheader
+    header = '\n\t\tPackage Contents:  ' + bd + package + rst + '\n'
+    print(header)
+    subheader = tab + 'Permission' + tab + ' Owner/Group' + '\t' + 'ctime' \
+        + '\t'.expandtabs(8) + 'File'
+    print(subheader)
+
+    # divider line
+    list(filter(lambda x: print('-', end=''), range(0, width + 1))), print('\r')
+
+    # content
+    for line in unformatted:
+        permissions = [tab + line.split()[0]]
+        raw = tab4 + 'root root'
+        ctime = line.split()[5:8]
+        f_ctime = tab4 + ''.join([x + ' ' for x in ctime])
+        content_path = tab4 + yl + line.split()[-1] + rst
+        fline = permissions[0] + raw + f_ctime + content_path
+        print(fline)
+    print('\n')
+    os.chdir(pwd)
+    return True
+
+
 def docker_daemon_up():
     """
     Summary:
@@ -998,6 +1043,9 @@ def postbuild(root, container, rpm_root, scripts_dir, version_module, version):
             copyfile(locate_rpm(volmnt), rpm_root)
             package_path = rpm_root + '/' + os.path.split(package)[1]
 
+        # rpm contents text file
+        contents = locate_artifact('.txt', volmnt)
+
         # stop and rm container
         cmd = f'docker stop {container.name}'
         subprocess.getoutput(cmd)
@@ -1024,7 +1072,7 @@ def postbuild(root, container, rpm_root, scripts_dir, version_module, version):
     except OSError as e:
         logger.exception('{}: Postbuild clean up failure'.format(inspect.stack()[0][3]))
         return ''
-    return package_path
+    return package_path, contents
 
 
 class ParameterSet():
@@ -1178,7 +1226,7 @@ def init_cli():
     elif args.build:
         libsrc = git_root() + '/' + 'core'
         if valid_version(args.set) and prebuild(TMPDIR, libsrc, VOLMNT, git_root() + '/' + args.parameter_file):
-            package = main(
+            package, contents = main(
                         setVersion=args.set,
                         environment=args.distro,
                         package_configpath=git_root() + '/' + args.parameter_file,
@@ -1188,6 +1236,14 @@ def init_cli():
             if package:
                 stdout_message(f'New package created: {yl + package + rst}')
                 stdout_message(f'RPM build process completed successfully. End', prefix='OK')
+
+                if contents:
+                    display_package_contents(package, contents)
+                else:
+                    stdout_message(
+                        message=f'Unable to locate a rpm contents file in {build_root}.',
+                        prefix='WARN')
+                    return False
                 return exit_codes['EX_OK']['Code']
             else:
                 stdout_message(
