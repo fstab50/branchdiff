@@ -128,6 +128,19 @@ function depcheck(){
 }
 
 
+function rpm_contents(){
+    ##
+    ##  Displays detailed view of all rpm contents
+    ##
+    local rpmfile="/home/builder/rpmbuild/RPMS/noarch/buildpy-*.rpm"
+    local contents="/home/builder/rpmbuild/RPMS/rpm-contents.txt"
+    local rst="$(echo -e ${reset})"
+
+    rpm -qlpv $rpmfile > "$contents"
+    return 0
+}
+
+
 function std_logger(){
     ##
     ##  Summary:
@@ -305,6 +318,11 @@ std_message "Changed to rpmbuild working directory. (PWD: $PWD)" "INFO" $LOG_FIL
 # build rpm
 rpmbuild -ba SPECS/branchdiff.spec
 std_message "executed rpmbuild" "INFO" $LOG_FILE
+
+# output rpm contents
+contents="RPMS/rpm-contents.txt"
+std_message "RPM Contents:" "INFO" $LOG_FILE
+rpm_contents
 
 std_message "copy completed rpm to volume mount: $VOLMNT" "INFO" $LOG_FILE
 cp -rv RPMS $VOLMNT >> $LOG_FILE
