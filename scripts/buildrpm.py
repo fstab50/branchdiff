@@ -946,7 +946,7 @@ def prebuild(builddir, libsrc, volmnt, parameter_file):
 
     except Exception as e:
         logger.exception(
-            '{}: Failure to import _version module _version'.format(inspect.stack()[0][3])
+            '{}: Failure to import __version__ parameter'.format(inspect.stack()[0][3])
         )
     return False
 
