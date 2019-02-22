@@ -113,8 +113,8 @@ fi
 
 ##   install bash_completion (amazonlinux 1 only); other epel pkgs   ##
 
-if [ -f '/usr/local/lib/buildpy/os_distro.sh' ]; then
-    if [ "$(sh /usr/local/lib/buildpy/os_distro.sh | awk '{print $2}')" -eq "1" ]; then
+if [ -f '/usr/local/lib/branchdiff/os_distro.sh' ]; then
+    if [ "$(sh /usr/local/lib/branchdiff/os_distro.sh | awk '{print $2}')" -eq "1" ]; then
         yum -y install bash-completion xclip  --enablerepo=epel
     fi
 else

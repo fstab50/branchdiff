@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+pkg=$(basename $0 2>/dev/null)
+
 #------------------------------------------------------------------------------
 #
 #   colors.sh module | std colors for bash
@@ -17,8 +19,7 @@
 #
 #------------------------------------------------------------------------------
 
-
-VERSION="2.0.1"
+VERSION="2.0.3"
 
 
 # --- standard bash color codes  ------------------------------------------------------------------
@@ -33,6 +34,7 @@ VERSION="2.0.1"
     cyan=$(tput setaf 6)
     white=$(tput setaf 7)
     gray=$(tput setaf 008)
+    magenta=$(tput setaf 13)
 
     # Formatting
     BOLD=`tput bold`
@@ -47,6 +49,7 @@ VERSION="2.0.1"
 
     # ansi color codes
     a_orange='\033[38;5;95;38;5;214m'
+    a_magenta='\033[38;5;95;38;5;177m'
     a_wgray='\033[38;5;95;38;5;250m'                  # white-gray
     a_lgray='\033[38;5;95;38;5;245m'                  # light gray
     a_dgray='\033[38;5;95;38;5;8m'                    # dark gray
@@ -144,3 +147,98 @@ VERSION="2.0.1"
     alias brightyellow2=$a_brightyellow2
     alias brightyellowgreen=$a_brightyellowgreen
     alias brightwhite=$a_brightwhite
+
+
+# --- display about  -------------------------------------------------------------------------------
+
+
+function print_local_variables(){
+    # print out all variables contained in this module:
+    VARS=$(set -o posix ; set)
+    SCRIPT_VARS=$(grep -vFe "$VARS" <<<"$(set -o posix ; set)" | grep -v ^VARS=)
+    echo -e "$SCRIPT_VARS"
+    unset VARS
+}
+
+
+function print_colors(){
+    # print out all variables contained in this module:
+    declare -a array=("${!1}")
+    for i in "${array[@]}"; do
+        var="$(echo -e $i)"
+        printf -- '\t%s\n' $var
+    done
+    return 0
+}
+
+
+function pkg_info(){
+    ##
+    ##  displays information about this library module
+    ##
+    ##     - dependent module colors.sh is located always adjacent
+    ##     - sourcing of dep modules must occur after local var to avoid overwrite
+    ##       of variable values in this module
+    ##
+    local version="$1"
+    bdwt=$(echo -e ${bold}${a_brightwhite})
+    act=$(echo -e ${a_orange})
+    rst=$(echo -e ${reset})
+
+    declare -a ansi_colors
+    declare -a printvalue_colors
+
+    # generate list of functions
+    printf -- '%s\n' "$(declare -F | awk '{print $3}')" > /tmp/.functions
+    sum=$(cat /tmp/.functions | wc -l)
+
+    # construct, display help msg output
+    cat <<EOM
+    ___________________________________________________
+
+    ${title}colors.sh${rst}:  Bash Color Library
+
+    Module Name:        ${cyan}$pkg${rst}
+    Module Version:     ${act}$version${rst}
+    ___________________________________________________
+
+    Module Contains $sum Functions:
+
+EOM
+    # display list of function names in this module
+    for l in $(cat /tmp/.functions); do
+        printf -- '\t%s %s\n' "-" "$l"
+    done
+    printf -- '\n'
+    rm /tmp/.functions
+
+    # show vars contained
+    ansi_colors=$(set -o posix ; set | grep 'a_')
+    asum=$(set -o posix ; set | grep 'a_' | wc -l)
+
+    printvalue_colors=$(set -o posix ; set | grep 'pv_')
+    pvsum=$(set -o posix ; set | grep 'pv_' | wc -l)
+
+    #  display color vars
+    cat <<EOM
+    ___________________________________________________
+
+    ${rst}ANSI Codes:  $asum
+
+    $(print_colors ansi_colors[@])
+
+    ${rst}Print Value Codes:  $pvsum
+
+    $(print_colors printvalue_colors[@])
+    ${rst}
+
+EOM
+    #
+    # <<-- end function pkg_info -->>
+}
+
+    # print information about this package
+    if [ "$pkg" = "colors.sh" ]; then
+        pkg_info "$VERSION"
+        exit 0
+    fi

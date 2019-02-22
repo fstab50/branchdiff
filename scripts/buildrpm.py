@@ -146,6 +146,29 @@ def help_menu():
     return True
 
 
+def clean(directory, debug):
+    """
+    Summary.
+
+        rm residual installation files from build directory
+
+    """
+    bytecode_list = list(
+                        filter(
+                            lambda x: x.endswith('.pyc') or x.endswith('.pyo'), os.listdir(directory)
+                        )
+                    )
+    if debug:
+        stdout_message(
+                message=f'bytecode_list contents: {bytecode_list}',
+                prefix='DEBUG'
+            )
+    for artifact in bytecode_list:
+        os.remove(directory + '/' + artifact)
+        logger.info('Artifact {} cleaned from {}'.format(artifact, directory))
+    return True
+
+
 def current_branch(path):
     """
     Returns:
@@ -282,7 +305,7 @@ def increment_version(current):
     return major + '.' + str(inc_minor)
 
 
-def tar_archive(archive, source_dir):
+def tar_archive(archive, source_dir, debug):
     """
     Summary.
 
@@ -294,9 +317,8 @@ def tar_archive(archive, source_dir):
 
     """
     try:
-        for artifact in os.listdir(source_dir):
-            if artifact.endswith('.pyc') or artifact.endswith('.pyo'):
-                os.remove(artifact)
+        # rm any python byte-code artifacts
+        clean(source_dir, debug)
 
         with tarfile.open(archive, "w:gz") as tar:
             tar.add(source_dir, arcname=os.path.basename(source_dir))
@@ -573,20 +595,7 @@ def builddir_content_updates(param_dict, osimage, version, debug):
             sys.exit(1)
 
         # rm residual installation files from build directory
-        bytecode_list = list(
-                            filter(
-                                lambda x: x.endswith('.pyc') or x.endswith('.pyo'), os.listdir(builddir_path)
-                            )
-                        )
-        if debug:
-            stdout_message(
-                    message=f'bytecode_list contents: {bytecode_list}',
-                    prefix='DEBUG'
-                )
-
-        for artifact in bytecode_list:
-            os.remove(builddir_path + '/' + artifact)
-
+        clean(builddir_path, debug)
 
     except OSError as e:
         logger.exception(
@@ -650,6 +659,51 @@ def container_running(cid, debug=False):
         else:
             stdout_message(f'Container {cid} stopped', prefix='WARN')
     return False
+
+
+def display_package_contents(rpm_path, contents):
+    """
+    Summary:
+        Output newly built package contents.
+    Args:
+        :build_root (str):  location of newly built rpm package
+        :version (str):  current version string, format:  '{major}.{minor}.{patch num}'
+    Returns:
+        Success | Failure, TYPE: bool
+    """
+    tab = '\t'.expandtabs(2)
+    tab4 = '\t'.expandtabs(4)
+    width = 90
+    package = os.path.split(rpm_path)[1]
+    path, discard = os.path.split(contents)
+    pwd = os.getcwd()
+    os.chdir('.') if not path else os.chdir(path)
+
+    with open(contents) as f1:
+        unformatted = f1.readlines()
+
+    # title header and subheader
+    header = '\n\t\tPackage Contents:  ' + bd + package + rst + '\n'
+    print(header)
+    subheader = tab + 'Permission' + tab + ' Owner/Group' + '\t' + 'ctime' \
+        + '\t'.expandtabs(8) + 'File'
+    print(subheader)
+
+    # divider line
+    list(filter(lambda x: print('-', end=''), range(0, width + 1))), print('\r')
+
+    # content
+    for line in unformatted:
+        permissions = [tab + line.split()[0]]
+        raw = tab4 + 'root root'
+        ctime = line.split()[5:8]
+        f_ctime = tab4 + ''.join([x + ' ' for x in ctime])
+        content_path = tab4 + yl + line.split()[-1] + rst
+        fline = permissions[0] + raw + f_ctime + content_path
+        print(fline)
+    print('\n')
+    os.chdir(pwd)
+    return True
 
 
 def docker_daemon_up():
@@ -821,7 +875,7 @@ def main(setVersion, environment, package_configpath, force=False, debug=False):
     # create tar archive
     target_archive = BUILD_ROOT + '/' + PROJECT_BIN + '-' + VERSION + '.tar.gz'
     source_dir = BUILD_ROOT + '/' + BUILDDIRNAME
-    r_tarfile = tar_archive(target_archive, source_dir)
+    r_tarfile = tar_archive(target_archive, source_dir, debug)
 
     # launch docker container and execute final build steps
     if r_struture and r_updates and r_tarfile:
@@ -908,8 +962,9 @@ def prebuild(builddir, libsrc, volmnt, parameter_file):
     def preclean(dir, artifact=''):
         """Cleans residual build artifacts by removing """
         try:
-            if artifact and os.path.exists(libsrc + '/' + artifact):
-                rmtree(libsrc + '/' + artifact)    # clean artifact from inside an existing dir
+            if artifact:
+                if os.path.exists(libsrc + '/' + artifact):
+                    rmtree(libsrc + '/' + artifact)    # clean artifact from inside an existing dir
             elif os.path.exists(dir):
                 rmtree(dir)     # rm entire directory
         except OSError as e:
@@ -946,19 +1001,25 @@ def prebuild(builddir, libsrc, volmnt, parameter_file):
 
     except Exception as e:
         logger.exception(
-            '{}: Failure to import _version module _version'.format(inspect.stack()[0][3])
+            '{}: Failure to import __version__ parameter'.format(inspect.stack()[0][3])
         )
     return False
 
 
-def locate_rpm(origin):
-    """ Finds rpm file object after creation
+def locate_artifact(filext, origin):
+    """
+    Summary.
+
+        Finds rpm file object after creation
+    Args:
+        :filext (str): File extension searching for (".rpm")
+        :origin (str): Starting directory for recursive search
     Returns:
         full path to rpm file | None if not found
     """
     for root, dirs, files in os.walk(origin):
         for file in files:
-            if file.endswith('.rpm'):
+            if file.endswith(filext):
                 return os.path.abspath(os.path.join(root, file))
     return None
 
@@ -980,14 +1041,18 @@ def postbuild(root, container, rpm_root, scripts_dir, version_module, version):
     major = '.'.join(version.split('.')[:2])
     minor = version.split('.')[-1]
     volmnt = VOLMNT
+    delete = True
 
     try:
 
         # cp rpm created to repo
-        package = locate_rpm(volmnt)
+        package = locate_artifact('.rpm', volmnt)
         if package:
-            copyfile(locate_rpm(volmnt), rpm_root)
+            copyfile(locate_artifact('.rpm', volmnt), rpm_root)
             package_path = rpm_root + '/' + os.path.split(package)[1]
+
+        # rpm contents text file
+        contents = locate_artifact('.txt', volmnt)
 
         # stop and rm container
         cmd = f'docker stop {container.name}'
@@ -1015,7 +1080,7 @@ def postbuild(root, container, rpm_root, scripts_dir, version_module, version):
     except OSError as e:
         logger.exception('{}: Postbuild clean up failure'.format(inspect.stack()[0][3]))
         return ''
-    return package_path
+    return package_path, contents
 
 
 class ParameterSet():
@@ -1169,7 +1234,7 @@ def init_cli():
     elif args.build:
         libsrc = git_root() + '/' + 'core'
         if valid_version(args.set) and prebuild(TMPDIR, libsrc, VOLMNT, git_root() + '/' + args.parameter_file):
-            package = main(
+            package, contents = main(
                         setVersion=args.set,
                         environment=args.distro,
                         package_configpath=git_root() + '/' + args.parameter_file,
@@ -1179,6 +1244,14 @@ def init_cli():
             if package:
                 stdout_message(f'New package created: {yl + package + rst}')
                 stdout_message(f'RPM build process completed successfully. End', prefix='OK')
+
+                if contents:
+                    display_package_contents(package, contents)
+                else:
+                    stdout_message(
+                        message=f'Unable to locate a rpm contents file in {build_root}.',
+                        prefix='WARN')
+                    return False
                 return exit_codes['EX_OK']['Code']
             else:
                 stdout_message(
