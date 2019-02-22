@@ -132,7 +132,7 @@ function rpm_contents(){
     ##
     ##  Displays detailed view of all rpm contents
     ##
-    local rpmfile="/home/builder/rpmbuild/RPMS/noarch/buildpy-*.rpm"
+    local rpmfile="/home/builder/rpmbuild/RPMS/noarch/branchdiff-*.rpm"
     local contents="/home/builder/rpmbuild/RPMS/rpm-contents.txt"
     local rst="$(echo -e ${reset})"
 
