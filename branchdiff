@@ -475,7 +475,7 @@ function title_header(){
     printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
 
     # reference width
-    refsum='153'
+    refsum='143'
 
     # first column spacing
     pct0=$(echo "scale=2;25/$refsum" | bc -l)
@@ -543,10 +543,11 @@ function commit_diff(){
     # print section header
     title_header "$branchref" "$branchcur" "$header"
     # print section body
-    sum=$(( 14 + 23 + 15 + 83))
+    sum=$(( 14 + 23 + 15 + 73 ))
     pct=$(echo "scale=2;90/$sum" | bc -l)
+    if (( $twidth <= '140' )); then pct=$(echo "scale=2;80/$sum" | bc -l); fi
     vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
-    awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-23s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
+    awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-21s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
 }
 
@@ -559,7 +560,7 @@ function file_diff(){
     local margins='30'
 
     # max width of fname portion
-    width_filenames=$(_calc_maximum_fname_length $bramchref)
+    width_filenames=$(_calc_maximum_fname_length $branchcur)
 
     # stat width
     swidth=$(( ${twidth}*4/7 - $width_filenames - $margins ))
