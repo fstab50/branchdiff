@@ -203,8 +203,7 @@ function _calc_maximum_fname_length(){
     declare -a changed
 
     # file all files changed
-    changed=$(_updated_files $branchref)
-    for file in "${changed[@]}"; do
+    for file in $(_updated_files $branchref); do
         if [[ ${#file} -gt $max_count ]]; then
             max_count=${#file}
         fi
@@ -555,14 +554,16 @@ function file_diff(){
     local branchref="$1"
     local branchcur="$2"
     local header="$3"
-    local twidth=$(tput cols)
+    local twidth
     local margins='30'
+
+    twidth=$(tput cols)
 
     # max width of fname portion
     width_filenames=$(_calc_maximum_fname_length $branchref)
 
     # stat width
-    swidth=$(( $twidth*4/7 - $width_filenames - $margins ))
+    swidth=$(( ${twidth}*4/7 - $width_filenames - $margins ))
     # header
     printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}${branchcur}${frame}"| indent04
 
