@@ -498,9 +498,9 @@ function title_header(){
 
     # author header spacing
     auth=14
-
+    adj_width=$(( $lsst + $cm + $cfwidth + $age + $auth ))
     awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-'$last's\n", $1, $2, $3, $4}' $header_file
-    printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
+    printf '\t %*s'  "$(( $twidth - 8))" '' | tr ' ' -  | indent04
     echo -e ${btext}
     return 0
 }
