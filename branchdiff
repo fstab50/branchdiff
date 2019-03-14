@@ -221,7 +221,7 @@ function _updated_files(){
     local branch2=$(current_branch)
 
     declare -a changed
-    changed=$(git diff --name-only $branch1..$branch2)
+    changed="$(git diff --name-only $branch1..$branch2)"
     echo "${changed[@]}"
 }
 
@@ -533,10 +533,10 @@ function commit_diff(){
     local pct
     local vw
     # output
-    git log --color=always \
+    git log ${branchref}..${branchcur} --color=always \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
-        --date=relative ${branchref}..${branchcur}  > $tmp_file
+        --date=relative  > $tmp_file
 
     commit_ct="$(numof_commits $branchref $branchcur)"
 
@@ -559,7 +559,7 @@ function file_diff(){
     local margins='30'
 
     # max width of fname portion
-    width_filenames=$(_calc_maximum_fname_length $bramchref)
+    width_filenames=$(_calc_maximum_fname_length $branchref)
 
     # stat width
     swidth=$(( $twidth*4/7 - $width_filenames - $margins ))
