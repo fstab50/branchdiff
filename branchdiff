@@ -9,7 +9,7 @@
 pkg=$(basename $0)                                  # pkg (script) full name
 pkg_root=$(echo $pkg | awk -F '.' '{print $1}')     # pkg without file extention
 pkg_path=$(cd $(dirname $0); pwd -P)                # location of pkg
-pkg_lib="$pkg_path/core"
+pkg_lib="/usr/local/lib/branchdiff"
 tmp_file="/tmp/gitdiff.txt"
 header_file="/tmp/header.txt"
 twidth=$(( $(tput cols) - 10 ))
@@ -221,7 +221,7 @@ function _updated_files(){
     local branch2=$(current_branch)
 
     declare -a changed
-    changed="$(git diff --name-only $branch1..$branch2)"
+    changed=$(git diff --name-only $branch1..$branch2)
     echo "${changed[@]}"
 }
 
@@ -487,7 +487,7 @@ function title_header(){
 
     # age header spacing
     pct2=$(echo "scale=2;57/$refsum" | bc -l)   # percent width
-    cfpct=$(echo "scale=2;6/$refsum" | bc -l)     # correction factor percent
+    cfpct=$(echo "scale=2;5/$refsum" | bc -l)     # correction factor percent
 
     if [ "$(tput cols)" -ge '200' ]; then
         cfwidth=$(float2int "$(echo "scale=0;$cfpct*$refsum" | bc -l)")
@@ -498,9 +498,9 @@ function title_header(){
 
     # author header spacing
     auth=14
-    title_width=$(( $lsst + $cm + $cfwidth + $age + $auth ))
+
     awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-'$last's\n", $1, $2, $3, $4}' $header_file
-    printf '\t %*s'  "$(( $twidth - 8))" '' | tr ' ' -  | indent04
+    printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
     echo -e ${btext}
     return 0
 }
@@ -533,18 +533,18 @@ function commit_diff(){
     local pct
     local vw
     # output
-    git log ${branchref}..${branchcur} --color=always \
+    git log --color=always \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
-        --date=relative  > $tmp_file
+        --date=relative ${branchref}..${branchcur}  > $tmp_file
 
     commit_ct="$(numof_commits $branchref $branchcur)"
 
     # print section header
     title_header "$branchref" "$branchcur" "$header"
     # print section body
-    sum=$(( 14 + 23 + 15 + 93))
-    pct=$(echo "scale=2;98/$sum" | bc -l)
+    sum=$(( 14 + 23 + 15 + 83))
+    pct=$(echo "scale=2;90/$sum" | bc -l)
     vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
     awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-23s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
@@ -559,7 +559,7 @@ function file_diff(){
     local margins='30'
 
     # max width of fname portion
-    width_filenames=$(_calc_maximum_fname_length $branchref)
+    width_filenames=$(_calc_maximum_fname_length $bramchref)
 
     # stat width
     swidth=$(( $twidth*4/7 - $width_filenames - $margins ))
