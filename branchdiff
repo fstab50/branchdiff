@@ -545,10 +545,36 @@ function commit_diff(){
 
     # print section header
     title_header "$branchref" "$branchcur" "$header"
+
     # print section body
     sum=$(( 14 + 23 + 15 + 73 ))
-    pct=$(echo "scale=2;90/$sum" | bc -l)
-    if (( $twidth <= '140' )); then pct=$(echo "scale=2;80/$sum" | bc -l); fi
+
+    #if (( $twidth <= '140' )); then
+    #    pct=$(echo "scale=2;80/$sum" | bc -l)
+
+    #elif (( '140' < $twidth <= '160' )); then
+    #    pct=$(echo "scale=2;89/$sum" | bc -l)
+
+    #elif (( $twidth >= '160' )); then
+    #    pct=$(echo "scale=2;93/$sum" | bc -l)
+
+    #else
+    #    pct=$(echo "scale=2;90/$sum" | bc -l)
+    #fi
+    case $twidth in
+        1[1-4]0)
+            pct=$(echo "scale=2;80/$sum" | bc -l)
+            ;;
+        1[4-6]0)
+            pct=$(echo "scale=2;89/$sum" | bc -l)
+            ;;
+        1[6-9]0 | 2[0-9]0)
+            pct=$(echo "scale=2;93/$sum" | bc -l)
+            ;;
+        *)
+            pct=$(echo "scale=2;90/$sum" | bc -l)
+            ;;
+    esac
     vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
     awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-21s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
