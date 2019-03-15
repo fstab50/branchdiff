@@ -203,8 +203,7 @@ function _calc_maximum_fname_length(){
     declare -a changed
 
     # file all files changed
-    changed=$(_updated_files $branchref)
-    for file in "${changed[@]}"; do
+    for file in $(_updated_files $branchref); do
         if [[ ${#file} -gt $max_count ]]; then
             max_count=${#file}
         fi
@@ -218,10 +217,14 @@ function _updated_files(){
     ##  returns list of all files changed; relative paths
     ##
     local branch1="$1"
-    local branch2=$(current_branch)
+    local branch2
+
+    branch2=$(current_branch)
 
     declare -a changed
-    changed=$(git diff --name-only $branch1..$branch2)
+    for i in $(git diff --name-only $branch1..$branch2); do
+        changed=( "${changed[@]}" "$i" )
+    done
     echo "${changed[@]}"
 }
 
@@ -475,7 +478,7 @@ function title_header(){
     printf -- '\t%s  %s  %s  %s\n' "${title}Commit" "CommitMsg" "Age" "Author${btext}"  > $header_file
 
     # reference width
-    refsum='153'
+    refsum='143'
 
     # first column spacing
     pct0=$(echo "scale=2;25/$refsum" | bc -l)
@@ -500,7 +503,7 @@ function title_header(){
     auth=14
 
     awk  '{ printf "\t %-'$cm's %-'$age's %-'$auth's %-'$last's\n", $1, $2, $3, $4}' $header_file
-    printf '%*s'  "$twidth" '' | tr ' ' _  | indent04
+    printf '\t%*s'  "$(($twidth - $twidth / 22))" '' | tr ' ' -  | indent04
     echo -e ${btext}
     return 0
 }
@@ -533,20 +536,35 @@ function commit_diff(){
     local pct
     local vw
     # output
-    git log --color=always \
+    git log ${branchref}..${branchcur} --color=always \
         --pretty=format:"%Cred%h%Creset = %C(yellow)%d%Creset %s = %Cgreen%cr%Creset = %Cblue%aE%Creset" \
         --abbrev-commit \
-        --date=relative ${branchref}..${branchcur}  > $tmp_file
+        --date=relative  > $tmp_file
 
     commit_ct="$(numof_commits $branchref $branchcur)"
 
     # print section header
     title_header "$branchref" "$branchcur" "$header"
+
     # print section body
-    sum=$(( 14 + 23 + 15 + 83))
-    pct=$(echo "scale=2;90/$sum" | bc -l)
+    sum=$(( 14 + 23 + 15 + 73 ))
+
+
+    if (( $twidth <= '140' )); then
+        pct=$(echo "scale=2;80/$sum" | bc -l)
+
+    elif (( '140' < $twidth <= '160' )); then
+        pct=$(echo "scale=2;89/$sum" | bc -l)
+
+    elif (( $twidth >= '170' )); then
+        pct=$(echo "scale=2;95/$sum" | bc -l)
+
+    else
+        pct=$(echo "scale=2;90/$sum" | bc -l)
+    fi
+
     vw=$(float2int "$(echo "scale=0;$pct*$twidth" | bc -l)")
-    awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-23s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
+    awk -F '=' '{ printf "\t%-12s %-'$vw'.'$vw's %-21s %-15s\n", "* "$1, $2, $3, $4}' $tmp_file
     printf '%*s\n' "$twidth" '' | tr ' ' _  | indent04
 }
 
@@ -559,10 +577,10 @@ function file_diff(){
     local margins='30'
 
     # max width of fname portion
-    width_filenames=$(_calc_maximum_fname_length $bramchref)
+    width_filenames=$(_calc_maximum_fname_length $branchcur)
 
     # stat width
-    swidth=$(( $twidth*4/7 - $width_filenames - $margins ))
+    swidth=$(( ${twidth}*4/7 - $width_filenames - $margins ))
     # header
     printf -- "\n${title}%s${btext}  :  %s\n\n" "$header" "$branchref vs. ${yellow}${branchcur}${frame}"| indent04
 
