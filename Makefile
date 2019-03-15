@@ -31,9 +31,9 @@ VERSION_FILE = $(LIB_DIR)/version.py
 
 build-all: clean builddeb buildrpm    ## Clean and Build Debian & RPM pkgs
 
-zero-builddeb: clean deplist builddeb    ## Clean and Build Debian (.deb) pkg
+zero-builddeb: clean builddeb    ## Clean and Build Debian (.deb) pkg
 
-zero-buildrpm: clean deplist buildrpm    ## Clean and Build Redhat (.rpm) pkg
+zero-buildrpm: clean buildrpm    ## Clean and Build Redhat (.rpm) pkg
 
 zero-deploydeb:	clean builddeb deploydeb	## Clean, Build & Install Debian (.deb) pkg
 
