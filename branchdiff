@@ -203,8 +203,7 @@ function _calc_maximum_fname_length(){
     declare -a changed
 
     # file all files changed
-    changed=$(_updated_files $branchref)
-    for file in "${changed[@]}"; do
+    for file in $(_updated_files $branchref); do
         if [[ ${#file} -gt $max_count ]]; then
             max_count=${#file}
         fi
@@ -218,10 +217,14 @@ function _updated_files(){
     ##  returns list of all files changed; relative paths
     ##
     local branch1="$1"
-    local branch2=$(current_branch)
+    local branch2
+
+    branch2=$(current_branch)
 
     declare -a changed
-    changed=$(git diff --name-only $branch1..$branch2)
+    for i in $(git diff --name-only $branch1..$branch2); do
+        changed=( "${changed[@]}" "$i" )
+    done
     echo "${changed[@]}"
 }
 
