@@ -49,6 +49,10 @@ if [[ -z $(ls /etc/apt/sources.list.d | grep $repository) ]]; then
         'bionic' | "\"18.04\"" | "18.04")
             echo 'deb [arch=amd64] http://deb.awscloud.center bionic main' > /etc/apt/sources.list.d/debian-tools.list
             ;;
+
+        'cosmic' | "\"18.10\"" | "18.10")
+            echo 'deb [arch=amd64] http://deb.awscloud.center cosmic main' > /etc/apt/sources.list.d/debian-tools.list
+            ;;
     esac
 
     # install public key
