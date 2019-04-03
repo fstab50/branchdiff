@@ -19,7 +19,7 @@ pkg=$(basename $0 2>/dev/null)
 #
 #------------------------------------------------------------------------------
 
-VERSION="2.0.3"
+VERSION="2.0.5"
 
 
 # --- standard bash color codes  ------------------------------------------------------------------
@@ -39,6 +39,8 @@ VERSION="2.0.3"
     # Formatting
     BOLD=`tput bold`
     UNBOLD=`tput sgr0`
+    a_italic='\x1b[3m'
+    ITALIC=$(echo -e ${a_italic})
 
     # std reset
     reset=$(tput sgr0)
@@ -46,13 +48,15 @@ VERSION="2.0.3"
 
 # --- ansi color escape codes  --------------------------------------------------------------------
 
-
     # ansi color codes
-    a_orange='\033[38;5;95;38;5;214m'
-    a_magenta='\033[38;5;95;38;5;177m'
-    a_wgray='\033[38;5;95;38;5;250m'                  # white-gray
-    a_lgray='\033[38;5;95;38;5;245m'                  # light gray
+    a_bluegray='\033[38;5;68;38;5;68m'
+    a_darkblue='\033[34;5;21m'
     a_dgray='\033[38;5;95;38;5;8m'                    # dark gray
+    a_lgray='\033[38;5;95;38;5;245m'                  # light gray
+    a_magenta='\033[38;5;95;38;5;177m'
+    a_orange='\033[38;5;95;38;5;214m'
+    a_wgray='\033[38;5;95;38;5;250m'                  # white-gray
+    a_wgray2='\033[38;5;7m;38;5;250m'                           # whitest-gray
 
     # ansi bright colors
     a_brightblue='\033[38;5;51m'
@@ -66,8 +70,8 @@ VERSION="2.0.3"
     a_brightwhite='\033[38;5;15m'
 
     # ansi font formatting
-    bold='\u001b[1m'                                # ansi format
-    underline='\u001b[4m'                           # ansi format
+    bold='\u001b[1m'                                  # ansi format
+    underline='\u001b[4m'                             # ansi format
 
     # ansi escape code reset
     resetansi='\u001b[0m'
@@ -85,16 +89,16 @@ VERSION="2.0.3"
     # frame codes (use for tables)                  SYNTAX:  color:format (bold, etc)
     pv_blue=$(echo -e ${a_brightblue})
     pv_bluebold=$(echo -e ${bold}${a_brightblue})
-    pv_green=$(echo -e ${a_brightgreen})            # use for tables; green border faming
-    pv_greenbold=$(echo -e ${bold}${a_brightgreen}) # use for tables; green bold border faming
-    pv_orange=$(echo -e ${a_orange})                # use for tables; orange border faming
-    pv_orangebold=$(echo -e ${bold}${a_orange})     # use for tables; orange bold border faming
-    pv_white=$(echo -e ${a_brightwhite})            # use for tables; white border faming
-    pv_whitebold=$(echo -e ${bold}${a_brightwhite}) # use for tables; white bold border faming
+    pv_green=$(echo -e ${a_brightgreen})              # use for tables; green border faming
+    pv_greenbold=$(echo -e ${bold}${a_brightgreen})   # use for tables; green bold border faming
+    pv_orange=$(echo -e ${a_orange})                  # use for tables; orange border faming
+    pv_orangebold=$(echo -e ${bold}${a_orange})       # use for tables; orange bold border faming
+    pv_white=$(echo -e ${a_brightwhite})              # use for tables; white border faming
+    pv_whitebold=$(echo -e ${bold}${a_brightwhite})   # use for tables; white bold border faming
 
-    pv_bodytext=$(echo -e ${reset}${a_wgray})             # main body text; set to reset for native xterm
-    pv_bg=$(echo -e ${a_brightgreen})                     # brightgreen foreground cmd
-    pv_bgb=$(echo -e ${bold}${a_brightgreen})             # bold brightgreen foreground cmd
+    pv_bodytext=$(echo -e ${reset}${a_wgray})         # main body text; set to reset for native xterm
+    pv_bg=$(echo -e ${a_brightgreen})                 # brightgreen foreground cmd
+    pv_bgb=$(echo -e ${bold}${a_brightgreen})         # bold brightgreen foreground cmd
     pv_wgray=$(echo -e ${a_wgray})
     pv_orange=$(echo -e ${a_orange})
     pv_wgray=$(echo -e ${a_wgray})
@@ -102,8 +106,8 @@ VERSION="2.0.3"
     pv_dgray=$(echo -e ${a_dgray})
 
     # initialize default color scheme
-    accent=$(tput setaf 008)                         # ansi format
-    ansi_orange=$(echo -e ${a_orange})                 # use for ansi escape color codes
+    accent=$(tput setaf 008)                          # ansi format
+    ansi_orange=$(echo -e ${a_orange})                # use for ansi escape color codes
 
     # reset print variable
     RESET=$(echo -e ${resetansi})
@@ -164,8 +168,10 @@ function print_local_variables(){
 function print_colors(){
     # print out all variables contained in this module:
     declare -a array=("${!1}")
+    local rst=$(echo -e ${reset})
+
     for i in "${array[@]}"; do
-        var="$(echo -e $i)"
+        var="$(echo -e ${i})"
         printf -- '\t%s\n' $var
     done
     return 0
@@ -181,9 +187,9 @@ function pkg_info(){
     ##       of variable values in this module
     ##
     local version="$1"
-    bdwt=$(echo -e ${bold}${a_brightwhite})
-    act=$(echo -e ${a_orange})
-    rst=$(echo -e ${reset})
+    local bdwt=$(echo -e ${bold}${a_brightwhite})
+    local act=$(echo -e ${a_orange})
+    local rst=$(echo -e ${reset})
 
     declare -a ansi_colors
     declare -a printvalue_colors
