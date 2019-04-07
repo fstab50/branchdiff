@@ -300,7 +300,7 @@ function _branchname_reconcilliation(){
 
     if [ "$(echo "${_locals[@]}" | grep $alternate)" ]; then
 
-        printf -- '%s\n' "$(echo "${_locals[@]}" | grep $alternate)"
+        printf -- '%s\n' "$alternate"
 
     else
         for branch in "${_remotes[@]}"; do
