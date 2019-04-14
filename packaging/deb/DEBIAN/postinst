@@ -42,11 +42,11 @@ if [[ -z $(ls /etc/apt/sources.list.d | grep $repository) ]]; then
             echo 'deb [arch=amd64] http://deb.awscloud.center trusty main' > /etc/apt/sources.list.d/debian-tools.list
             ;;
 
-        'xenial' | "\"16.04\"" | "16.04")
+        'xenial' | "\"16.04\"" | "16.04" | "8")
             echo 'deb [arch=amd64] http://deb.awscloud.center xenial main' > /etc/apt/sources.list.d/debian-tools.list
             ;;
 
-        'bionic' | "\"18.04\"" | "18.04")
+        'bionic' | "\"18.04\"" | "18.04" | "9")
             echo 'deb [arch=amd64] http://deb.awscloud.center bionic main' > /etc/apt/sources.list.d/debian-tools.list
             ;;
 
