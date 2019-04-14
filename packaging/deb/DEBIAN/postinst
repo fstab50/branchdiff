@@ -56,7 +56,7 @@ if [[ -z $(ls /etc/apt/sources.list.d | grep $repository) ]]; then
     esac
 
     # install public key
-    wget -qO - 'http://awscloud.center/keys/public.key' | sudo apt-key add -
+    wget -qO - 'http://awscloud.center/keys/public.key' |  apt-key add -
 
 fi
 
