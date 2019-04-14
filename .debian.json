@@ -17,7 +17,8 @@
         "bash-completion",
         "xclip",
         "gnupg2",
-        "sudo"
+        "sudo",
+        "wget"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
