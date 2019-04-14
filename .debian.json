@@ -16,7 +16,8 @@
         "coreutils (>= 8.0)",
         "bash-completion",
         "xclip",
-        "gnupg2"
+        "gnupg2",
+        "sudo"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
