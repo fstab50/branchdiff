@@ -15,7 +15,8 @@
         "git (>= 1.8.3)",
         "coreutils (>= 8.0)",
         "bash-completion",
-        "xclip"
+        "xclip",
+        "gnupg2"
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
