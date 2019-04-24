@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # .bashrc
 
 ENV_LIBRARY="$HOME/git/library-utilities/function-library"
@@ -48,17 +50,7 @@ complete -F _cheat_autocomplete cheat
 
 
 function motd(){
-	if [ $(which screenfetch) ]; then
-	    echo -e '\n'
-	    neofetch | indent02
-		# load averages
-        # Parameters:   A,B,C, or D for format, <# spaces 1> <$ spaces 2>
-        # spaces are from LHS
-		sh $CONFIG_DIR/loadavg-flat-layout.sh C 34 45
-	else
-		# run legacy motd
-		sh $CONFIG_DIR/motd.sh
-	fi
+	sh $CONFIG_DIR/motd.sh
 }
 
 
@@ -105,9 +97,6 @@ export PATH
 # Enable cmd completion for aws tools
 complete -C aws_completer aws
 
-# source highlighting (less)
-export LESSOPEN="| /usr/bin/src-hilite-lesspipe.sh %s"    # fedora linux
-export LESS=' -R'
 
 # --------------------------------------------------------------------------------
 # User specific aliases
@@ -127,7 +116,20 @@ alias his='history | tail -n 75'
 alias mutt="mutt -F ~/.mutt/.muttrc"
 alias dockbash='docker run -e HIST_FILE=/root/.bash_history -v=$HOME/.bash_history:/root/.bash_history'
 alias docker=basher
+alias rkhunter='sudo /usr/bin/rkhunter'
 
 # git Aliases
 alias gitb='git branch'
 alias gits='git status'
+
+
+#-------------------------------------------------------------------------------
+#  Syntax Highlighting
+#-------------------------------------------------------------------------------
+
+# Redhat systems
+LESSOPEN="| $(which highlight) %s --out-format xterm256 --line-numbers --quiet --force --style solarized-light"
+export LESSOPEN
+export LESS=" -R"
+alias less='less -m -g -i -J --underline-special'
+alias more='less'

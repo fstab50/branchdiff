@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # .bashrc
 
 ENV_LIBRARY="$HOME/git/library-utilities/function-library"
@@ -114,7 +116,20 @@ alias his='history | tail -n 75'
 alias mutt="mutt -F ~/.mutt/.muttrc"
 alias dockbash='docker run -e HIST_FILE=/root/.bash_history -v=$HOME/.bash_history:/root/.bash_history'
 alias docker=basher
+alias rkhunter='sudo /usr/bin/rkhunter'
 
 # git Aliases
 alias gitb='git branch'
 alias gits='git status'
+
+
+#-------------------------------------------------------------------------------
+#  Syntax Highlighting
+#-------------------------------------------------------------------------------
+
+# Redhat systems
+LESSOPEN="| $(which highlight) %s --out-format xterm256 --line-numbers --quiet --force --style solarized-light"
+export LESSOPEN
+export LESS=" -R"
+alias less='less -m -g -i -J --underline-special'
+alias more='less'
