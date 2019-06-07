@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 IMAGEDIR="$ROOT/assets"
 PROFILE='imagestore'
 BUCKET='http-imagestore'
