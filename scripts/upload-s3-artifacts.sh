@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-IMAGEDIR="$ROOT/assets"
+
 PROFILE='imagestore'
 BUCKET='http-imagestore'
 KEY='branchdiff'
@@ -33,6 +33,8 @@ function _valid_iamuser(){
 
 
 ROOT=$(_git_root)
+IMAGEDIR="$ROOT/assets"
+
 
 # color codes
 source "$ROOT/core/colors.sh"
@@ -42,7 +44,7 @@ source "$ROOT/core/std_functions.sh"
 if _valid_iamuser $PROFILE; then
 
     printf -- '\n'
-    cd "$IMAGEDIR/assets" || true
+    cd "$IMAGEDIR" || true
 
     declare -a arr_files
     mapfile -t arr_files < <(ls . 2>/dev/null)
