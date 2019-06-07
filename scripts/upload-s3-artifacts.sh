@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 IMAGEDIR="$ROOT/assets"
-PROFILE='imagestore5'
+PROFILE='imagestore55'
 BUCKET='http-imagestore'
 KEY='branchdiff'
 TMPDIR='/tmp'
@@ -62,10 +62,12 @@ if _valid_iamuser $PROFILE; then
     cd "$ROOT" || true
 
 else
-    std_message "You must ensure ${bd}${orange}$PROFILE${rst} is present in the local awscli configuration" "ERROR"
+    std_message "You must ensure ${bold}${red}$PROFILE${RESET} is present in the local awscli configuration" "FAIL"
 fi
 
 # clean up
-rm $TMPDIR/aws.txt || true
+if [ -f "$TMPDIR/aws.txt" ]; then
+    rm $TMPDIR/aws.txt || true
+fi
 
 exit 0
