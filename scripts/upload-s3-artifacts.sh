@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 IMAGEDIR="$ROOT/assets"
-PROFILE='imagestore55'
+PROFILE='imagestore'
 BUCKET='http-imagestore'
 KEY='branchdiff'
 TMPDIR='/tmp'
