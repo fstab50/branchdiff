@@ -98,6 +98,11 @@ deployrpm: buildrpm   ## Install (source: pypi). Build artifacts exist
 	cd $(CUR_DIR) && . $(VENV_DIR)/bin/activate && bash $(SCRIPT_DIR)/installrpm.sh
 
 
+.PHONY: upload-images
+upload-images:   ## Upload README images to Amazon S3
+	bash $(CUR_DIR)/scripts/upload-s3-artifacts.sh
+
+
 .PHONY: help
 help:   ## Print help index
 	@printf "\n\033[0m %-15s\033[0m %-13s\u001b[37;1m%-15s\u001b[0m\n\n" " " "make targets: " $(PROJECT)
