@@ -42,7 +42,7 @@ source "$ROOT/core/std_functions.sh"
 if _valid_iamuser $PROFILE; then
 
     printf -- '\n'
-    cd "$IMAGEDIR" || true
+    cd "$IMAGEDIR/assets" || true
 
     declare -a arr_files
     mapfile -t arr_files < <(ls . 2>/dev/null)
