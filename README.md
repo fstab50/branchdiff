@@ -55,7 +55,6 @@
 
 [![branchdiff default view](./assets/summary.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/summary.png)
 
-[![branchdiff-xlines](./assets/branchdiff-xlines.png)](http://images.awscloud.center/branchdiff/branchdiff-xlines.png)
 
 [back to the top](#top)
 
@@ -244,6 +243,9 @@ $ branchdiff
 <p align="center">
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
+
+[![branchdiff-xlines](./assets/branchdiff-xlines.png)](http://images.awscloud.center/branchdiff/branchdiff-xlines.png)
+
 
 [back to the top](#top)
 
