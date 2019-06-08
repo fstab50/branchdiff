@@ -244,7 +244,7 @@ $ branchdiff
   <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
 </p>
 
-[![branchdiff-xlines](./assets/branchdiff-xlines.png)](http://images.awscloud.center/branchdiff/branchdiff-xlines.png)
+[![branchdiff-xlines](./assets/branchdiff-xlines.png)](https://d1qxyi0fawulzu.cloudfront.net/branchdiff/branchdiff-xlines.png)
 
 
 [back to the top](#top)
