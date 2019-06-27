@@ -3,7 +3,7 @@
 
 
 PROFILE='imagestore'
-BUCKET='images.awscloud.center'
+BUCKET='images.origin'
 KEY='branchdiff'
 TMPDIR='/tmp'
 
