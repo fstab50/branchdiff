@@ -23,7 +23,7 @@
 
 * [**UPGRADING**](#upgrading)
 
-* [**USAGE**](#usage)
+* [**OPTIONS**](#options)
 
 * [**SCREENSHOTS**](#screenshots)
     * [Working Branch Status](#screenshots)
@@ -198,7 +198,7 @@ $  sudo apt upgrade
 [back to the top](#top)
 
 * * *
-## Usage
+## Options
 
 To display the help menu:
 
