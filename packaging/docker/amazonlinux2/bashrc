@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+
+#-------------------------------------------------------------------------------
+#  Non-interactive bypass
+#-------------------------------------------------------------------------------
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+    *) return ;;
+esac
+
 # .bashrc
 
 ENV_LIBRARY="$HOME/git/library-utilities/function-library"
@@ -7,7 +18,6 @@ source "$CONFIG_DIR/colors.sh"
 OS_INFO=$(sh $CONFIG_DIR/os_distro.sh 2>/dev/null)
 os_family=$(echo $OS_INFO | awk '{print $1}')
 os_release=$(echo $OS_INFO | awk '{print $2}')
-
 
 # ------------------------------------------------------------------------------
 #  function declarations
@@ -146,7 +156,7 @@ export CHEAT_EDITOR="/usr/bin/vim"
 export CHEATCOLORS=true
 
 # display motd
-motd 
+motd
 
 # AWS Marketplace Owner IDs
 export UBUNTU=099720109477
