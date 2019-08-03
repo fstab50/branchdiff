@@ -53,7 +53,7 @@
 * Graphical view of when commits were made to the current branch, by whom
 * Graphical merge maps
 
-[![branchdiff default view](./assets/summary.png)](http://images.awspros.world/ec2tools/summary.png)
+[![branchdiff default view](./assets/summary.png)](http://images.awspros.world/branchdiff/summary.png)
 
 
 [back to the top](#top)
@@ -102,7 +102,7 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     $  grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/*
     ```
 
-    [![repository-contents](./assets/repo-install-verify.png)](http://images.awspros.world/ec2tools/repo-install-verify.png)
+    [![repository-contents](./assets/repo-install-verify.png)](http://images.awspros.world/branchdiff/repo-install-verify.png)
 
 4. Update and install the package:
 
@@ -131,7 +131,7 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ sudo yum install wget
     ```
 
-    [![rpm-install1](./assets/rpm-install-1.png)](http://images.awspros.world/ec2tools/rpm-install-1.png)
+    [![rpm-install1](./assets/rpm-install-1.png)](http://images.awspros.world/branchdiff/rpm-install-1.png)
 
     ```
     $ wget http://awscloud.center/rpm/developer-tools.repo
@@ -153,12 +153,12 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ sudo yum install branchdiff
     ```
 
-    [![rpm-install2](./assets/rpm-install-2.png)](http://images.awspros.world/ec2tools/rpm-install-2.png)
+    [![rpm-install2](./assets/rpm-install-2.png)](http://images.awspros.world/branchdiff/rpm-install-2.png)
 
 
     Answer "y":
 
-    [![rpm-install3](./assets/rpm-install-3.png)](http://images.awspros.world/ec2tools/rpm-install-3.png)
+    [![rpm-install3](./assets/rpm-install-3.png)](http://images.awspros.world/branchdiff/rpm-install-3.png)
 
 
 4. Verify Installation
@@ -167,7 +167,7 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ yum info branchdiff
     ```
 
-    [![rpm-install4](./assets/rpm-install-4.png)](http://images.awspros.world/ec2tools/rpm-install-4.png)
+    [![rpm-install4](./assets/rpm-install-4.png)](http://images.awspros.world/branchdiff/rpm-install-4.png)
 
 [back to the top](#top)
 
@@ -207,7 +207,7 @@ To display the help menu:
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/help-menu.png" alt="branchdiff help" target="_blank"/>
+  <img src="http://images.awspros.world/branchdiff/help-menu.png" alt="branchdiff help" target="_blank"/>
 </p>
 
 
@@ -227,7 +227,7 @@ $ branchdiff
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/branchdiff1.png" alt="branchdiff1"/>
+  <img src="http://images.awspros.world/branchdiff/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
 [back to the top](#top)
@@ -241,7 +241,7 @@ $ branchdiff
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/branchdiff-xlines.png" alt="branchdiff1"/>
+  <img src="http://images.awspros.world/branchdiff/branchdiff-xlines.png" alt="branchdiff1"/>
 </p>
 
 
@@ -258,7 +258,7 @@ $ branchdiff --commit-log history
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/commit-log-history.png" alt="commitlog-history"/>
+  <img src="http://images.awspros.world/branchdiff/commit-log-history.png" alt="commitlog-history"/>
 </p>
 
 [back to the top](#top)
@@ -278,7 +278,7 @@ $ branchdiff --commit-log detail
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/commit-log-detail.png" alt="commitlog-history"/>
+  <img src="http://images.awspros.world/branchdiff/commit-log-detail.png" alt="commitlog-history"/>
 </p>
 
 Git repository with many working branches and complex merge cadence:
@@ -288,7 +288,7 @@ $ branchdiff --commit-log detail
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/commit-log-detail2.png" alt="commitlog-history"/>
+  <img src="http://images.awspros.world/branchdiff/commit-log-detail2.png" alt="commitlog-history"/>
 </p>
 
 
@@ -305,7 +305,7 @@ $ branchdiff --code
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/branchdiff-code.png" alt="branchdiff-code"/>
+  <img src="http://images.awspros.world/branchdiff/branchdiff-code.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
@@ -340,7 +340,7 @@ $ branchdiff --code Code/connectors/table.py
 ```
 
 <p align="center">
-  <img src="http://images.awspros.world/ec2tools/code-filediff.png" alt="branchdiff-code"/>
+  <img src="http://images.awspros.world/branchdiff/code-filediff.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
