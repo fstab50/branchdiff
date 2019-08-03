@@ -237,7 +237,7 @@ $ branchdiff
 #### [Screenshots](#screenshots) / Extended commit history
 
 ```bash
-$ branchdiff
+~/xlines$ branchdiff
 ```
 
 <p align="center">
