@@ -6,7 +6,7 @@
 ## About this repository
 
 * Purpose: 		Access advanced git functionality without commands for instant visibility into the status of your working branch
-* Version:	     1.1.13
+* Version:	     1.1.12
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
