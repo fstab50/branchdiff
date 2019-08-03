@@ -61,10 +61,10 @@
 * * *
 ## Supported Linux Distributions
 
-* Ubuntu 16.04, Ubuntu 18.04  
+* Ubuntu 16.04, Ubuntu 18.04
 * Linux Mint 18, 19
 * Debian variants of Ubuntu / Linux Mint distributions above
-* Redhat 7+, CentOS 7+  
+* Redhat 7+, CentOS 7+
 
 [back to the top](#top)
 
@@ -76,7 +76,7 @@
 
 The easiest way to install **branchdiff** is via the Debian-tools repository:
 
-1. Download the public key:  
+1. Download the public key:
 
     ```
     $ wget -qO - http://awscloud.center/keys/public.key | sudo apt-key add -
@@ -134,7 +134,7 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     [![rpm-install1](./assets/rpm-install-1.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-1.png)
 
     ```
-    $ wget http://awscloud.center.s3-website.us-east-2.amazonaws.com/rpm/developer-tools.repo
+    $ wget http://awscloud.center/rpm/developer-tools.repo
     ```
 
     ```
@@ -321,7 +321,7 @@ Pressing the tab key twice autocompletes the names of all files that received up
 ```bash
 $ branchdiff --code <tab><tab>
 
-Ansible/deploy_configuration.yml                       Code/core/ec2prices.py                             
+Ansible/deploy_configuration.yml                       Code/core/ec2prices.py
 attribute_defs.yml                                     Code/core/__init__.py
 cloudformation/dynamodb-table.template.yml             Code/core/parameter_processing.py
 cloudformation/serverless-monitor.template.yml         Code/core/_version.py
