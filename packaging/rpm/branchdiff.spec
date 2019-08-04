@@ -72,7 +72,6 @@ install -m 0644 branchdiff-completion.bash $RPM_BUILD_ROOT/%{_compdir}/branchdif
 
 
 %post
-#!/usr/bin/env bash
 
 BIN_PATH=/usr/local/bin
 

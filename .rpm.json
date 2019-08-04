@@ -17,7 +17,7 @@
     ],
     "LogFiles": [ ],
     "VersionModule": "version.py",
-    "DockerImage": "rpmbuildD",
+    "DockerImage": "rpmbuildB",
     "DockerContainer": "buildbranchdiff",
     "DockerUser": "builder",
     "DockerBuildScript": "docker-buildrpm.sh",

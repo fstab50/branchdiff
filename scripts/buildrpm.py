@@ -714,9 +714,11 @@ def docker_daemon_up():
     Returns:
         True (running) | False, TYPE: bool
     """
-    if which('docker'):
-        cmd = 'docker images >/dev/null 2>&1; echo $?'
-        return True if int(subprocess.getoutput(cmd)) == 0 else False
+    cmd = 'docker images >/dev/null 2>&1; echo $?'
+    if which('docker') and int(subprocess.getoutput(cmd)) == 0:
+        return True
+    else:
+        stdout_message('Docker engine not running or not accessible', prefix='WARN')
     return False
 
 

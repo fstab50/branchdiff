@@ -5,8 +5,8 @@
 
 ## About this repository
 
-* Purpose: 		Access advanced git commands without code for instant visibility into the status of your working branch
-* Version:	     1.1.11
+* Purpose: 		Access advanced git functionality without commands for instant visibility into the status of your working branch
+* Version:	     1.1.12
 * Repo: 		https://github.com/fstab50/branchdiff
 
 
@@ -23,7 +23,7 @@
 
 * [**UPGRADING**](#upgrading)
 
-* [**USAGE**](#usage)
+* [**OPTIONS**](#options)
 
 * [**SCREENSHOTS**](#screenshots)
     * [Working Branch Status](#screenshots)
@@ -53,17 +53,18 @@
 * Graphical view of when commits were made to the current branch, by whom
 * Graphical merge maps
 
-[![branchdiff default view](./assets/summary.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/summary.png)
+[![branchdiff default view](./assets/summary.png)](http://images.awspros.world/branchdiff/summary.png)
+
 
 [back to the top](#top)
 
 * * *
 ## Supported Linux Distributions
 
-* Ubuntu 16.04, Ubuntu 18.04  
+* Ubuntu 16.04, Ubuntu 18.04
 * Linux Mint 18, 19
 * Debian variants of Ubuntu / Linux Mint distributions above
-* Redhat 7+, CentOS 7+  
+* Redhat 7+, CentOS 7+
 
 [back to the top](#top)
 
@@ -75,7 +76,7 @@
 
 The easiest way to install **branchdiff** is via the Debian-tools repository:
 
-1. Download the public key:  
+1. Download the public key:
 
     ```
     $ wget -qO - http://awscloud.center/keys/public.key | sudo apt-key add -
@@ -101,7 +102,7 @@ The easiest way to install **branchdiff** is via the Debian-tools repository:
     $  grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/*
     ```
 
-    [![repository-contents](./assets/repo-install-verify.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/repo-install-verify.png)
+    [![repository-contents](./assets/repo-install-verify.png)](http://images.awspros.world/branchdiff/repo-install-verify.png)
 
 4. Update and install the package:
 
@@ -130,10 +131,10 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ sudo yum install wget
     ```
 
-    [![rpm-install1](./assets/rpm-install-1.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-1.png)
+    [![rpm-install1](./assets/rpm-install-1.png)](http://images.awspros.world/branchdiff/rpm-install-1.png)
 
     ```
-    $ wget http://awscloud.center.s3-website.us-east-2.amazonaws.com/rpm/developer-tools.repo
+    $ wget http://awscloud.center/rpm/developer-tools.repo
     ```
 
     ```
@@ -152,12 +153,12 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ sudo yum install branchdiff
     ```
 
-    [![rpm-install2](./assets/rpm-install-2.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-2.png)
+    [![rpm-install2](./assets/rpm-install-2.png)](http://images.awspros.world/branchdiff/rpm-install-2.png)
 
 
     Answer "y":
 
-    [![rpm-install3](./assets/rpm-install-3.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-3.png)
+    [![rpm-install3](./assets/rpm-install-3.png)](http://images.awspros.world/branchdiff/rpm-install-3.png)
 
 
 4. Verify Installation
@@ -166,7 +167,7 @@ The easiest way to install **branchdiff** on redhat-based Linux distributions is
     $ yum info branchdiff
     ```
 
-    [![rpm-install4](./assets/rpm-install-4.png)](https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/rpm-install-4.png)
+    [![rpm-install4](./assets/rpm-install-4.png)](http://images.awspros.world/branchdiff/rpm-install-4.png)
 
 [back to the top](#top)
 
@@ -197,7 +198,7 @@ $  sudo apt upgrade
 [back to the top](#top)
 
 * * *
-## Usage
+## Options
 
 To display the help menu:
 
@@ -206,7 +207,7 @@ To display the help menu:
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/help-menu.png" alt="branchdiff help"/>
+  <img src="http://images.awspros.world/branchdiff/help-menu.png" alt="branchdiff help" target="_blank"/>
 </p>
 
 
@@ -226,7 +227,7 @@ $ branchdiff
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff1.png" alt="branchdiff1"/>
+  <img src="http://images.awspros.world/branchdiff/branchdiff1.png" alt="branchdiff1"/>
 </p>
 
 [back to the top](#top)
@@ -236,12 +237,13 @@ $ branchdiff
 #### [Screenshots](#screenshots) / Extended commit history
 
 ```bash
-$ branchdiff
+~/xlines$ branchdiff
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff2.png" alt="branchdiff1"/>
+  <img src="http://images.awspros.world/branchdiff/branchdiff-xlines.png" alt="branchdiff1"/>
 </p>
+
 
 [back to the top](#top)
 
@@ -256,7 +258,7 @@ $ branchdiff --commit-log history
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-history.png" alt="commitlog-history"/>
+  <img src="http://images.awspros.world/branchdiff/commit-log-history.png" alt="commitlog-history"/>
 </p>
 
 [back to the top](#top)
@@ -276,7 +278,7 @@ $ branchdiff --commit-log detail
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail.png" alt="commitlog-history"/>
+  <img src="http://images.awspros.world/branchdiff/commit-log-detail.png" alt="commitlog-history"/>
 </p>
 
 Git repository with many working branches and complex merge cadence:
@@ -286,7 +288,7 @@ $ branchdiff --commit-log detail
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/commit-log-detail2.png" alt="commitlog-history"/>
+  <img src="http://images.awspros.world/branchdiff/commit-log-detail2.png" alt="commitlog-history"/>
 </p>
 
 
@@ -303,7 +305,7 @@ $ branchdiff --code
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/branchdiff-code.png" alt="branchdiff-code"/>
+  <img src="http://images.awspros.world/branchdiff/branchdiff-code.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
@@ -317,7 +319,7 @@ Pressing the tab key twice autocompletes the names of all files that received up
 ```bash
 $ branchdiff --code <tab><tab>
 
-Ansible/deploy_configuration.yml                       Code/core/ec2prices.py                             
+Ansible/deploy_configuration.yml                       Code/core/ec2prices.py
 attribute_defs.yml                                     Code/core/__init__.py
 cloudformation/dynamodb-table.template.yml             Code/core/parameter_processing.py
 cloudformation/serverless-monitor.template.yml         Code/core/_version.py
@@ -338,7 +340,7 @@ $ branchdiff --code Code/connectors/table.py
 ```
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fstab50/branchdiff/master/assets/code-filediff.png" alt="branchdiff-code"/>
+  <img src="http://images.awspros.world/branchdiff/code-filediff.png" alt="branchdiff-code"/>
 </p>
 
 [back to the top](#top)
