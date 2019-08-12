@@ -53,7 +53,7 @@
 * Graphical view of when commits were made to the current branch, by whom
 * Graphical merge maps
 
-[![branchdiff default view](./assets/summary.png)](http://images.awspros.world/branchdiff/summary.png)
+[![branchdiff default view](./assets/intro_sm.png)](http://images.awspros.world/branchdiff/intro_lg.png)
 
 
 [back to the top](#top)
