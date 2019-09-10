@@ -37,7 +37,7 @@ import subprocess
 import tarfile
 import fileinput
 from shutil import copy2 as copyfile
-from shutil import rmtree, which
+from shutil import copytree, rmtree, which
 import distro
 import docker
 import loggers
@@ -70,6 +70,7 @@ lk = Colors.DARK_BLUE                    # color for filesystem path confirmatio
 red = Colors.RED                        # color for failed operations
 yl = Colors.GOLD3                       # color when copying, creating paths
 rst = Colors.RESET                      # reset all color, formatting
+arrow = yl + Colors.BOLD + '-->' + rst
 
 
 # global logger
@@ -608,6 +609,9 @@ def builddir_content_updates(param_dict, osimage, version, debug):
 def cp_dockerfiles(src, dst):
     """
     Copy dockerfiles and associated build artifacts to build_root
+
+    >> NOT CURRENTLY USED <<
+
     """
     # place docker build script
     script_src = src + '/' + dockerscript
@@ -734,8 +738,12 @@ def docker_init(src, builddir, osimage, param_dict, debug):
     cname = param_dict['DockerContainer']                    # container id
     host_mnt = VOLMNT                                        # host volume mount point
     container_mnt = CONTAINER_VOLMNT                         # container volume internal mnt pt
+    docker_user = 'builder'
     bash_cmd = '/bin/sleep 30'
     buildscript = 'docker-buildrpm.sh'
+
+    # copy buildscript to directory where build files assembled
+    copyfile(src + '/' + buildscript, builddir + '/' + buildscript)
 
     try:
 
@@ -765,6 +773,7 @@ def docker_init(src, builddir, osimage, param_dict, debug):
                 image=imagename,
                 command=bash_cmd,
                 volumes={host_mnt: {'bind': container_mnt, 'mode': 'rw'}},
+                user=docker_user,
                 detach=True
             )
 
@@ -781,7 +790,7 @@ def docker_init(src, builddir, osimage, param_dict, debug):
 
         buildfile_list = list(
             filter(
-                lambda x: x.endswith('.tar.gz') or x.endswith('.spec'), os.listdir('.')
+                lambda x: x.endswith('.tar.gz') or x.endswith('.spec') or x.endswith('.sh'), os.listdir('.')
             )
         )
 
@@ -804,7 +813,7 @@ def docker_init(src, builddir, osimage, param_dict, debug):
                     )
 
         # exec rpmbuild script
-        cmd = f'docker exec -i {container.name} sh -c \'cd ~ && bash {buildscript}\''
+        cmd = f'docker exec -i {container.name} sh -c \'cd /home/builder && bash {buildscript}\''
         stdout_message(subprocess.getoutput(cmd))
 
         if container_running(container.name):
@@ -1234,7 +1243,9 @@ def init_cli():
         return exit_codes['EX_OK']['Code']
 
     elif args.build:
+
         libsrc = git_root() + '/' + 'core'
+
         if valid_version(args.set) and prebuild(TMPDIR, libsrc, VOLMNT, git_root() + '/' + args.parameter_file):
             package, contents = main(
                         setVersion=args.set,
