@@ -219,8 +219,12 @@ To display the help menu:
 <a name="screenshots0"></a>
 #### [Screenshots](#screenshots) / Working Branch Status
 
-[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch in which the cursor is located:
+[branchdiff](https://github.com/fstab50/branchdiff) provides the status of working branch of the current git repository in which the cursor is located:
 
+
+```bash
+$ cd <git repository root directory>
+```
 
 ```bash
 $ branchdiff
