@@ -4,13 +4,13 @@
 #  Non-interactive bypass
 #-------------------------------------------------------------------------------
 
-# If not running interactively, don't do anything
-case $- in
-    *i*) ;;
-    *) return ;;
-esac
+[ -z "$PS1" ] && return
 
-# .bashrc
+
+#-------------------------------------------------------------------------------
+#  Sources
+#-------------------------------------------------------------------------------
+
 ENV_LIBRARY="$HOME/git/library-utilities/function-library"
 CONFIG_DIR="$HOME/.config/bash"
 source "$CONFIG_DIR/colors.sh"
