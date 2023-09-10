@@ -61,10 +61,11 @@
 * * *
 ## Supported Linux Distributions
 
-* Ubuntu 16.04, Ubuntu 18.04
-* Linux Mint 18, 19
+* Ubuntu 18.04, 20.04, 20.10, 22.04
+* Linux Mint 18, 19, 20, 21
 * Debian variants of Ubuntu / Linux Mint distributions above
-* Redhat 7+, CentOS 7+
+* Redhat 7,8+
+* CentOS 7, 8+
 
 [back to the top](#top)
 
